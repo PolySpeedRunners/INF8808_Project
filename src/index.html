@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualisations Olympiques</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Title at the top -->
+    <header class="header">
+        <h1>Projet INF8808</h1>
+    </header>
+    
+    <nav class="sidebar">
+        <button data-target="#section1">1</button>
+        <button data-target="#section2">2</button>
+        <button data-target="#section3">3</button>
+    </nav>
+    
+    <main>
+        <section id="section1" class="visual-section">
+            <h1>Visualisation 1</h1>
+            <p>Description de la première visualisation...</p>
+        </section>
+        
+        <section id="section2" class="visual-section">
+            <h1>Visualisation 2</h1>
+            <p>Description de la deuxième visualisation...</p>
+        </section>
+        
+        <section id="section3" class="visual-section">
+            <h1>Visualisation 3</h1>
+            <p>Description de la troisième visualisation...</p>
+        </section>
+    </main>
+
+    <script>
+        document.querySelectorAll('.sidebar button').forEach(button => {
+            button.addEventListener('click', () => {
+                document.querySelector(button.dataset.target).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.visual-section');
+            const sidebarButtons = document.querySelectorAll('.sidebar button');
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
+                    currentSection = `#${section.id}`;
+                }
+            });
+            
+            sidebarButtons.forEach(button => {
+                if (button.dataset.target === currentSection) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
