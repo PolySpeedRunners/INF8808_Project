@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Title at the top -->
     <header class="header">
         <h1>Projet INF8808</h1>
     </header>
@@ -20,18 +19,27 @@
     
     <main>
         <section id="section1" class="visual-section">
-            <h1>Visualisation 1</h1>
-            <p>Description de la première visualisation...</p>
+            <h1 class="title">Visualisation 1</h1>
+            <div class="graph">
+                <h1 class="graph-title">TITRE 1</h1>
+            </div>
+            <p class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sodales, ligula vitae volutpat vestibulum, nisl odio congue ligula, id iaculis felis nunc ut quam. In hac habitasse platea dictumst. Integer et egestas sem. Curabitur vel rutrum lacus. Integer ornare scelerisque tempor. In pretium sollicitudin est at vulputate. Nunc est quam, molestie vitae porta id, commodo non lorem. Vestibulum ac nunc ut libero gravida rutrum. Quisque est nibh, ultrices non enim nec, volutpat pretium ex. Phasellus ultrices libero pellentesque felis pellentesque, eu gravida purus iaculis. Mauris nisl purus, hendrerit quis ultrices vitae, pellentesque a metus. In in tortor euismod, pellentesque purus at, consequat massa. </p>
         </section>
         
         <section id="section2" class="visual-section">
-            <h1>Visualisation 2</h1>
-            <p>Description de la deuxième visualisation...</p>
+            <h1 class="title">Visualisation 2</h1>
+            <div class="graph">
+                <h1 class="graph-title">TITRE 2</h1>
+            </div>
+            <p class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sodales, ligula vitae volutpat vestibulum, nisl odio congue ligula, id iaculis felis nunc ut quam. In hac habitasse platea dictumst. Integer et egestas sem. Curabitur vel rutrum lacus. Integer ornare scelerisque tempor. In pretium sollicitudin est at vulputate. Nunc est quam, molestie vitae porta id, commodo non lorem. Vestibulum ac nunc ut libero gravida rutrum. Quisque est nibh, ultrices non enim nec, volutpat pretium ex. Phasellus ultrices libero pellentesque felis pellentesque, eu gravida purus iaculis. Mauris nisl purus, hendrerit quis ultrices vitae, pellentesque a metus. In in tortor euismod, pellentesque purus at, consequat massa. </p>
         </section>
         
         <section id="section3" class="visual-section">
-            <h1>Visualisation 3</h1>
-            <p>Description de la troisième visualisation...</p>
+            <h1 class="title">Visualisation 3</h1>
+            <div class="graph">
+                <h1 class="graph-title">TITRE 3</h1>
+            </div>
+            <p class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sodales, ligula vitae volutpat vestibulum, nisl odio congue ligula, id iaculis felis nunc ut quam. In hac habitasse platea dictumst. Integer et egestas sem. Curabitur vel rutrum lacus. Integer ornare scelerisque tempor. In pretium sollicitudin est at vulputate. Nunc est quam, molestie vitae porta id, commodo non lorem. Vestibulum ac nunc ut libero gravida rutrum. Quisque est nibh, ultrices non enim nec, volutpat pretium ex. Phasellus ultrices libero pellentesque felis pellentesque, eu gravida purus iaculis. Mauris nisl purus, hendrerit quis ultrices vitae, pellentesque a metus. In in tortor euismod, pellentesque purus at, consequat massa. </p>
         </section>
     </main>
 
@@ -39,7 +47,8 @@
         document.querySelectorAll('.sidebar button').forEach(button => {
             button.addEventListener('click', () => {
                 document.querySelector(button.dataset.target).scrollIntoView({
-                    behavior: 'smooth'
+                    behavior: 'smooth',
+                    block: 'center'
                 });
             });
         });
