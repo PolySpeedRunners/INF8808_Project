@@ -4,16 +4,6 @@ const section3Container = "#section3";
 
 export function populateYearAndDisciplineOptions(data) {
   const years = Object.keys(data).sort();
-  const disciplines = new Set();
-
-  for (const year of years) {
-    const countries = data[year];
-    for (const country of Object.values(countries)) {
-      for (const d of Object.keys(country.disciplines || {})) {
-        disciplines.add(d);
-      }
-    }
-  }
 
   years.forEach((year) => {
     const option = document.createElement("option");
@@ -22,17 +12,44 @@ export function populateYearAndDisciplineOptions(data) {
     yearSelect.appendChild(option);
   });
 
-  Array.from(disciplines)
-    .sort()
-    .forEach((discipline) => {
-      const option = document.createElement("option");
-      option.value = discipline;
-      option.textContent = discipline;
-      disciplineSelect.appendChild(option);
-    });
-    yearSelect.addEventListener('change', () => updateChart(data));
-    disciplineSelect.addEventListener('change', () => updateChart(data));
+  yearSelect.addEventListener('change', () => {
+    const selectedYear = yearSelect.value;
+    updateDisciplinesList(selectedYear, data);
+    updateChart(data); // to redraw the chart on year change
+  });
+
+  // Initial population for the first year
+  const firstYear = years[0];
+  updateDisciplinesList(firstYear, data);
 }
+
+function updateDisciplinesList(year, data) {
+  disciplineSelect.innerHTML = '';
+
+  const yearData = data[year] || {};
+  const disciplines = new Set();
+
+  for (const country of Object.values(yearData)) {
+    for (const discipline of Object.keys(country.disciplines || {})) {
+      disciplines.add(discipline);
+    }
+  }
+
+  const sortedDisciplines = Array.from(disciplines).sort();
+
+  sortedDisciplines.forEach((discipline) => {
+    const option = document.createElement("option");
+    option.value = discipline;
+    option.textContent = discipline;
+    disciplineSelect.appendChild(option);
+  });
+
+  if (sortedDisciplines.length > 0) {
+    disciplineSelect.value = sortedDisciplines[0];
+  }
+  disciplineSelect.addEventListener('change', () => updateChart(data));
+}
+
 
 export function updateChart(resultsData) {
   const year = yearSelect.value;
@@ -101,8 +118,7 @@ export function drawBarChart({
     .filter((d) => d.medals > 0)
     .sort((a, b) => b.medals - a.medals)
     .slice(0, 20); // Top 20
-
-  console.log(formattedData);
+  const topCountryName = formattedData[0]?.countryName;
 
   const x = d3
     .scaleBand()
@@ -126,11 +142,11 @@ export function drawBarChart({
     .attr("y", (d) => y(d.medals))
     .attr("width", x.bandwidth())
     .attr("height", (d) => innerHeight - y(d.medals))
-    .attr("fill", "#69b3a2")
+    .attr("fill", (d) => d.countryName === topCountryName ? "red" : "blue")
     .on("mouseover", (event, d) => {
       tooltip
           .style("opacity", 1)
-          .html(`<strong>${d.countryName}</strong><br>Médailles: ${d.medals}<br>`);
+          .html(`<strong>${d.countryName}</strong><br>Medals: ${d.medals}<br>`);
   })
     .on("mousemove", event => {
         const bounds = container.node().getBoundingClientRect();
@@ -150,7 +166,8 @@ export function drawBarChart({
     .style("text-anchor", "end")
     .attr("transform", "rotate(-45)")
     .style("font-family", fontFamily)
-    .style("fill", textColor);
+    .style("fill", textColor)
+    .style("font-weight", (d) => d === topCountryName ? "bold" : "normal");
 
   chart
     .append("g")
@@ -165,7 +182,7 @@ export function drawBarChart({
     .attr("transform", "rotate(-90)")
     .attr("text-anchor", "middle")
     .style("fill", textColor)
-    .text("Nombre de médailles");
+    .text("Number of medals");
 
   svg
     .append("text")
@@ -175,5 +192,5 @@ export function drawBarChart({
     .style("font-family", fontFamily)
     .style("font-size", "18px")
     .style("fill", textColor)
-    .text(`${discipline} Medals in ${yearSeason}`);
+    .text(`${discipline} Medals in ${yearSeason} Olympics`);
 }

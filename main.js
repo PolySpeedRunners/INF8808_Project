@@ -19,8 +19,8 @@ Promise.all([
     drawBarChart({
         containerSelector: "#section3",
         data: resultsData,
-        yearSeason: "2020,Summer",
-        discipline: "Swimming (Aquatics)"
+        yearSeason: "2000,Summer",
+        discipline: "Archery"
       });
 
 });
