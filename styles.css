@@ -112,7 +112,7 @@ body {
 .description {
     width: 100%;
     max-width: 1200px;
-    margin-top: 20px;
+    margin-top: 50px;
     text-align: justify;
     color: var(--text-color);
 }
@@ -127,7 +127,7 @@ body {
 /* Adjust graph to not take full width */
 .graph {
     flex: 1;
-    height: 100%;
+    height: 110%;
 }
 
 .toggle-buttons {
@@ -168,4 +168,101 @@ body {
     height: 4px;
     width: 100%;
     background-color: var(--button-active-color);
+}
+
+.controls-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: flex-start;
+    margin-left: 20px;
+    height: 100%;
+}
+
+.year-slider {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 30px;
+    font-size: 14px;
+    width: 150px;
+    color: var(--text-color);
+}
+
+.year-slider label {
+    margin-bottom: 10px;
+}
+
+#yearRange {
+    width: 100%;
+}
+
+.slider-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 75%; 
+    position: relative;
+    margin-top: 40px;
+    gap: 20px; 
+}
+
+.slider-labels {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    margin-right: 10px;
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+.vertical-slider {
+    writing-mode: vertical-lr;
+    width: 20px;
+    height: 100%;
+    transform: rotate(180deg);
+}
+
+#yearRange::-webkit-slider-runnable-track {
+    background: var(--button-hover-color); 
+    width: 6px;
+    border-radius: 3px;
+}
+
+#yearRange::-moz-range-track {
+    background: var(--button-hover-color);
+    width: 6px;
+    border-radius: 3px;
+}
+
+#yearRange::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--button-active-color);  
+    border: 2px solid white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    box-shadow: 0 0 3px rgba(0,0,0,0.3);
+    cursor: pointer;
+}
+
+#yearRange::-moz-range-thumb {
+    background: var(--button-active-color);
+    border: 2px solid white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    box-shadow: 0 0 3px rgba(0,0,0,0.3);
+    cursor: pointer;
+}
+
+.year-label {
+    cursor: pointer;
+    transition: font-weight 0.2s;
+}
+
+.year-label.active {
+    font-weight: bold;
 }

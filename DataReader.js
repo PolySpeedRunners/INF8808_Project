@@ -4,10 +4,6 @@ export async function loadMedalData(csvPath) {
         return {
             countryCode: d["country_code"],
             country: d["country"],
-            countryLong: d["country_long"],
-            gold: +d["Gold Medal"],
-            silver: +d["Silver Medal"],
-            bronze: +d["Bronze Medal"],
             total: +d["Total"]
         };
     });
