@@ -1,20 +1,11 @@
-import {
-    loadMedalData,
-    loadGdpByYear,
-    loadPopulationByYear,
-    joinDatasets
-} from './DataReader.js';
-
+import { loadMedalData, loadGdpByYear, loadPopulationByYear, joinDatasets, loadResults, loadDemography, loadGenc } from './DataReader.js';
 import { drawMedalsVsGdpGraph } from './viz/viz1.js';
-
-const defaultYear = 2024;
-
-const yearSlider = document.getElementById("yearRange");
-if (yearSlider) yearSlider.value = defaultYear;
+import { drawRadarChart } from './viz/viz2.js';
+import { drawBarChart, populateYearAndDisciplineOptions } from './viz/viz3.js';
+import { formatDemography, addDemographyData } from './preprocess.js';
 
 const olympicYears = [2010, 2012, 2014, 2016, 2018, 2020, 2022, 2024];
 
-// Load and join medals, GDP, and population for all years
 async function loadAllDataForYears(years) {
     const results = {};
 
@@ -49,4 +40,31 @@ loadAllDataForYears(olympicYears).then((joinedDataByYear) => {
         dataByYear: joinedDataByYear,
         defaultYear: 2024
     });
+});
+
+
+Promise.all([
+    loadDemography('data/all/demography.csv'),
+    loadGenc('data/all/genc_regions.csv'),
+    loadResults('data/all/results.csv', 'data/all/noc_regions.csv', 'data/all/gdp.csv', 'data/all/populations.csv')
+]).then(([demography, genc, results]) => {
+    const resultsData = results;
+    const demographyData = demography;
+    const gencData = genc;
+    const formattedDemographyData = formatDemography(demographyData, gencData);
+    addDemographyData(resultsData,formattedDemographyData);
+    drawRadarChart({
+        containerSelector: '#section2',
+        data: resultsData,
+        yearSeason:"2000,Summer",
+        countryCode: "USA"
+    });
+    populateYearAndDisciplineOptions(resultsData);
+    drawBarChart({
+        containerSelector: "#section3",
+        data: resultsData,
+        yearSeason: "2000,Summer",
+        discipline: "Archery"
+      });
+
 });

@@ -209,7 +209,7 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
 
     const yearSlider = document.getElementById("yearRange");
     const yearLabels = document.querySelectorAll(".year-label");
-    
+
     function updateActiveYearLabel(year) {
         yearLabels.forEach(label => {
             label.classList.toggle("active", parseInt(label.dataset.year) === year);
