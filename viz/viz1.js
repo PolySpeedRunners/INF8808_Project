@@ -1,4 +1,5 @@
 export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYear }) {
+
     const margin = { top: 50, right: 20, bottom: 80, left: 80 };
     const ticks = { x: 6, y: 10 };
 
@@ -209,6 +210,8 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
 
     const yearSlider = document.getElementById("yearRange");
     const yearLabels = document.querySelectorAll(".year-label");
+
+    if (yearSlider) yearSlider.value = defaultYear;
 
     function updateActiveYearLabel(year) {
         yearLabels.forEach(label => {

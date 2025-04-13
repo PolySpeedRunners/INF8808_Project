@@ -4,7 +4,7 @@ import { drawRadarChart } from './viz/viz2.js';
 import { drawBarChart, populateYearAndDisciplineOptions } from './viz/viz3.js';
 import { formatDemography, addDemographyData } from './preprocess.js';
 
-const olympicYears = [2010, 2012, 2014, 2016, 2018, 2020, 2022, 2024];
+const olympicYears = [2010, 2012, 2014, 2016, 2018, 2020, 2022];
 
 async function loadAllDataForYears(years) {
     const results = {};
@@ -38,7 +38,7 @@ loadAllDataForYears(olympicYears).then((joinedDataByYear) => {
     drawMedalsVsGdpGraph({
         containerSelector: '#section1',
         dataByYear: joinedDataByYear,
-        defaultYear: 2024
+        defaultYear: 2022
     });
 });
 
