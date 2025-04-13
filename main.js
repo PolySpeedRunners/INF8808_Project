@@ -1,6 +1,6 @@
 import { loadMedalData, loadGdpByYear, loadPopulationByYear, joinDatasets, loadResults } from './DataReader.js';
 import { drawMedalsVsGdpGraph } from './viz/viz1.js';
-import { drawBarChart } from './viz/viz3.js';
+import { drawBarChart, populateYearAndDisciplineOptions, updateChart, yearSelect, disciplineSelect } from './viz/viz3.js';
 
 Promise.all([
     loadMedalData('data/medals_2024.csv'),
@@ -15,10 +15,12 @@ Promise.all([
         data: fullData
     });
     const resultsData = results;
+    populateYearAndDisciplineOptions(resultsData);
     drawBarChart({
         containerSelector: "#section3",
         data: resultsData,
         yearSeason: "2020,Summer",
         discipline: "Swimming (Aquatics)"
       });
+
 });
