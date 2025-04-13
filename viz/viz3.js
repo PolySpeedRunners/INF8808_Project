@@ -52,7 +52,6 @@ export function drawBarChart({
   yearSeason,
   discipline,
 }) {
-  console.log("params", yearSeason, discipline);
   const margin = { top: 50, right: 20, bottom: 80, left: 80 };
   const ticks = { x: 6, y: 10 };
   const fontFamily = getComputedStyle(document.documentElement)
@@ -64,6 +63,19 @@ export function drawBarChart({
 
   const container = d3.select(containerSelector + " .graph");
   container.selectAll("*").remove();
+  container.selectAll("div.tooltip").remove();
+  const tooltip = container
+        .append("div")
+        .attr("class", "tooltip")
+        .style("position", "absolute")
+        .style("padding", "8px")
+        .style("background", "var(--secondary-color)")
+        .style("border", "1px solid var(--text-color)")
+        .style("color", "var(--text-color)")
+        .style("border-radius", "4px")
+        .style("font-size", "14px")
+        .style("pointer-events", "none")
+        .style("opacity", 0);
 
   const width = container.node().clientWidth;
   const height = container.node().clientHeight;
@@ -114,7 +126,21 @@ export function drawBarChart({
     .attr("y", (d) => y(d.medals))
     .attr("width", x.bandwidth())
     .attr("height", (d) => innerHeight - y(d.medals))
-    .attr("fill", "#69b3a2");
+    .attr("fill", "#69b3a2")
+    .on("mouseover", (event, d) => {
+      tooltip
+          .style("opacity", 1)
+          .html(`<strong>${d.countryName}</strong><br>Médailles: ${d.medals}<br>`);
+  })
+    .on("mousemove", event => {
+        const bounds = container.node().getBoundingClientRect();
+        tooltip
+            .style("left", `${event.clientX - bounds.left + 10}px`)
+            .style("top", `${event.clientY - bounds.top - 30}px`);
+    })
+    .on("mouseout", () => {
+        tooltip.style("opacity", 0);
+    });;
 
   chart
     .append("g")
@@ -132,6 +158,14 @@ export function drawBarChart({
     .selectAll("text")
     .style("font-family", fontFamily)
     .style("fill", textColor);
+
+  chart.append("text")
+    .attr("x", -innerHeight / 2)
+    .attr("y", -margin.left + 20)
+    .attr("transform", "rotate(-90)")
+    .attr("text-anchor", "middle")
+    .style("fill", textColor)
+    .text("Nombre de médailles");
 
   svg
     .append("text")
