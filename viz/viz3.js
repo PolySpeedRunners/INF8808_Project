@@ -1,7 +1,5 @@
 export const yearSelect = document.getElementById("year-select");
 export const disciplineSelect = document.getElementById("discipline-select");
-yearSelect.addEventListener('change', updateChart);
-disciplineSelect.addEventListener('change', updateChart);
 const section3Container = "#section3";
 
 export function populateYearAndDisciplineOptions(data) {
@@ -32,6 +30,8 @@ export function populateYearAndDisciplineOptions(data) {
       option.textContent = discipline;
       disciplineSelect.appendChild(option);
     });
+    yearSelect.addEventListener('change', () => updateChart(data));
+    disciplineSelect.addEventListener('change', () => updateChart(data));
 }
 
 export function updateChart(resultsData) {
