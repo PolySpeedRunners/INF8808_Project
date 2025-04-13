@@ -110,30 +110,30 @@ export async function loadResults(resultsPath, nocPath, gdpPath, populationPath)
     resultsData = filterNonOlympics(resultsData);
     resultsData = filterByYear(resultsData, 2000);
     resultsData = groupByYear(resultsData);
-    console.log(resultsData);
+    // console.log(resultsData);
     let nocRegionsData = await d3.csv(nocPath);
     const nocMap = new Map(nocRegionsData.map((d) => [d.NOC, d.region]));
     const countryMap = new Map(nocRegionsData.map((d) => [d.region, d.NOC]));
-    console.log(nocMap);
-    console.log(countryMap);
+    // console.log(nocMap);
+    // console.log(countryMap);
     let gdpData = await d3.csv(gdpPath); // NEEDS DATA ClEANING
     let populationData = await d3.csv(populationPath); // NEEDS DATA CLEANING
-    console.log(gdpData);
-    console.log(populationData);
+    // console.log(gdpData);
+    // console.log(populationData);
 
     const scoresByYearSeason = computeScoresByYearSeason(resultsData);
-    console.log(scoresByYearSeason);
+    // console.log(scoresByYearSeason);
     const resultsWithCountryNames = convertNocToCountry(
       scoresByYearSeason,
       nocMap
     );
-    console.log(resultsWithCountryNames);
+    // console.log(resultsWithCountryNames);
     const medalData = computeDisciplineScoresByCountry(resultsData, nocMap); // TO KEEP, BETTER THAN resultsWithCountryNames
     // NEEDS TO FIX COUNTRIES LIKE RUSSIA AND GERMANY
     findAndFixMissingCountries(gdpData, nocMap, countryMap);
     findAndFixMissingCountries(populationData, nocMap, countryMap);
     const populationMedalData=addPopulationToMedalData(medalData, populationData);
     const populationGDPMedalData = addGDPToMedalData(populationMedalData, populationData);
-    console.log(populationGDPMedalData);
+    // console.log(populationGDPMedalData);
     return populationGDPMedalData;
 }

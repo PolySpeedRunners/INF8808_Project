@@ -22,11 +22,12 @@ Promise.all([
     const demographyData = demography;
     const gencData = genc;
     const formattedDemographyData = formatDemography(demographyData, gencData);
-    console.log(formattedDemographyData);
     addDemographyData(resultsData,formattedDemographyData);
     drawRadarChart({
         containerSelector: '#section2',
-        data: resultsData
+        data: resultsData,
+        yearSeason:"2000,Summer",
+        countryCode: "USA"
     });
     populateYearAndDisciplineOptions(resultsData);
     drawBarChart({

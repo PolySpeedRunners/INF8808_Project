@@ -267,6 +267,8 @@ export function addDemographyData(resultsData, formattedDemographyData) {
       if (!country)  {
         console.log("noc+country",noc,countries[noc]["countryName"] );
         counter++;
+        countries[noc].tfr = 0;
+        countries[noc].percentage=0;
         continue;
       }
 
