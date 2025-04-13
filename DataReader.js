@@ -75,6 +75,34 @@ export function joinDatasets(...datasets) {
     return merged;
 }
 
+export async function loadDemography(csvPath) {
+    return d3.csv(csvPath).then(data => {
+        return data.map(d => {
+            return {
+                year: d["YEAR"],
+                genc: d["GEO_ID"],
+                tfr: d["TFR"],
+                pop: d["POP"],
+                pop15_19: d["POP15_19"],
+                pop20_24: d["POP20_24"],
+                deaths: d["DEATHS"]
+            };
+        });
+    });
+}
+
+export async function loadGenc(csvPath) {
+    return d3.csv(csvPath).then(data => {
+        return data.map(d => {
+            return {
+                countryName: d["COUNTRY NAME"],
+                genc: d["GENC DIGRAPH"],
+                iso3: d["LEGACY ISO 3"]
+            };
+        });
+    });
+}
+
 export async function loadResults(resultsPath, nocPath, gdpPath, populationPath) {
     let resultsData = await d3.csv(resultsPath);
     resultsData = cleanNullValues(resultsData);
