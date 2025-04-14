@@ -77,7 +77,7 @@ function applyMinMaxScaling(resultsData) {
     }
   
     radarKeys.forEach((key, index) => {
-      const angle = radarAxis(key) + Math.PI / 2;
+      const angle = radarAxis(key) - Math.PI / 2;
       chartGroup.append("line")
         .attr("x1", 0)
         .attr("y1", 0)
@@ -88,7 +88,7 @@ function applyMinMaxScaling(resultsData) {
     });
   
     radarKeys.forEach((key, index) => {
-      const angle = radarAxis(key) + Math.PI / 2;
+      const angle = radarAxis(key) - Math.PI / 2;
       const xPos = scale(10) * Math.cos(angle);
       const yPos = scale(10) * Math.sin(angle);
   
@@ -110,7 +110,7 @@ function applyMinMaxScaling(resultsData) {
     console.log(countryValues);
   
     const radarLine = d3.lineRadial()
-      .angle((d) => radarAxis(d.axis) + Math.PI / 2)
+      .angle((d) => radarAxis(d.axis))
       .radius((d) => d.value);
   
     chartGroup.append("path")
@@ -123,8 +123,8 @@ function applyMinMaxScaling(resultsData) {
     chartGroup.selectAll(".radar-point")
       .data(countryValues)
       .enter().append("circle")
-      .attr("cx", (d) => d.value * Math.cos(radarAxis(d.axis) + Math.PI / 2))
-      .attr("cy", (d) => d.value * Math.sin(radarAxis(d.axis) + Math.PI / 2))
+      .attr("cx", (d) => d.value * Math.cos(radarAxis(d.axis) - Math.PI / 2))
+      .attr("cy", (d) => d.value * Math.sin(radarAxis(d.axis) - Math.PI / 2))
       .attr("r", 4)
       .attr("fill", "#FF6347")
       .on("mouseover", function(event, d) {
