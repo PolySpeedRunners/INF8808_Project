@@ -284,3 +284,42 @@ export function addDemographyData(resultsData, formattedDemographyData) {
     }
   }
 }
+
+export function computeAthletesByCountryAndYear(resultsData) {
+  const athleteMap = new Map();
+
+  resultsData.forEach((entry) => {
+    const year = entry.year;
+    const noc = entry.noc;
+    const athlete = entry.athlete_id;
+
+    if (!year || !noc || !athlete) return;
+
+    if (!athleteMap.has(noc)) {
+      athleteMap.set(noc, { "Country Code": noc });
+    }
+
+    const countryEntry = athleteMap.get(noc);
+
+    if (!countryEntry[year]) {
+      countryEntry[year] = new Set();
+    }
+
+    countryEntry[year].add(athlete);
+  });
+
+  // Convert Sets to counts
+  const result = [];
+  athleteMap.forEach((entry) => {
+    const flatEntry = { "Country Code": entry["Country Code"] };
+    Object.entries(entry).forEach(([key, value]) => {
+      if (key !== "Country Code") {
+        flatEntry[key] = value.size;
+      }
+    });
+    result.push(flatEntry);
+  });
+
+  return result;
+}
+

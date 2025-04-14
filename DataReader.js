@@ -4,13 +4,13 @@ import {
     filterByYear,
     filterNonOlympics,
     groupByYear,
-    computeScoresByYearSeason,
-    convertNocToCountry,
     computeDisciplineScoresByCountry,
     findAndFixMissingCountries,
     addPopulationToMedalData,
     addGDPToMedalData,
-  } from "./preprocess.js";
+    computeAthletesByCountryAndYear,
+    addAthleteCountToMedalData
+} from "./preprocess.js";
 // Load medals CSV
 export async function loadMedalData(csvPath) {
     return d3.csv(csvPath, d => {
@@ -101,6 +101,7 @@ export async function loadGenc(csvPath) {
 
 export async function loadResults(resultsPath, nocPath, gdpPath, populationPath) {
     let resultsData = await d3.csv(resultsPath);
+    const athletesByCountryYear = computeAthletesByCountryAndYear(resultsData);
     resultsData = cleanNullValues(resultsData);
     resultsData = convertYearToInt(resultsData);
     resultsData = filterNonOlympics(resultsData);
@@ -113,12 +114,12 @@ export async function loadResults(resultsPath, nocPath, gdpPath, populationPath)
     let gdpData = await d3.csv(gdpPath); // NEEDS DATA ClEANING
     let populationData = await d3.csv(populationPath); // NEEDS DATA CLEANING
 
-    const medalData = computeDisciplineScoresByCountry(resultsData, nocMap); // TO KEEP, BETTER THAN resultsWithCountryNames
+    let retData = computeDisciplineScoresByCountry(resultsData, nocMap); // TO KEEP, BETTER THAN resultsWithCountryNames
     // NEEDS TO FIX COUNTRIES LIKE RUSSIA AND GERMANY
     findAndFixMissingCountries(gdpData, nocMap, countryMap);
     findAndFixMissingCountries(populationData, nocMap, countryMap);
-    const populationMedalData=addPopulationToMedalData(medalData, populationData);
-    const populationGDPMedalData = addGDPToMedalData(populationMedalData, populationData);
-    console.log(populationGDPMedalData);
-    return populationGDPMedalData;
+    retData = addPopulationToMedalData(retData, populationData);
+    retData = addGDPToMedalData(retData, populationData);
+    retData = addAthleteCountToMedalData(retData, athletesByCountryYear);
+    return retData;
 }
