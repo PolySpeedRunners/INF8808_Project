@@ -65,6 +65,5 @@ Promise.all([
         data: resultsData,
         yearSeason: "2000,Summer",
         discipline: "Archery"
-      });
-
+    });
 });
