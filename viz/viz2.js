@@ -2,7 +2,7 @@ function applyMinMaxScaling(resultsData) {
     for (const yearSeason in resultsData) {
       const countries = Object.values(resultsData[yearSeason]);
   
-      const keysToScale = ["gdp", "percentage", "population", "tfr"];
+      const keysToScale = ["gdp", "percentage", "population", "tfr", "AthCount"];
       const minMax = {};
   
       for (const key of keysToScale) {
@@ -49,7 +49,7 @@ function applyMinMaxScaling(resultsData) {
   
     const radius = Math.min(innerWidth, innerHeight) / 2;
   
-    const radarKeys = ["minmax_gdp", "minmax_population", "minmax_tfr", "minmax_percentage"];
+    const radarKeys = ["minmax_gdp", "minmax_population", "minmax_tfr", "minmax_percentage", "minmax_AthCount"];
     
     const svg = container.append("svg")
       .attr("width", width)
