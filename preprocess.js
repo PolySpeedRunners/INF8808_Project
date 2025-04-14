@@ -213,6 +213,10 @@ export function addGDPToMedalData(medalData, gdpData) {
   return addDataToMedalData(medalData, gdpData, "gdp", "Country Code");
 }
 
+export function addAthleteCountToMedalData(medalData, athCountData) {
+  return addDataToMedalData(medalData, athCountData, "AthCount", "Country Code");
+}
+
 export function formatDemography(demographyData, gencData) {
   const gencToCountryMap = new Map();
   gencData.forEach(({ countryName, genc, iso3 }) => {
@@ -265,7 +269,6 @@ export function addDemographyData(resultsData, formattedDemographyData) {
       const country = demographyByGenc[noc];
 
       if (!country)  {
-        console.log("noc+country",noc,countries[noc]["countryName"] );
         counter++;
         countries[noc].tfr = 0;
         countries[noc].percentage=0;
@@ -280,5 +283,4 @@ export function addDemographyData(resultsData, formattedDemographyData) {
       countries[noc].percentage = demography.percentage ? parseFloat(demography.percentage): 0;
     }
   }
-  console.log("coutner:", counter);
 }

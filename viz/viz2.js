@@ -22,7 +22,6 @@ function applyMinMaxScaling(resultsData) {
   
           if (typeof value === "number" && !isNaN(value) && max !== min) {
             scaled = 1 + (value - min) * (9 / (max - min));
-            console.log(scaled);
           } else {
             scaled = 1;
           }
