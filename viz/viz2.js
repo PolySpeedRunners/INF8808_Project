@@ -73,7 +73,7 @@ export function drawRadarChart({ containerSelector, data, yearSeason, countryCod
   const radius = Math.min(innerWidth, innerHeight) / 2;
 
   const radarKeys = ["minmax_gdp", "minmax_population", "minmax_tfr", "minmax_percentage", "minmax_AthCount"];
-  
+
   const svg = container.append("svg")
     .attr("viewBox", `0 0 ${width} ${height}`)
     .attr("preserveAspectRatio", "xMidYMid meet") // Maintain aspect ratio.
@@ -152,16 +152,16 @@ export function drawRadarChart({ containerSelector, data, yearSeason, countryCod
     .attr("cy", (d) => d.value * Math.sin(radarAxis(d.axis) - Math.PI / 2))
     .attr("r", 4)
     .attr("fill", "#FF6347")
-    .on("mouseover", function(event, d) {
+    .on("mouseover", function (event, d) {
       tooltip.style("opacity", 1)
         .html(`<strong>${countryData.countryName}</strong><br>${d.axis.replace("minmax_", "")}: ${d.value.toFixed(2)}`);
     })
-    .on("mousemove", function(event) {
+    .on("mousemove", function (event) {
       const bounds = container.node().getBoundingClientRect();
       tooltip.style("left", `${event.clientX - bounds.left + 10}px`)
         .style("top", `${event.clientY - bounds.top - 30}px`);
     })
-    .on("mouseout", function() {
+    .on("mouseout", function () {
       tooltip.style("opacity", 0);
     });
 
