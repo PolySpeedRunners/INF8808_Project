@@ -23,12 +23,13 @@ function drawRadarCharts(yearData, selectedYear) {
   .sort(([, a], [, b]) => b.totalMedals - a.totalMedals)
   .slice(0, 5);
 
-  sortedCountries.forEach(([countryCode, countryData]) => {
+  sortedCountries.forEach(([countryCode, countryData], index) => {
     drawRadarChart({
       containerSelector: section2Container,
       data: countryData,
       yearSeason: selectedYear,
-      countryCode: countryCode
+      countryCode: countryCode,
+      index: index,
     });
   });
 }
@@ -67,7 +68,7 @@ function applyMinMaxScaling(resultsData) {
   }
 }
 
-export function drawRadarChart({ containerSelector, data, yearSeason, countryCode }) {
+export function drawRadarChart({ containerSelector, data, yearSeason, countryCode, index}) {
   const newData = structuredClone(data);
   applyMinMaxScaling(newData);
 

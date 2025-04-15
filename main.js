@@ -53,12 +53,6 @@ Promise.all([
     const formattedDemographyData = formatDemography(demographyData, gencData);
     addDemographyData(resultsData,formattedDemographyData);
     chooseYearRadarChart(resultsData)
-    drawRadarChart({
-        containerSelector: '#section2',
-        data: resultsData,
-        yearSeason: "2000,Summer",
-        countryCode: "USA"
-    });
     populateYearAndDisciplineOptions(resultsData);
     drawBarChart({
         containerSelector: "#section3",
