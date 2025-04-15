@@ -5,6 +5,8 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
 
     const fontFamily = getComputedStyle(document.documentElement).getPropertyValue('--font-family').trim();
     const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim();
+    const axisTextColor = getComputedStyle(document.documentElement).getPropertyValue('--axis-title-color').trim();
+
 
     const container = d3.select(containerSelector + " .graph");
     const width = container.node().clientWidth;
@@ -114,7 +116,10 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
         .attr("y", innerHeight + margin.bottom - 35)
         .attr("text-anchor", "middle")
         .attr("class", "x-axis-label")
-        .style("fill", textColor)
+        .style("fill", axisTextColor)
+        .style('font-family', 'Inter')
+        .style("font-weight", "bold")
+        .style("font-size", "18px")
         .text("Population du pays");
 
     g.append("text")
@@ -122,7 +127,10 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
         .attr("y", -margin.left + 20)
         .attr("transform", "rotate(-90)")
         .attr("text-anchor", "middle")
-        .style("fill", textColor)
+        .style("fill", axisTextColor)
+        .style('font-family', 'Inter')
+        .style("font-weight", "bold")
+        .style("font-size", "18px")
         .text("Nombre de médailles");
 
     const allCircles = g.selectAll("circle")
