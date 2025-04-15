@@ -13,9 +13,16 @@ export function chooseYearRadarChart(data) {
 
   yearSelect.addEventListener('change', () => {
     const selectedYear = yearSelect.value;
-    drawRadarCharts(data[selectedYear], selectedYear);
+    const yearData = structuredClone(data[selectedYear]);
+    applyMinMaxScaling(yearData);
+    drawRadarCharts(yearData, selectedYear);
   });
-  drawRadarCharts(data[years[0]], years[0]);
+
+  const initialYear = years[0];
+  const initialYearData = structuredClone(data[initialYear]);
+  applyMinMaxScaling(initialYearData);
+  drawRadarCharts(initialYearData, initialYear);
+  drawRadarCharts(initialYearData, initialYear);
 }
 
 function drawRadarCharts(yearData, selectedYear) {
@@ -36,48 +43,45 @@ function drawRadarCharts(yearData, selectedYear) {
 
 function applyMinMaxScaling(resultsData) {
   console.log("result : ", resultsData);
-  for (const yearSeason in resultsData) {
-    const countries = Object.values(resultsData[yearSeason]);
+  const keysToScale = ["gdp", "percentage", "population", "tfr", "AthCount"];
+  const minMax = {};
 
-    const keysToScale = ["gdp", "percentage", "population", "tfr", "AthCount"];
-    const minMax = {};
+  const countries = Object.values(resultsData);
 
+  for (const key of keysToScale) {
+    const values = countries
+      .map(c => c[key])
+      .filter(v => typeof v === "number" && !isNaN(v));
+    minMax[key] = {
+      min: Math.min(...values),
+      max: Math.max(...values),
+    };
+  }
+
+  for (const noc in resultsData) {
+    const countryData = resultsData[noc];
     for (const key of keysToScale) {
-      const values = countries.map(c => c[key]).filter(v => typeof v === "number" && !isNaN(v));
-      minMax[key] = {
-        min: Math.min(...values),
-        max: Math.max(...values),
-      };
-    }
-
-    for (const noc in resultsData[yearSeason]) {
-      const countryData = resultsData[yearSeason][noc];
-      for (const key of keysToScale) {
-        const value = countryData[key];
-        const { min, max } = minMax[key];
-        let scaled = null;
-
-        if (typeof value === "number" && !isNaN(value) && max !== min) {
-          scaled = 1 + (value - min) * (9 / (max - min));
-        } else {
-          scaled = 1;
-        }
-
-        countryData[`minmax_${key}`] = scaled;
+      const value = countryData[key];
+      const { min, max } = minMax[key];
+      let scaled = null;
+      if (typeof value === "number" && !isNaN(value) && max !== min) {
+        scaled = 1 + (value - min) * (9 / (max - min));
+      } else {
+        scaled = 1;
       }
+      countryData[`minmax_${key}`] = scaled;
     }
   }
 }
 
 export function drawRadarChart({ containerSelector, data, yearSeason, countryCode, index}) {
-  const newData = structuredClone(data);
-  applyMinMaxScaling(newData);
-
   const margin = { top: 50, right: 20, bottom: 80, left: 80 };
   const fontFamily = getComputedStyle(document.documentElement).getPropertyValue('--font-family').trim();
   const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim();
 
-  const container = d3.select(containerSelector + " .graph");
+  const container = d3.select(containerSelector);
+  container.selectAll("*").remove();
+  container.selectAll("div.tooltip").remove();
   const width = container.node().clientWidth;
   const height = container.node().clientHeight;
 
@@ -90,7 +94,7 @@ export function drawRadarChart({ containerSelector, data, yearSeason, countryCod
 
   const svg = container.append("svg")
     .attr("viewBox", `0 0 ${width} ${height}`)
-    .attr("preserveAspectRatio", "xMidYMid meet") // Maintain aspect ratio.
+    .attr("preserveAspectRatio", "xMidYMid meet")
     .style("width", "100%")
     .style("height", "100%")
 
@@ -141,10 +145,9 @@ export function drawRadarChart({ containerSelector, data, yearSeason, countryCod
       .text(key.replace("minmax_", ""));
   });
 
-  const countryData = newData[yearSeason][countryCode];
   const countryValues = radarKeys.map((key) => ({
     axis: key,
-    value: scale(countryData[key])
+    value: scale(data[key])
   }));
   console.log(countryValues);
 
@@ -168,7 +171,7 @@ export function drawRadarChart({ containerSelector, data, yearSeason, countryCod
     .attr("fill", "#FF6347")
     .on("mouseover", function (event, d) {
       tooltip.style("opacity", 1)
-        .html(`<strong>${countryData.countryName}</strong><br>${d.axis.replace("minmax_", "")}: ${d.value.toFixed(2)}`);
+        .html(`<strong>${data.countryName}</strong><br>${d.axis.replace("minmax_", "")}: ${d.value.toFixed(2)}`);
     })
     .on("mousemove", function (event) {
       const bounds = container.node().getBoundingClientRect();
@@ -199,5 +202,5 @@ export function drawRadarChart({ containerSelector, data, yearSeason, countryCod
     .style("font-family", fontFamily)
     .style("font-size", "18px")
     .style("fill", textColor)
-    .text(`${yearSeason} - ${countryData.countryName} Kiviat Chart`);
+    .text(`${yearSeason} - ${data.countryName} Kiviat Chart`);
 }
