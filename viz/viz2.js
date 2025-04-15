@@ -1,3 +1,6 @@
+export const yearSelect = document.getElementById("year-select-podium");
+const section2Container = "#section2";
+
 function applyMinMaxScaling(resultsData) {
   for (const yearSeason in resultsData) {
     const countries = Object.values(resultsData[yearSeason]);
