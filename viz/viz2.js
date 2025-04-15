@@ -90,7 +90,7 @@ export function drawRadarChart({ containerSelector, data, yearSeason, countryCod
 
   const radius = Math.min(innerWidth, innerHeight) / 2;
 
-  const radarKeys = ["minmax_gdp", "minmax_population", "minmax_tfr", "minmax_percentage", "minmax_AthCount"];
+  const radarKeys = ["minmax_gdp", "minmax_population", "minmax_tfr", "minmax_% de jeune", "minmax_AthCount"];
 
   const svg = container.append("svg")
     .attr("viewBox", `0 0 ${width} ${height}`)
@@ -211,5 +211,5 @@ export function drawRadarChart({ containerSelector, data, yearSeason, countryCod
     .style("font-family", fontFamily)
     .style("font-size", "25px")
     .style("fill", textColor)
-    .text(`${index + 1} place with ${data.totalMedals} medals`);
+    .text(`${index + 1} place avec ${data.totalMedals} medailles`);
 }
