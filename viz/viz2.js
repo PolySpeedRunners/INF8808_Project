@@ -13,13 +13,25 @@ export function chooseYearRadarChart(data) {
 
   yearSelect.addEventListener('change', () => {
     const selectedYear = yearSelect.value;
+    drawRadarCharts(data[selectedYear], selectedYear);
   });
-
-  const firstYear = years[0];
-  console.log(data);
-  console.log(data[firstYear]);
+  drawRadarCharts(data[years[0]], years[0]);
 }
 
+function drawRadarCharts(yearData, selectedYear) {
+  const sortedCountries = Object.entries(yearData)
+  .sort(([, a], [, b]) => b.totalMedals - a.totalMedals)
+  .slice(0, 5);
+
+  sortedCountries.forEach(([countryCode, countryData]) => {
+    drawRadarChart({
+      containerSelector: section2Container,
+      data: countryData,
+      yearSeason: selectedYear,
+      countryCode: countryCode
+    });
+  });
+}
 
 function applyMinMaxScaling(resultsData) {
   for (const yearSeason in resultsData) {
