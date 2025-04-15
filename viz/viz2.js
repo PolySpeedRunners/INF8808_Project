@@ -2,7 +2,7 @@ function applyMinMaxScaling(resultsData) {
     for (const yearSeason in resultsData) {
       const countries = Object.values(resultsData[yearSeason]);
   
-      const keysToScale = ["gdp", "percentage", "population", "tfr"];
+      const keysToScale = ["gdp", "percentage", "population", "tfr", "AthCount"];
       const minMax = {};
   
       for (const key of keysToScale) {
@@ -49,7 +49,7 @@ function applyMinMaxScaling(resultsData) {
   
     const radius = Math.min(innerWidth, innerHeight) / 2;
   
-    const radarKeys = ["minmax_gdp", "minmax_population", "minmax_tfr", "minmax_percentage"];
+    const radarKeys = ["minmax_gdp", "minmax_population", "minmax_tfr", "minmax_percentage", "minmax_AthCount"];
     
     const svg = container.append("svg")
       .attr("viewBox", `0 0 ${width} ${height}`)
@@ -79,7 +79,7 @@ function applyMinMaxScaling(resultsData) {
     }
   
     radarKeys.forEach((key, index) => {
-      const angle = radarAxis(key) + Math.PI / 2;
+      const angle = radarAxis(key) - Math.PI / 2;
       chartGroup.append("line")
         .attr("x1", 0)
         .attr("y1", 0)
@@ -90,7 +90,7 @@ function applyMinMaxScaling(resultsData) {
     });
   
     radarKeys.forEach((key, index) => {
-      const angle = radarAxis(key) + Math.PI / 2;
+      const angle = radarAxis(key) - Math.PI / 2;
       const xPos = scale(10) * Math.cos(angle);
       const yPos = scale(10) * Math.sin(angle);
   
