@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visualisations Olympiques</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/nouislider@15.6.1/dist/nouislider.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -33,16 +34,9 @@
                             <button class="toggle-button" data-mode="gdp">PIB</button>
                         </div>
                         <div class="slider-wrapper">
-                            <input  type="range" id="yearRange" min="2010" max="2022" step="2" value="2022" class="vertical-slider">
-                            <div class="slider-labels">
-                                <span class="year-label" data-year="2022">2022</span>
-                                <span class="year-label" data-year="2020">2020</span>
-                                <span class="year-label" data-year="2018">2018</span>
-                                <span class="year-label" data-year="2016">2016</span>
-                                <span class="year-label" data-year="2014">2014</span>
-                                <span class="year-label" data-year="2012">2012</span>
-                                <span class="year-label" data-year="2010">2010</span>
-                            </div>
+                            <div id="yearRange" style="height: 400px;"></div>
+                            <div class="slider-labels" id="rangeLabel" style="font-size: 14px; color: var(--text-color);"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -52,10 +46,12 @@
         <section id="section2" class="visual-section">
             <h1 class="title">Visualisation 2</h1>
             <div class="visualization-container">
-                <!-- <h1 class="graph-title">TITRE 2</h1> -->
+                <h1 class="graph-title">
+                    Nombre de médailles gagnées SELON LE PROFIL DÉMOGRAPHIQUE ET ÉCONOMIQUE DU PAYS
+                </h1>
                 <div class="graph"></div>
             </div>
-            <p class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sodales, ligula vitae volutpat vestibulum, nisl odio congue ligula, id iaculis felis nunc ut quam. In hac habitasse platea dictumst. Integer et egestas sem. Curabitur vel rutrum lacus. Integer ornare scelerisque tempor. In pretium sollicitudin est at vulputate. Nunc est quam, molestie vitae porta id, commodo non lorem. Vestibulum ac nunc ut libero gravida rutrum. Quisque est nibh, ultrices non enim nec, volutpat pretium ex. Phasellus ultrices libero pellentesque felis pellentesque, eu gravida purus iaculis. Mauris nisl purus, hendrerit quis ultrices vitae, pellentesque a metus. In in tortor euismod, pellentesque purus at, consequat massa. </p>
+            <p class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sodales...</p>
         </section>
         
         <section id="section3" class="visual-section">
@@ -73,7 +69,7 @@
         
                 <div class="graph"></div>
             </div>
-            <p class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sodales, ligula vitae volutpat vestibulum, nisl odio congue ligula, id iaculis felis nunc ut quam. In hac habitasse platea dictumst. Integer et egestas sem. Curabitur vel rutrum lacus. Integer ornare scelerisque tempor. In pretium sollicitudin est at vulputate. Nunc est quam, molestie vitae porta id, commodo non lorem. Vestibulum ac nunc ut libero gravida rutrum. Quisque est nibh, ultrices non enim nec, volutpat pretium ex. Phasellus ultrices libero pellentesque felis pellentesque, eu gravida purus iaculis. Mauris nisl purus, hendrerit quis ultrices vitae, pellentesque a metus. In in tortor euismod, pellentesque purus at, consequat massa. </p>
+            <p class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sodales...</p>
         </section>
     </main>
 
@@ -109,6 +105,7 @@
         });
     </script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nouislider@15.6.1/dist/nouislider.min.js"></script>
     <script type="module" src="main.js"></script>
 </body>
 </html>

@@ -20,7 +20,7 @@ async function loadAllDataForYears(years) {
             .filter(d => d.gdp >= 2 && d.total > 0)
             .sort((a, b) => b.total - a.total)
             .map((d, i) => ({ ...d, year, rank: i + 1 }));
-            
+
 
         console.log(`Data for ${year} loaded`);
         console.log(`Medals: ${medals.length}, GDP: ${gdp.length}, Population: ${population.length}`);
@@ -42,7 +42,6 @@ loadAllDataForYears(olympicYears).then((joinedDataByYear) => {
     });
 });
 
-
 Promise.all([
     loadDemography('data/all/demography.csv'),
     loadGenc('data/all/genc_regions.csv'),
@@ -52,11 +51,11 @@ Promise.all([
     const demographyData = demography;
     const gencData = genc;
     const formattedDemographyData = formatDemography(demographyData, gencData);
-    addDemographyData(resultsData,formattedDemographyData);
+    addDemographyData(resultsData, formattedDemographyData);
     drawRadarChart({
         containerSelector: '#section2',
         data: resultsData,
-        yearSeason:"2000,Summer",
+        yearSeason: "2000,Summer",
         countryCode: "USA"
     });
     populateYearAndDisciplineOptions(resultsData);

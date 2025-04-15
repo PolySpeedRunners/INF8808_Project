@@ -1,12 +1,10 @@
 export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYear }) {
-
     const margin = { top: 50, right: 20, bottom: 80, left: 80 };
     const ticks = { x: 6, y: 10 };
 
     const fontFamily = getComputedStyle(document.documentElement).getPropertyValue('--font-family').trim();
     const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim();
     const axisTextColor = getComputedStyle(document.documentElement).getPropertyValue('--axis-title-color').trim();
-
 
     const container = d3.select(containerSelector + " .graph");
     const width = container.node().clientWidth;
@@ -35,9 +33,8 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
         SVK: "Europe", FIN: "Europe", BLR: "Europe", EST: "Europe", SMR: "Europe",
         MKD: "Europe", TKM: "Asie", SYR: "Asie", GHA: "Afrique", CUB: "Amérique",
         LIE: "Europe", LAT: "Europe", RUS: "Europe", DEU: "Europe", NED: "Europe",
-        NLD: "Europe", CHE: "Europe", POR: "Europe", SVN: "Europe", MKD: "Europe",
+        NLD: "Europe", CHE: "Europe", POR: "Europe", SVN: "Europe"
     };
-
 
     const getColorByCountryCode = (code) => {
         const continent = countryContinentMap[code];
@@ -48,13 +45,14 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
 
     const svg = container.append("svg")
         .attr("viewBox", `0 0 ${width} ${height}`)
-        .attr("preserveAspectRatio", "xMidYMid meet") // Maintain aspect ratio.
+        .attr("preserveAspectRatio", "xMidYMid meet")
         .style("width", "100%")
         .style("height", "100%")
         .style("font-family", fontFamily)
         .style("color", textColor);
 
     const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+
     const tooltip = container.append("div")
         .attr("class", "tooltip")
         .style("position", "absolute")
@@ -67,7 +65,6 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
         .style("pointer-events", "none")
         .style("opacity", 0);
 
-    // Compute shared X scale
     const allData = Object.values(dataByYear).flat();
     const maxPopulation = d3.max(allData, d => d.population);
     const minPopulation = Math.max(1, d3.min(allData, d => d.population));
@@ -86,7 +83,6 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
         Math.ceil(Math.log10(maxGdp)) + 1
     ).map(d => Math.pow(10, d));
 
-    // Build x scales
     const xScales = {
         population: d3.scaleLog()
             .domain([minPopulationRounded, maxPopulation * 1.1])
@@ -98,7 +94,6 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
             .base(10)
     };
 
-    // Precompute Y scales for all years
     const yScales = {};
     Object.entries(dataByYear).forEach(([year, yearData]) => {
         const maxMedals = d3.max(yearData, d => d.total);
@@ -107,7 +102,6 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
             .range([innerHeight, 0]);
     });
 
-    // Draw axes placeholders
     const xAxisGroup = g.append("g").attr("transform", `translate(0,${innerHeight})`);
     const yAxisGroup = g.append("g");
     const xGridGroup = g.append("g").attr("class", "x-grid").attr("transform", `translate(0,${innerHeight})`);
@@ -135,122 +129,144 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
         .style("font-size", "18px")
         .text("Nombre de médailles");
 
-    const allCircles = g.selectAll("circle")
-        .data(
-            allData
-                .filter(d => getColorByCountryCode(d.countryCode) !== "#999")
-                .map(d => ({ ...d }))
-        )
-        .enter()
-        .append("circle")
-        .attr("r", 6)
-        .attr("fill", d => getColorByCountryCode(d.countryCode))
-        .attr("stroke", textColor)
-        .attr("stroke-width", 1)
-        .style("opacity", 0)
-        .style("pointer-events", "none")
-        .on("mouseover", (event, d) => {
-            tooltip
-                .style("opacity", 1)
-                .html(`<strong>${d.country}</strong><br>Médailles: ${d.total}<br>Rang du pays: ${d.rank}`);
-        })
-        .on("mousemove", event => {
-            const bounds = container.node().getBoundingClientRect();
-            tooltip
-                .style("left", `${event.clientX - bounds.left + 10}px`)
-                .style("top", `${event.clientY - bounds.top - 30}px`);
-        })
-        .on("mouseout", () => tooltip.style("opacity", 0));
+    let currentMode = "population";
 
-    function updateGraph(mode, year) {
-        const xScale = xScales[mode];
-        const yScale = yScales[year];
-        const tickValues = mode === "gdp" ? tickValuesGdp : tickValuesPopulation;
+    function updateGraphForRange(mode, minYear, maxYear) {
+        let aggregatedData = [];
+        Object.entries(dataByYear).forEach(([year, records]) => {
+            const y = +year;
+            if (y >= minYear && y <= maxYear) {
+                aggregatedData = aggregatedData.concat(records);
+            }
+        });
+
+        const aggregatedByCountry = Array.from(
+            d3.rollup(aggregatedData,
+                records => ({
+                    country: records[0].country,
+                    countryCode: records[0].countryCode,
+                    total: d3.sum(records, d => d.total),
+                    gdp: records[records.length - 1].gdp,
+                    population: records[records.length - 1].population
+                }),
+                d => d.countryCode
+            ),
+            ([, data]) => data
+        );
+
+        const maxMedals = d3.max(aggregatedByCountry, d => d.total) || 10;
+        const yScale = d3.scaleLinear()
+            .domain([0, Math.ceil(maxMedals / 10) * 10])
+            .range([innerHeight, 0]);
+
+        const xScale = currentMode === 'gdp' ? xScales.gdp : xScales.population;
+        const tickValues = currentMode === 'gdp' ? tickValuesGdp : tickValuesPopulation;
 
         const xAxis = d3.axisBottom(xScale)
             .tickValues(tickValues)
             .tickFormat(d3.format("~s"));
+        xAxisGroup.transition().duration(500).call(xAxis);
 
         const xGrid = d3.axisBottom(xScale)
             .tickValues(tickValues)
             .tickSize(-innerHeight)
             .tickFormat("");
+        xGridGroup.transition().duration(500).call(xGrid)
+            .call(g => g.selectAll("line").style("stroke", textColor).style("opacity", 0.2))
+            .call(g => g.select(".domain").remove());
+
+        const yAxis = d3.axisLeft(yScale).ticks(ticks.y);
+        yAxisGroup.transition().duration(500).call(yAxis);
 
         const yGrid = d3.axisLeft(yScale)
             .ticks(ticks.y)
             .tickSize(-innerWidth)
             .tickFormat("");
-
-        xAxisGroup.transition().duration(500).call(xAxis)
-
-        xGridGroup.transition().duration(500).call(xGrid)
-            .call(g => g.selectAll("line").style("stroke", textColor).style("opacity", 0.2))
-            .call(g => g.select(".domain").remove());
-
-        yAxisGroup.transition().duration(500).call(d3.axisLeft(yScale).ticks(ticks.y))
-
         yGridGroup.transition().duration(500).call(yGrid)
             .call(g => g.selectAll("line").style("stroke", textColor).style("opacity", 0.2))
             .call(g => g.select(".domain").remove());
 
-        xAxisLabel.text(mode === "gdp" ? "PIB du pays (log)" : "Population du pays (log)");
+        xAxisLabel.text(currentMode === "gdp" ? "PIB du pays (log)" : "Population du pays (log)");
 
-        allCircles.transition()
-            .duration(250)
-            .attr("cx", d => xScale(d[mode]))
+        const circles = g.selectAll("circle")
+            .data(aggregatedByCountry.filter(d => getColorByCountryCode(d.countryCode) !== "#999"), d => d.countryCode);
+
+        circles.exit().transition().duration(250)
+            .style("opacity", 0)
+            .remove();
+
+        circles.transition().duration(250)
+            .attr("cx", d => xScale(d[currentMode]))
+            .attr("cy", d => yScale(d.total));
+
+        circles.enter()
+            .append("circle")
+            .attr("r", 6)
+            .attr("fill", d => getColorByCountryCode(d.countryCode))
+            .attr("stroke", textColor)
+            .attr("stroke-width", 1)
+            .attr("cx", d => xScale(d[currentMode]))
             .attr("cy", d => yScale(d.total))
-            .style("opacity", d => d.year == year ? 1 : 0)
-            .style("pointer-events", d => d.year == year ? "auto" : "none")
+            .style("opacity", 0)
+            .on("mouseover", (event, d) => {
+                tooltip.style("opacity", 1)
+                    .html(`<strong>${d.country}</strong><br>Médailles: ${d.total}`);
+            })
+            .on("mousemove", event => {
+                const bounds = container.node().getBoundingClientRect();
+                tooltip.style("left", `${event.clientX - bounds.left + 10}px`)
+                    .style("top", `${event.clientY - bounds.top - 30}px`);
+            })
+            .on("mouseout", () => tooltip.style("opacity", 0))
+            .transition().duration(250)
+            .style("opacity", 1);
     }
 
-    // Initial mode/year
-    let currentMode = "population";
-    updateGraph(currentMode, defaultYear);
-
-    // Toggle buttons
     document.querySelectorAll(".toggle-button").forEach(button => {
         button.addEventListener("click", () => {
             document.querySelectorAll(".toggle-button").forEach(b => b.classList.remove("active"));
             button.classList.add("active");
             currentMode = button.dataset.mode;
-            const selectedYear = parseInt(document.getElementById("yearRange")?.value || defaultYear);
-            updateGraph(currentMode, selectedYear);
+            const [minYear, maxYear] = slider.noUiSlider.get().map(v => parseInt(v));
+            updateGraphForRange(currentMode, minYear, maxYear);
         });
     });
 
-    const yearSlider = document.getElementById("yearRange");
-    const yearLabels = document.querySelectorAll(".year-label");
-
-    if (yearSlider) yearSlider.value = defaultYear;
-
-    function updateActiveYearLabel(year) {
-        yearLabels.forEach(label => {
-            label.classList.toggle("active", parseInt(label.dataset.year) === year);
-        });
-    }
-
-    yearSlider?.addEventListener("input", e => {
-        const selectedYear = parseInt(e.target.value);
-        updateGraph(currentMode, selectedYear);
-        updateActiveYearLabel(selectedYear);
+    const slider = document.getElementById("yearRange");
+    noUiSlider.create(slider, {
+        start: [2016, 2022],
+        connect: true,
+        step: 2,
+        orientation: 'vertical',
+        direction: 'rtl',
+        range: {
+            min: 2010,
+            max: 2022
+        },
+        format: {
+            to: value => Math.round(value),
+            from: value => Math.round(value)
+        },
+        pips: {
+            mode: 'values',
+            values: [2010, 2012, 2014, 2016, 2018, 2020, 2022],
+            density: 100,
+            stepped: true
+        }
     });
 
-    yearLabels.forEach(label => {
-        label.addEventListener("click", () => {
-            const year = parseInt(label.dataset.year);
-            yearSlider.value = year;
-            updateGraph(currentMode, year);
-            updateActiveYearLabel(year);
-        });
+    const rangeLabel = document.getElementById("rangeLabel");
+    slider.noUiSlider.on('update', function (values) {
+        const [minYear, maxYear] = values.map(v => parseInt(v));
+        if (rangeLabel) {
+            rangeLabel.textContent = `Years: ${minYear} – ${maxYear}`;
+        }
+        updateGraphForRange(currentMode, minYear, maxYear);
     });
-
-    // Set the initial active label
-    updateActiveYearLabel(parseInt(yearSlider.value));
 
     const legendSquareSize = 12;
     const legendSpacingX = 120;
     const continents = Object.keys(continentColors);
-
     const legendTotalWidth = continents.length * legendSpacingX;
     const legendStartX = (width - legendTotalWidth) / 2;
 
