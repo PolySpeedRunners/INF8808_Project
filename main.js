@@ -1,6 +1,6 @@
 import { loadMedalData, loadGdpByYear, loadPopulationByYear, joinDatasets, loadResults, loadDemography, loadGenc } from './DataReader.js';
 import { drawMedalsVsGdpGraph } from './viz/viz1.js';
-import { drawRadarChart, chooseYearRadarChart } from './viz/viz2.js';
+import { chooseYearRadarChart } from './viz/viz2.js';
 import { drawBarChart, populateYearAndDisciplineOptions } from './viz/viz3.js';
 import { formatDemography, addDemographyData } from './preprocess.js';
 
