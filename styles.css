@@ -148,6 +148,7 @@ body {
     background: none;
     color: var(--text-color);
     font-weight: normal;
+    font-family: 'Inter';
     cursor: pointer;
     font-size: 16px;
     position: relative;

@@ -47,8 +47,10 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
     container.selectAll("*").remove();
 
     const svg = container.append("svg")
-        .attr("width", width)
-        .attr("height", height)
+        .attr("viewBox", `0 0 ${width} ${height}`)
+        .attr("preserveAspectRatio", "xMidYMid meet") // Maintain aspect ratio.
+        .style("width", "100%")
+        .style("height", "100%")
         .style("font-family", fontFamily)
         .style("color", textColor);
 
