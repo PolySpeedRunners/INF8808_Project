@@ -37,7 +37,7 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
         LIE: "Europe", LAT: "Europe", RUS: "Europe", DEU: "Europe", NED: "Europe",
         NLD: "Europe", CHE: "Europe", POR: "Europe", SVN: "Europe", MKD: "Europe",
     };
-    
+
 
     const getColorByCountryCode = (code) => {
         const continent = countryContinentMap[code];
@@ -228,13 +228,13 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
             label.classList.toggle("active", parseInt(label.dataset.year) === year);
         });
     }
-    
+
     yearSlider?.addEventListener("input", e => {
         const selectedYear = parseInt(e.target.value);
         updateGraph(currentMode, selectedYear);
         updateActiveYearLabel(selectedYear);
     });
-    
+
     yearLabels.forEach(label => {
         label.addEventListener("click", () => {
             const year = parseInt(label.dataset.year);
@@ -243,7 +243,40 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
             updateActiveYearLabel(year);
         });
     });
-    
+
     // Set the initial active label
     updateActiveYearLabel(parseInt(yearSlider.value));
+
+    const legendSquareSize = 12;
+    const legendSpacingX = 120;
+    const continents = Object.keys(continentColors);
+
+    const legendTotalWidth = continents.length * legendSpacingX;
+    const legendStartX = (width - legendTotalWidth) / 2;
+
+    const legend = svg.append("g")
+        .attr("class", "legend")
+        .attr("transform", `translate(${legendStartX}, ${margin.top - 30})`);
+
+    const legendItems = legend.selectAll(".legend-item")
+        .data(continents)
+        .enter()
+        .append("g")
+        .attr("class", "legend-item")
+        .attr("transform", (d, i) => `translate(${i * legendSpacingX}, 0)`);
+
+    legendItems.append("rect")
+        .attr("width", legendSquareSize)
+        .attr("height", legendSquareSize)
+        .attr("fill", d => continentColors[d])
+        .attr("stroke", textColor)
+        .attr("stroke-width", 1);
+
+    legendItems.append("text")
+        .attr("x", legendSquareSize + 6)
+        .attr("y", legendSquareSize - 2)
+        .style("font-size", "14px")
+        .style("fill", textColor)
+        .style("font-family", fontFamily)
+        .text(d => d);
 }
