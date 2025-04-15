@@ -1,6 +1,6 @@
 import { loadMedalData, loadGdpByYear, loadPopulationByYear, joinDatasets, loadResults, loadDemography, loadGenc } from './DataReader.js';
 import { drawMedalsVsGdpGraph } from './viz/viz1.js';
-import { drawRadarChart } from './viz/viz2.js';
+import { drawRadarChart, chooseYearRadarChart } from './viz/viz2.js';
 import { drawBarChart, populateYearAndDisciplineOptions } from './viz/viz3.js';
 import { formatDemography, addDemographyData } from './preprocess.js';
 
@@ -53,6 +53,7 @@ Promise.all([
     const gencData = genc;
     const formattedDemographyData = formatDemography(demographyData, gencData);
     addDemographyData(resultsData,formattedDemographyData);
+    chooseYearRadarChart(resultsData)
     drawRadarChart({
         containerSelector: '#section2',
         data: resultsData,

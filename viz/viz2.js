@@ -1,6 +1,26 @@
 export const yearSelect = document.getElementById("year-select-podium");
 const section2Container = "#section2";
 
+export function chooseYearRadarChart(data) {
+  // add choice of year to the chart
+  const years = Object.keys(data).sort();
+  years.forEach((year) => {
+    const option = document.createElement("option");
+    option.value = year;
+    option.textContent = year;
+    yearSelect.appendChild(option);
+  });
+
+  yearSelect.addEventListener('change', () => {
+    const selectedYear = yearSelect.value;
+  });
+
+  const firstYear = years[0];
+  console.log(data);
+  console.log(data[firstYear]);
+}
+
+
 function applyMinMaxScaling(resultsData) {
   for (const yearSeason in resultsData) {
     const countries = Object.values(resultsData[yearSeason]);
