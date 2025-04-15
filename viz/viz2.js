@@ -200,7 +200,16 @@ export function drawRadarChart({ containerSelector, data, yearSeason, countryCod
     .attr("y", margin.top / 2)
     .attr("text-anchor", "middle")
     .style("font-family", fontFamily)
-    .style("font-size", "18px")
+    .style("font-size", "25px")
     .style("fill", textColor)
-    .text(`${yearSeason} - ${data.countryName} Kiviat Chart`);
+    .text(`${data.countryName}`);
+
+    svg.append("text")
+    .attr("x", width / 2)
+    .attr("y", height - margin.bottom / 2)
+    .attr("text-anchor", "middle")
+    .style("font-family", fontFamily)
+    .style("font-size", "25px")
+    .style("fill", textColor)
+    .text(`${index + 1} place with ${data.totalMedals} medals`);
 }
