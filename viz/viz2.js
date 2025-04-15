@@ -25,7 +25,7 @@ function drawRadarCharts(yearData, selectedYear) {
 
   sortedCountries.forEach(([countryCode, countryData], index) => {
     drawRadarChart({
-      containerSelector: section2Container,
+      containerSelector: `#chart-container-${index + 1}`,
       data: countryData,
       yearSeason: selectedYear,
       countryCode: countryCode,
@@ -35,6 +35,7 @@ function drawRadarCharts(yearData, selectedYear) {
 }
 
 function applyMinMaxScaling(resultsData) {
+  console.log("result : ", resultsData);
   for (const yearSeason in resultsData) {
     const countries = Object.values(resultsData[yearSeason]);
 
