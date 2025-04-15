@@ -52,8 +52,10 @@ function applyMinMaxScaling(resultsData) {
     const radarKeys = ["minmax_gdp", "minmax_population", "minmax_tfr", "minmax_percentage"];
     
     const svg = container.append("svg")
-      .attr("width", width)
-      .attr("height", height);
+      .attr("viewBox", `0 0 ${width} ${height}`)
+      .attr("preserveAspectRatio", "xMidYMid meet") // Maintain aspect ratio.
+      .style("width", "100%")
+      .style("height", "100%")
   
     const chartGroup = svg.append("g")
       .attr("transform", `translate(${margin.left + innerWidth / 2}, ${margin.top + innerHeight / 2})`);
