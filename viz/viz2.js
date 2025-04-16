@@ -74,6 +74,23 @@ function applyMinMaxScaling(resultsData) {
   }
 }
 
+function formatRadarKey(key) {
+  switch (key) {
+      case "minmax_gdp":
+          return "GDP";
+      case "minmax_population":
+          return "Population";
+      case "minmax_tfr":
+          return "Fertility Rate";
+      case "minmax_percentage":
+          return "Youth % (15-25)";
+      case "minmax_AthCount":
+          return "Athlete Count";
+      default:
+          return key;
+  }
+}
+
 export function drawRadarChart({ containerSelector, data, yearSeason, countryCode, index}) {
   const margin = { top: 50, right: 20, bottom: 80, left: 80 };
   const fontFamily = getComputedStyle(document.documentElement).getPropertyValue('--font-family').trim();
@@ -90,7 +107,7 @@ export function drawRadarChart({ containerSelector, data, yearSeason, countryCod
 
   const radius = Math.min(innerWidth, innerHeight) / 2;
 
-  const radarKeys = ["minmax_gdp", "minmax_population", "minmax_tfr", "minmax_% de jeune", "minmax_AthCount"];
+  const radarKeys = ["minmax_gdp", "minmax_population", "minmax_tfr", "minmax_percentage", "minmax_AthCount"];
 
   const svg = container.append("svg")
     .attr("viewBox", `0 0 ${width} ${height}`)
@@ -134,7 +151,6 @@ export function drawRadarChart({ containerSelector, data, yearSeason, countryCod
     const angle = radarAxis(key) - Math.PI / 2;
     const xPos = scale(10) * Math.cos(angle);
     const yPos = scale(10) * Math.sin(angle);
-
     chartGroup.append("text")
       .attr("x", xPos)
       .attr("y", yPos)
@@ -142,7 +158,8 @@ export function drawRadarChart({ containerSelector, data, yearSeason, countryCod
       .style("text-anchor", "middle")
       .style("font-family", fontFamily)
       .style("fill", textColor)
-      .text(key.replace("minmax_", ""));
+      .style("font-size", "12px")
+      .text(formatRadarKey(key));
   });
 
   const countryValues = radarKeys.map((key) => ({
@@ -155,23 +172,22 @@ export function drawRadarChart({ containerSelector, data, yearSeason, countryCod
     .angle((d) => radarAxis(d.axis))
     .radius((d) => d.value);
 
-  chartGroup.append("path")
+    chartGroup.append("path")
     .datum(countryValues)
     .attr("d", radarLine)
     .attr("fill", "rgba(70,130,180,0.7)")
     .attr("stroke", textColor)
-    .attr("stroke-width", 2);
-
-  chartGroup.selectAll(".radar-point")
-    .data(countryValues)
-    .enter().append("circle")
-    .attr("cx", (d) => d.value * Math.cos(radarAxis(d.axis) - Math.PI / 2))
-    .attr("cy", (d) => d.value * Math.sin(radarAxis(d.axis) - Math.PI / 2))
-    .attr("r", 4)
-    .attr("fill", "#FF6347")
-    .on("mouseover", function (event, d) {
+    .attr("stroke-width", 2)
+    .style("pointer-events", "all")
+    .on("mouseover", function (event) {
       tooltip.style("opacity", 1)
-        .html(`<strong>${data.countryName}</strong><br>${d.axis.replace("minmax_", "")}: ${d.value.toFixed(2)}`);
+        .html(`<strong>${data.countryName}</strong><br>
+          GDP: ${data.minmax_gdp.toFixed(2)}<br>
+          Pop: ${data.minmax_population.toFixed(2)}<br>
+          Fertility: ${data.minmax_tfr.toFixed(2)}<br>
+          Youth %: ${data.minmax_percentage.toFixed(2)}<br>
+          Athletes: ${data.minmax_AthCount.toFixed(2)}
+        `);
     })
     .on("mousemove", function (event) {
       const bounds = container.node().getBoundingClientRect();
@@ -182,7 +198,7 @@ export function drawRadarChart({ containerSelector, data, yearSeason, countryCod
       tooltip.style("opacity", 0);
     });
 
-  const tooltip = d3.select(containerSelector + " .graph")
+    const tooltip = container
     .append("div")
     .attr("class", "tooltip")
     .style("position", "absolute")
