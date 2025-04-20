@@ -113,13 +113,12 @@ export async function loadResults(resultsPath, nocPath, gdpPath, populationPath)
     const countryMap = new Map(nocRegionsData.map((d) => [d.region, d.NOC]));
     let gdpData = await d3.csv(gdpPath); // NEEDS DATA ClEANING
     let populationData = await d3.csv(populationPath); // NEEDS DATA CLEANING
-
     let retData = computeDisciplineScoresByCountry(resultsData, nocMap); // TO KEEP, BETTER THAN resultsWithCountryNames
     // NEEDS TO FIX COUNTRIES LIKE RUSSIA AND GERMANY
     findAndFixMissingCountries(gdpData, nocMap, countryMap);
     findAndFixMissingCountries(populationData, nocMap, countryMap);
     retData = addPopulationToMedalData(retData, populationData);
-    retData = addGDPToMedalData(retData, populationData);
+    retData = addGDPToMedalData(retData, gdpData);
     retData = addAthleteCountToMedalData(retData, athletesByCountryYear);
     return retData;
 }
