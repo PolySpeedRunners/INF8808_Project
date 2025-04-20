@@ -27,12 +27,10 @@ function drawRadarCharts(yearData, selectedYear) {
   .sort(([, a], [, b]) => b.totalMedals - a.totalMedals)
   .slice(0, 5);
 
-  sortedCountries.forEach(([countryCode, countryData], index) => {
+  sortedCountries.forEach(([_, countryData], index) => {
     drawRadarChart({
       containerSelector: `#chart-container-${index + 1}`,
       data: countryData,
-      yearSeason: selectedYear,
-      countryCode: countryCode,
       index: index,
     });
   });
@@ -87,7 +85,7 @@ function formatRadarKey(key) {
   }
 }
 
-export function drawRadarChart({ containerSelector, data, yearSeason, countryCode, index }) {
+export function drawRadarChart({ containerSelector, data, index }) {
   const margin = { top: 50, right: 20, bottom: 80, left: 80 };
   const fontFamily = getComputedStyle(document.documentElement).getPropertyValue('--font-family').trim();
   const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim();
@@ -104,7 +102,7 @@ export function drawRadarChart({ containerSelector, data, yearSeason, countryCod
   const scale = d3.scaleLinear().domain([1, 10]).range([0, radius]);
   const radarAxis = d3.scaleBand().domain(radarKeys).range([0, Math.PI * 2]);
 
-  drawRadarGrid(chartGroup, radius, textColor);
+  drawRadarGrid(chartGroup, radius);
   drawRadarAxes(chartGroup, radarKeys, radarAxis, scale, textColor);
   drawRadarLabels(chartGroup, radarKeys, radarAxis, scale, fontFamily, textColor);
 
@@ -145,7 +143,7 @@ function createSVG(container, width, height) {
     .style("height", "100%");
 }
 
-function drawRadarGrid(group, radius, color) {
+function drawRadarGrid(group, radius) {
   const gridLevels = 10;
   for (let level = 0; level < gridLevels; level++) {
     const radiusGrid = radius * ((level + 1) / gridLevels);
@@ -208,7 +206,7 @@ function drawRadarShape(group, values, axisScale, strokeColor, data, container) 
     tooltip.style("opacity", 1)
       .html(`<strong>${data.countryName}</strong><br>
         GDP: ${data.minmax_gdp.toFixed(2)}<br>
-        Pop: ${data.minmax_population.toFixed(2)}<br>
+        Population: ${data.minmax_population.toFixed(2)}<br>
         Fertility: ${data.minmax_tfr.toFixed(2)}<br>
         Youth %: ${data.minmax_percentage.toFixed(2)}<br>
         Athletes: ${data.minmax_AthCount.toFixed(2)}`);
