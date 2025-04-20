@@ -142,9 +142,25 @@ export function computeDisciplineScoresByCountry(resultsData, nocMap) {
             if (!addedCombinations.has(combination) && medalValue > 0) {
               addedCombinations.add(combination);
 
-              result.disciplines[d.discipline] =
-                (result.disciplines[d.discipline] || 0) + medalValue;
+              if (!result.disciplines[d.discipline]) {
+                result.disciplines[d.discipline] = {
+                  total: 0,
+                  gold: 0,
+                  silver: 0,
+                  bronze: 0,
+                };
+              }
+
+              result.disciplines[d.discipline].total += medalValue;
               result.totalMedals += medalValue;
+
+              if (d.medal === "Gold") {
+                result.disciplines[d.discipline].gold += 1;
+              } else if (d.medal === "Silver") {
+                result.disciplines[d.discipline].silver += 1;
+              } else if (d.medal === "Bronze") {
+                result.disciplines[d.discipline].bronze += 1;
+              }
             }
           }
 

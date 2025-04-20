@@ -69,6 +69,7 @@ export function drawBarChart({
   yearSeason,
   discipline,
 }) {
+  console.log(data);
   const margin = { top: 50, right: 20, bottom: 80, left: 80 };
   const ticks = { x: 6, y: 10 };
   const fontFamily = getComputedStyle(document.documentElement)
@@ -113,7 +114,10 @@ export function drawBarChart({
   const formattedData = Object.entries(yearData)
     .map(([noc, values]) => ({
       countryName: values.countryName,
-      medals: values.disciplines?.[discipline] || 0,
+      medals: values.disciplines?.[discipline]?.total || 0,
+      gold: values.disciplines?.[discipline]?.gold || 0,
+      silver: values.disciplines?.[discipline]?.silver || 0,
+      bronze: values.disciplines?.[discipline]?.bronze || 0,
     }))
     .filter((d) => d.medals > 0)
     .sort((a, b) => b.medals - a.medals)
@@ -146,7 +150,13 @@ export function drawBarChart({
     .on("mouseover", (event, d) => {
       tooltip
           .style("opacity", 1)
-          .html(`<strong>${d.countryName}</strong><br>Medals: ${d.medals}<br>`);
+          .html(
+            `<strong>${d.countryName}</strong><br>` +
+            `Total Medals: ${d.medals}<br>` +
+            `🥇 Gold: ${d.gold || 0}<br>` +
+            `🥈 Silver: ${d.silver || 0}<br>` +
+            `🥉 Bronze: ${d.bronze || 0}`
+          );
   })
     .on("mousemove", event => {
         const bounds = container.node().getBoundingClientRect();
