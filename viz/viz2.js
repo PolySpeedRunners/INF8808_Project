@@ -1,8 +1,6 @@
 export const yearSelect = document.getElementById("year-select-podium");
-const section2Container = "#section2";
 
 export function chooseYearRadarChart(data) {
-  // add choice of year to the chart
   const years = Object.keys(data).sort();
   years.forEach((year) => {
     const option = document.createElement("option");
@@ -21,7 +19,6 @@ export function chooseYearRadarChart(data) {
   const initialYear = years[0];
   const initialYearData = structuredClone(data[initialYear]);
   applyMinMaxScaling(initialYearData);
-  drawRadarCharts(initialYearData, initialYear);
   drawRadarCharts(initialYearData, initialYear);
 }
 
@@ -42,7 +39,6 @@ function drawRadarCharts(yearData, selectedYear) {
 }
 
 function applyMinMaxScaling(resultsData) {
-  console.log("result : ", resultsData);
   const keysToScale = ["gdp", "percentage", "population", "tfr", "AthCount"];
   const minMax = {};
 
@@ -91,43 +87,69 @@ function formatRadarKey(key) {
   }
 }
 
-export function drawRadarChart({ containerSelector, data, yearSeason, countryCode, index}) {
+export function drawRadarChart({ containerSelector, data, yearSeason, countryCode, index }) {
   const margin = { top: 50, right: 20, bottom: 80, left: 80 };
   const fontFamily = getComputedStyle(document.documentElement).getPropertyValue('--font-family').trim();
   const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim();
 
-  const container = d3.select(containerSelector);
-  container.selectAll("*").remove();
-  container.selectAll("div.tooltip").remove();
-  const width = container.node().clientWidth;
-  const height = container.node().clientHeight;
-
-  const innerWidth = width - margin.left - margin.right;
-  const innerHeight = height - margin.top - margin.bottom;
-
+  const container = setupContainer(containerSelector);
+  const { width, height, innerWidth, innerHeight } = getDimensions(container, margin);
   const radius = Math.min(innerWidth, innerHeight) / 2;
 
   const radarKeys = ["minmax_gdp", "minmax_population", "minmax_tfr", "minmax_percentage", "minmax_AthCount"];
-
-  const svg = container.append("svg")
-    .attr("viewBox", `0 0 ${width} ${height}`)
-    .attr("preserveAspectRatio", "xMidYMid meet")
-    .style("width", "100%")
-    .style("height", "100%")
-
+  const svg = createSVG(container, width, height);
   const chartGroup = svg.append("g")
     .attr("transform", `translate(${margin.left + innerWidth / 2}, ${margin.top + innerHeight / 2})`);
 
   const scale = d3.scaleLinear().domain([1, 10]).range([0, radius]);
+  const radarAxis = d3.scaleBand().domain(radarKeys).range([0, Math.PI * 2]);
 
-  const radarAxis = d3.scaleBand()
-    .domain(radarKeys)
-    .range([0, Math.PI * 2]);
+  drawRadarGrid(chartGroup, radius, textColor);
+  drawRadarAxes(chartGroup, radarKeys, radarAxis, scale, textColor);
+  drawRadarLabels(chartGroup, radarKeys, radarAxis, scale, fontFamily, textColor);
 
+  const countryValues = radarKeys.map(key => ({
+    axis: key,
+    value: scale(data[key])
+  }));
+
+  drawRadarShape(chartGroup, countryValues, radarAxis, textColor, data, container);
+
+  drawTitle(svg, width, margin.top, fontFamily, textColor, data.countryName);
+  drawSubtitle(svg, width, height, margin.bottom, fontFamily, textColor, index, data.totalMedals);
+}
+
+function setupContainer(selector) {
+  const container = d3.select(selector);
+  container.selectAll("*").remove();
+  container.selectAll("div.tooltip").remove();
+  return container;
+}
+
+function getDimensions(container, margin) {
+  const width = container.node().clientWidth;
+  const height = container.node().clientHeight;
+  return {
+    width,
+    height,
+    innerWidth: width - margin.left - margin.right,
+    innerHeight: height - margin.top - margin.bottom
+  };
+}
+
+function createSVG(container, width, height) {
+  return container.append("svg")
+    .attr("viewBox", `0 0 ${width} ${height}`)
+    .attr("preserveAspectRatio", "xMidYMid meet")
+    .style("width", "100%")
+    .style("height", "100%");
+}
+
+function drawRadarGrid(group, radius, color) {
   const gridLevels = 10;
   for (let level = 0; level < gridLevels; level++) {
     const radiusGrid = radius * ((level + 1) / gridLevels);
-    chartGroup.append("circle")
+    group.append("circle")
       .attr("cx", 0)
       .attr("cy", 0)
       .attr("r", radiusGrid)
@@ -135,71 +157,72 @@ export function drawRadarChart({ containerSelector, data, yearSeason, countryCod
       .style("stroke", "#ddd")
       .style("stroke-width", "0.5px");
   }
+}
 
-  radarKeys.forEach((key, index) => {
-    const angle = radarAxis(key) - Math.PI / 2;
-    chartGroup.append("line")
+function drawRadarAxes(group, keys, axisScale, valueScale, color) {
+  keys.forEach((key) => {
+    const angle = axisScale(key) - Math.PI / 2;
+    group.append("line")
       .attr("x1", 0)
       .attr("y1", 0)
-      .attr("x2", scale(10) * Math.cos(angle))
-      .attr("y2", scale(10) * Math.sin(angle))
-      .attr("stroke", textColor)
+      .attr("x2", valueScale(10) * Math.cos(angle))
+      .attr("y2", valueScale(10) * Math.sin(angle))
+      .attr("stroke", color)
       .attr("stroke-width", 2);
   });
+}
 
-  radarKeys.forEach((key, index) => {
-    const angle = radarAxis(key) - Math.PI / 2;
-    const xPos = scale(10) * Math.cos(angle);
-    const yPos = scale(10) * Math.sin(angle);
-    chartGroup.append("text")
+function drawRadarLabels(group, keys, axisScale, valueScale, fontFamily, color) {
+  keys.forEach((key) => {
+    const angle = axisScale(key) - Math.PI / 2;
+    const xPos = valueScale(10) * Math.cos(angle);
+    const yPos = valueScale(10) * Math.sin(angle);
+    group.append("text")
       .attr("x", xPos)
       .attr("y", yPos)
       .attr("dy", "-10px")
       .style("text-anchor", "middle")
       .style("font-family", fontFamily)
-      .style("fill", textColor)
+      .style("fill", color)
       .style("font-size", "12px")
       .text(formatRadarKey(key));
   });
+}
 
-  const countryValues = radarKeys.map((key) => ({
-    axis: key,
-    value: scale(data[key])
-  }));
-  console.log(countryValues);
-
+function drawRadarShape(group, values, axisScale, strokeColor, data, container) {
   const radarLine = d3.lineRadial()
-    .angle((d) => radarAxis(d.axis))
-    .radius((d) => d.value);
+    .angle(d => axisScale(d.axis))
+    .radius(d => d.value);
 
-    chartGroup.append("path")
-    .datum(countryValues)
+  const path = group.append("path")
+    .datum(values)
     .attr("d", radarLine)
     .attr("fill", "rgba(70,130,180,0.7)")
-    .attr("stroke", textColor)
+    .attr("stroke", strokeColor)
     .attr("stroke-width", 2)
-    .style("pointer-events", "all")
-    .on("mouseover", function (event) {
-      tooltip.style("opacity", 1)
-        .html(`<strong>${data.countryName}</strong><br>
-          GDP: ${data.minmax_gdp.toFixed(2)}<br>
-          Pop: ${data.minmax_population.toFixed(2)}<br>
-          Fertility: ${data.minmax_tfr.toFixed(2)}<br>
-          Youth %: ${data.minmax_percentage.toFixed(2)}<br>
-          Athletes: ${data.minmax_AthCount.toFixed(2)}
-        `);
-    })
-    .on("mousemove", function (event) {
-      const bounds = container.node().getBoundingClientRect();
-      tooltip.style("left", `${event.clientX - bounds.left + 10}px`)
-        .style("top", `${event.clientY - bounds.top - 30}px`);
-    })
-    .on("mouseout", function () {
-      tooltip.style("opacity", 0);
-    });
+    .style("pointer-events", "all");
 
-    const tooltip = container
-    .append("div")
+  const tooltip = createTooltip(container);
+
+  path.on("mouseover", () => {
+    tooltip.style("opacity", 1)
+      .html(`<strong>${data.countryName}</strong><br>
+        GDP: ${data.minmax_gdp.toFixed(2)}<br>
+        Pop: ${data.minmax_population.toFixed(2)}<br>
+        Fertility: ${data.minmax_tfr.toFixed(2)}<br>
+        Youth %: ${data.minmax_percentage.toFixed(2)}<br>
+        Athletes: ${data.minmax_AthCount.toFixed(2)}`);
+  }).on("mousemove", (event) => {
+    const bounds = container.node().getBoundingClientRect();
+    tooltip.style("left", `${event.clientX - bounds.left + 10}px`)
+      .style("top", `${event.clientY - bounds.top - 30}px`);
+  }).on("mouseout", () => {
+    tooltip.style("opacity", 0);
+  });
+}
+
+function createTooltip(container) {
+  return container.append("div")
     .attr("class", "tooltip")
     .style("position", "absolute")
     .style("padding", "8px")
@@ -210,22 +233,26 @@ export function drawRadarChart({ containerSelector, data, yearSeason, countryCod
     .style("font-size", "14px")
     .style("pointer-events", "none")
     .style("opacity", 0);
+}
 
+function drawTitle(svg, width, topMargin, fontFamily, color, countryName) {
   svg.append("text")
     .attr("x", width / 2)
-    .attr("y", margin.top / 2)
+    .attr("y", topMargin / 2)
     .attr("text-anchor", "middle")
     .style("font-family", fontFamily)
     .style("font-size", "25px")
-    .style("fill", textColor)
-    .text(`${data.countryName}`);
+    .style("fill", color)
+    .text(`${countryName}`);
+}
 
-    svg.append("text")
+function drawSubtitle(svg, width, height, bottomMargin, fontFamily, color, rank, medals) {
+  svg.append("text")
     .attr("x", width / 2)
-    .attr("y", height - margin.bottom / 2)
+    .attr("y", height - bottomMargin / 2)
     .attr("text-anchor", "middle")
     .style("font-family", fontFamily)
     .style("font-size", "25px")
-    .style("fill", textColor)
-    .text(`${index + 1} place avec ${data.totalMedals} medailles`);
+    .style("fill", color)
+    .text(`${rank + 1} place with ${medals} medals`);
 }
