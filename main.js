@@ -2,6 +2,7 @@ import { loadMedalData, loadGdpByYear, loadPopulationByYear, joinDatasets, loadR
 import { drawMedalsVsGdpGraph } from './viz/viz1.js';
 import { chooseYearRadarChart } from './viz/viz2.js';
 import { drawBarChart, populateYearAndDisciplineOptions } from './viz/viz3.js';
+import { drawLineChart, setLineChartListener } from './viz/viz4.js';
 import { formatDemography, addDemographyData } from './preprocess.js';
 
 const olympicYears = [2010, 2012, 2014, 2016, 2018, 2020, 2022];
@@ -60,4 +61,6 @@ Promise.all([
         yearSeason: "2000,Summer",
         discipline: "Archery"
     });
+    setLineChartListener(resultsData, "#section4", "Both");
+    drawLineChart({data:resultsData, containerSelector:"#section4"});
 });
