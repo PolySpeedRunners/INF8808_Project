@@ -1,4 +1,6 @@
 export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYear }) {
+    // Default constants
+    const ANIMATION_TIME = 500; // ms
 
     const margin = { top: 20, right: 20, bottom: 80, left: 80 };
     const ticks = { x: 6, y: 10 };
@@ -184,22 +186,22 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
             .tickSize(-innerWidth)
             .tickFormat("");
 
-        xAxisGroup.transition().duration(500).call(xAxis)
+        xAxisGroup.transition().duration(ANIMATION_TIME).call(xAxis)
 
-        xGridGroup.transition().duration(500).call(xGrid)
+        xGridGroup.transition().duration(ANIMATION_TIME).call(xGrid)
             .call(g => g.selectAll("line").style("stroke", textColor).style("opacity", 0.2))
             .call(g => g.select(".domain").remove());
 
-        yAxisGroup.transition().duration(500).call(d3.axisLeft(yScale).ticks(ticks.y))
+        yAxisGroup.transition().duration(ANIMATION_TIME).call(d3.axisLeft(yScale).ticks(ticks.y))
 
-        yGridGroup.transition().duration(500).call(yGrid)
+        yGridGroup.transition().duration(ANIMATION_TIME).call(yGrid)
             .call(g => g.selectAll("line").style("stroke", textColor).style("opacity", 0.2))
             .call(g => g.select(".domain").remove());
 
         xAxisLabel.text(mode === "gdp" ? "Country GDP ($)" : "Country population");
 
         allCircles.transition()
-            .duration(250)
+            .duration(ANIMATION_TIME)
             .attr("cx", d => xScale(d[mode]))
             .attr("cy", d => yScale(d.total))
             .style("opacity", d => d.year == year ? 1 : 0)
