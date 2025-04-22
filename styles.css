@@ -117,6 +117,7 @@ body {
 .graph-and-controls {
     display: flex;
     height: 90%;
+    gap: 5px;
 }
 
 .graph {
@@ -170,6 +171,7 @@ body {
     align-items: center;
     justify-content: flex-start;
     height: 90%;
+    align-self: center;
 }
 
 .year-slider {
