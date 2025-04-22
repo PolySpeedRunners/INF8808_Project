@@ -95,11 +95,11 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
     const xScales = {
         population: d3.scaleLog()
             .domain([minPopulationRounded, maxPopulation * 1.1])
-            .range([0, innerWidth * 0.9])
+            .range([0, innerWidth])
             .base(10),
         gdp: d3.scaleLog()
             .domain([minGdpRounded, maxGdp * 1.1])
-            .range([0, innerWidth * 0.9])
+            .range([0, innerWidth])
             .base(10)
     };
 
@@ -115,7 +115,7 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
     // Draw axes placeholders
     const xAxisGroup = g
       .append("g")
-      .attr("transform", `translate(0,${innerHeight})`);
+      .attr("transform", `translate(0, ${innerHeight})`);
     const yAxisGroup = g.append("g");
     const xGridGroup = g
       .append("g")
