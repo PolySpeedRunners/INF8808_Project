@@ -1,30 +1,14 @@
 export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYear }) {
-    // Default constants
+    /* Default constants */
     const ANIMATION_TIME = 500; // ms
-
-    const margin = { top: 20, right: 20, bottom: 80, left: 80 };
-    const ticks = { x: 6, y: 10 };
-
-    const fontFamily = getComputedStyle(document.documentElement).getPropertyValue('--font-family').trim();
-    const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim();
-    const axisTextColor = getComputedStyle(document.documentElement).getPropertyValue('--axis-title-color').trim();
-
-
-    const container = d3.select(containerSelector + " .graph");
-    const width = container.node().clientWidth;
-    const height = container.node().clientHeight;
-    const innerWidth = width - margin.left - margin.right;
-    const innerHeight = height - margin.top - margin.bottom;
-
-    const continentColors = {
+    const CONTINENT_LEGEND_COLOR = {
         Europe: "#0B7AC9", 
         Asia: "#EAA935", 
         Africa: "#2B2A29",
         Australia: "#00A357", 
         America: "#E34556"
     };
-
-    const countryContinentMap = {
+    const COUNTRY_TO_CONTINENT_MAP = {
         USA: "America", CHN: "Asia", JPN: "Asia", AUS: "Australia", FRA: "Europe",
         GBR: "Europe", KOR: "Asia", ITA: "Europe", NZL: "Australia", CAN: "America",
         UZB: "Asia", HUN: "Europe", ESP: "Europe", SWE: "Europe", KEN: "Africa",
@@ -44,9 +28,25 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
         NLD: "Europe", CHE: "Europe", POR: "Europe", SVN: "Europe", MKD: "Europe",
     };
 
+    const margin = { top: 20, right: 20, bottom: 80, left: 80 };
+    const ticks = { x: 6, y: 10 };
+
+    const fontFamily = getComputedStyle(document.documentElement).getPropertyValue('--font-family').trim();
+    const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim();
+    const axisTextColor = getComputedStyle(document.documentElement).getPropertyValue('--axis-title-color').trim();
+
+
+    const container = d3.select(containerSelector + " .graph");
+    const width = container.node().clientWidth;
+    const height = container.node().clientHeight;
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom;
+
+
+
     const getColorByCountryCode = (code) => {
-        const continent = countryContinentMap[code];
-        return continentColors[continent] || "#999";
+        const continent = COUNTRY_TO_CONTINENT_MAP[code];
+        return CONTINENT_LEGEND_COLOR[continent] || "#999";
     };
 
     container.selectAll("*").remove();
@@ -283,14 +283,14 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
     });
     updateActiveYearLabel(parseInt(yearSlider.value));
 
-    createLegend(svg, margin, continentColors, fontFamily, textColor);
+    createLegend(svg, margin, CONTINENT_LEGEND_COLOR, fontFamily, textColor);
 }
 
-function createLegend(svg, margin, continentColors, fontFamily, textColor) {
+function createLegend(svg, margin, CONTINENT_LEGEND_COLOR, fontFamily, textColor) {
     const legendGroup = svg.append("g")
         .attr("class", "graph-legend");
 
-    const legendData = Object.entries(continentColors);
+    const legendData = Object.entries(CONTINENT_LEGEND_COLOR);
     const legendItemWidth = 120;
     const legendSquareSize = 15;
     const legendSpacing = 15;
