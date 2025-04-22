@@ -113,10 +113,17 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
     });
 
     // Draw axes placeholders
-    const xAxisGroup = g.append("g").attr("transform", `translate(0,${innerHeight})`);
+    const xAxisGroup = g
+      .append("g")
+      .attr("transform", `translate(0,${innerHeight})`);
     const yAxisGroup = g.append("g");
-    const xGridGroup = g.append("g").attr("class", "x-grid").attr("transform", `translate(0,${innerHeight})`);
-    const yGridGroup = g.append("g").attr("class", "y-grid");
+    const xGridGroup = g
+      .append("g")
+      .attr("class", "x-grid")
+      .attr("transform", `translate(0, ${innerHeight})`)
+    const yGridGroup = g
+      .append("g")
+      .attr("class", "y-grid")
 
     const xAxisLabel = g.append("text")
         .attr("x", innerWidth / 2)
@@ -186,17 +193,41 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
             .tickSize(-innerWidth)
             .tickFormat("");
 
-        xAxisGroup.transition().duration(ANIMATION_TIME).call(xAxis)
+        xAxisGroup
+            .transition()
+            .duration(ANIMATION_TIME)
+            .call(xAxis);
 
-        xGridGroup.transition().duration(ANIMATION_TIME).call(xGrid)
-            .call(g => g.selectAll("line").style("stroke", textColor).style("opacity", 0.2))
-            .call(g => g.select(".domain").remove());
+        xGridGroup
+          .transition()
+          .duration(ANIMATION_TIME)
+          .call(xGrid)
+          .call((g) =>
+            g
+              .selectAll("line")
+              .style("stroke", textColor)
+              .style("opacity", 0.2)
+              .style("stroke", "#F76B51")
+          )
+          .call((g) => g.select(".domain").remove());
 
-        yAxisGroup.transition().duration(ANIMATION_TIME).call(d3.axisLeft(yScale).ticks(ticks.y))
+        yAxisGroup
+          .transition()
+          .duration(ANIMATION_TIME)
+          .call(d3.axisLeft(yScale).ticks(ticks.y));
 
-        yGridGroup.transition().duration(ANIMATION_TIME).call(yGrid)
-            .call(g => g.selectAll("line").style("stroke", textColor).style("opacity", 0.2))
-            .call(g => g.select(".domain").remove());
+        yGridGroup
+          .transition()
+          .duration(ANIMATION_TIME)
+          .call(yGrid)
+          .call((g) =>
+            g
+              .selectAll("line")
+              .style("stroke", textColor)
+              .style("opacity", 0.2)
+              .style("stroke", "#F76B51")
+          )
+          .call((g) => g.select(".domain").remove());
 
         xAxisLabel.text(mode === "gdp" ? "Country GDP ($)" : "Country population");
 
