@@ -12,11 +12,11 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
     const innerHeight = height - margin.top - margin.bottom;
 
     const continentColors = {
-        Europe: "#1f77b4", 
-        Asia: "#ff7f0e", 
-        Africa: "#2ca02c",
-        Australia: "#17becf", 
-        America: "#d62728"
+        Europe: "#0B7AC9", 
+        Asia: "#EAA935", 
+        Africa: "#2B2A29",
+        Australia: "#00A357", 
+        America: "#E34556"
     };
 
     const countryContinentMap = {
