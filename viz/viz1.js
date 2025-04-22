@@ -144,7 +144,7 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
         .style("font-family", "Inter")
         .style("font-weight", "bold")
         .style("font-size", "18px")
-        .text("Nombre de médailles");
+        .text("Number of medals");
 
     let currentMode = "population";
 
@@ -208,7 +208,7 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
         yGridGroup.transition().duration(500).call(yGrid)
             .call(g => g.selectAll("line").style("stroke", textColor).style("opacity", 0.2))
             .call(g => g.select(".domain").remove());
-        xAxisLabel.text(currentMode === "gdp" ? "PIB du pays (log)" : "Population du pays (log)");
+        xAxisLabel.text(currentMode === "gdp" ? "Country GDP" : "Country population");
         const circles = g.selectAll("circle")
             .data(aggregatedByCountry.filter(d => getColorByCountryCode(d.countryCode) !== "#999"), d => d.countryCode);
         circles.exit().transition().duration(250)
@@ -229,7 +229,7 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
             .style("opacity", 1)
             .on("mouseover", (event, d) => {
                 tooltip.style("opacity", 1)
-                    .html(`<strong>${d.country}</strong><br>Médailles: ${d.total}`);
+                    .html(`<strong>${d.country}</strong><br>Medal: ${d.total}`);
             })
             .on("mousemove", event => {
                 const bounds = container.node().getBoundingClientRect();
