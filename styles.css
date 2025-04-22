@@ -95,13 +95,8 @@ body {
 }
 
 .graph-title {
-    position: absolute;
-    top: 0px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 70%;
     text-align: center;
-    font-size: 30px;
+    font-size: 25px;
     font-weight: bold;
     color: var(--dark-text-color);
     font-family: 'Inter';
@@ -120,14 +115,12 @@ body {
 
 .graph-and-controls {
     display: flex;
-    padding-top: 50px;
     height: 90%;
-    align-items: flex-start;
 }
 
 .graph {
-    flex: 1;
-    height: 110%;
+    flex: 0.9;
+    padding-block: 15px;
 }
 
 .toggle-buttons {
@@ -136,7 +129,6 @@ body {
     justify-content: flex-end;
     align-items: flex-start;
     background-color: var(--secondary-color);
-    padding-top: 50px;
 }
 
 .toggle-button {
