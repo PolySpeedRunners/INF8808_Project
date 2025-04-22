@@ -1,13 +1,16 @@
+const CONTINENT_LEGEND_COLOR = {
+    Europe:     "#0B7AC9",
+    Asia:       "#EAA935",
+    Africa:     "#2B2A29",
+    Australia:  "#00A357",
+    America:    "#E34556",
+};
+
+
 export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYear }) {
     /* Default constants */
     const ANIMATION_TIME = 500; // ms
-    const CONTINENT_LEGEND_COLOR = {
-        Europe: "#0B7AC9", 
-        Asia: "#EAA935", 
-        Africa: "#2B2A29",
-        Australia: "#00A357", 
-        America: "#E34556"
-    };
+
     const COUNTRY_TO_CONTINENT_MAP = {
         USA: "America", CHN: "Asia", JPN: "Asia", AUS: "Australia", FRA: "Europe",
         GBR: "Europe", KOR: "Asia", ITA: "Europe", NZL: "Australia", CAN: "America",
@@ -41,8 +44,6 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
     const height = container.node().clientHeight;
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
-
-
 
     const getColorByCountryCode = (code) => {
         const continent = COUNTRY_TO_CONTINENT_MAP[code];
@@ -239,6 +240,8 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
             .attr("cy", (d) => yScale(d.total))
             .style("opacity", (d) => (d.year == year ? 1 : 0))
             .style("pointer-events", (d) => (d.year == year ? "auto" : "none"));
+
+        updateTitle(mode);
     }
 
     // Initial mode/year
@@ -286,7 +289,7 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
     createLegend(svg, margin, CONTINENT_LEGEND_COLOR, fontFamily, textColor);
 }
 
-function createLegend(svg, margin, CONTINENT_LEGEND_COLOR, fontFamily, textColor) {
+function createLegend(svg, margin, fontFamily, textColor) {
     const legendGroup = svg.append("g")
         .attr("class", "graph-legend");
 
@@ -326,4 +329,17 @@ function createLegend(svg, margin, CONTINENT_LEGEND_COLOR, fontFamily, textColor
             .style("fill", textColor)
             .text(continent);
     });
+}
+
+/**
+ * Updates the title of the graph based on the mode.
+ *
+ * @param {string} mode The mode of the graph, either "gdp" or "population".
+ */
+function updateTitle(mode) {
+    const graphTitle = document.querySelector(".graph-title");
+    graphTitle.textContent =
+        mode === "gdp"
+        ? "Number of Olympic medals in relation to GDP"
+        : "Number of Olympic medals in relation to Population";
 }
