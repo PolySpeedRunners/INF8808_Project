@@ -25,22 +25,37 @@
             <h1 class="title">Visualisation 1</h1>
             <div class="visualization-container">
                 <h1 class="graph-title">
-                    NUMBER OF MEDALS WON AT THE OLYMPIC GAMES BY COUNTRY'S POPULATION
+                    Number of Olympic Medals in Relation to Population or GDP
                 </h1>
+                <div class="graph-legend">
+                    <span class="legend-item"><span class="legend-color" style="background-color:#2B2A29;"></span> Africa</span>
+                    <span class="legend-item"><span class="legend-color" style="background-color:#E34556;"></span> America</span>
+                    <span class="legend-item"><span class="legend-color" style="background-color:#EAA935;"></span> Asia</span>
+                    <span class="legend-item"><span class="legend-color" style="background-color:#0B7AC9;"></span> Europe</span>
+                    <span class="legend-item"><span class="legend-color" style="background-color:#00A357;"></span> Oceania</span>
+                </div>
                 <div class="graph-and-controls">
                     <div class="graph"></div>
                     <div class="controls-column">
                         <div class="toggle-buttons">
                             <button class="toggle-button active" data-mode="population">Population</button>
-                            <button class="toggle-button" data-mode="gdp">PIB</button>
+                            <button class="toggle-button" data-mode="gdp">GDP</button>
                         </div>
                         <div class="slider-wrapper">
-                            <div id="yearRange" style="height: 400px;"></div>
-                            <div class="slider-labels" id="rangeLabel" style="font-size: 14px; color: var(--text-color);"></div>
-                        </div>
+                            <input  type="range" id="yearRange" min="2010" max="2022" step="2" value="2022" class="vertical-slider">
+                            <div class="slider-labels">
+                                <span class="year-label" data-year="2022">2022</span>
+                                <span class="year-label" data-year="2020">2020</span>
+                                <span class="year-label" data-year="2018">2018</span>
+                                <span class="year-label" data-year="2016">2016</span>
+                                <span class="year-label" data-year="2014">2014</span>
+                                <span class="year-label" data-year="2012">2012</span>
+                                <span class="year-label" data-year="2010">2010</span>
+                            </div>
                     </div>
                 </div>
             </div>
+           
         </section>
         
         <section id="section2" class="visual-section">
