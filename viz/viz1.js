@@ -57,7 +57,7 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
         .style("font-family", fontFamily)
         .style("color", textColor);
 
-    const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+    const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top + 30})`);
     const tooltip = container.append("div")
         .attr("class", "tooltip")
         .style("position", "absolute")
@@ -247,4 +247,48 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
         });
     });
     updateActiveYearLabel(parseInt(yearSlider.value));
+
+    createLegend(svg, margin, continentColors, fontFamily, textColor);
+}
+
+function createLegend(svg, margin, continentColors, fontFamily, textColor) {
+    const legendGroup = svg.append("g")
+        .attr("class", "graph-legend");
+
+    const legendData = Object.entries(continentColors);
+    const legendItemWidth = 120;
+    const legendSquareSize = 15;
+    const legendSpacing = 15;
+
+    const totalLegendWidth = legendData.length * legendItemWidth;
+
+    // Center the legend group horizontally
+    const svgWidth = parseFloat(svg.attr("viewBox").split(" ")[2]);
+    const legendStartX = (svgWidth - totalLegendWidth) / 2;
+
+    legendGroup.attr("transform", `translate(${legendStartX}, ${margin.top})`);
+
+    // Add legend items
+    legendData.forEach(([continent, color], index) => {
+        const legendItem = legendGroup.append("g")
+            .attr("class", "legend-item")
+            .attr("transform", `translate(${index * legendItemWidth}, 0)`);
+
+        // Add the square for the continent color
+        legendItem.append("rect")
+            .attr("width", legendSquareSize)
+            .attr("height", legendSquareSize)
+            .attr("fill", color)
+            .attr("stroke", "#000")
+            .attr("stroke-width", 1);
+
+        // Add the continent label
+        legendItem.append("text")
+            .attr("x", legendSquareSize + legendSpacing) // Position text to the right of the square
+            .attr("y", legendSquareSize - 3) // Vertically align text with the square
+            .style("font-family", fontFamily)
+            .style("font-size", "14px")
+            .style("fill", textColor)
+            .text(continent);
+    });
 }
