@@ -112,18 +112,25 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
             .range([innerHeight, 0]);
     });
 
-    // Draw axes placeholders
     const xAxisGroup = g
-      .append("g")
-      .attr("transform", `translate(0, ${innerHeight})`);
-    const yAxisGroup = g.append("g");
+        .append("g")
+        .attr("transform", `translate(0, ${innerHeight})`)
+
+    const yAxisGroup = g
+        .append("g")
+
     const xGridGroup = g
-      .append("g")
-      .attr("class", "x-grid")
-      .attr("transform", `translate(0, ${innerHeight})`)
+        .append("g")
+        .attr("class", "x-grid")
+        .attr("transform", `translate(0, ${innerHeight})`)
+        .style("color", "var(--button-active-color)")
+        .style("opacity", 0.5);
+    
     const yGridGroup = g
-      .append("g")
-      .attr("class", "y-grid")
+        .append("g")
+        .attr("class", "y-grid")
+        .style("color", "var(--button-active-color)")
+        .style("opacity", 0.5);
 
     const xAxisLabel = g.append("text")
         .attr("x", innerWidth / 2)
@@ -179,64 +186,59 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
         const yScale = yScales[year];
         const tickValues = mode === "gdp" ? tickValuesGdp : tickValuesPopulation;
 
-        const xAxis = d3.axisBottom(xScale)
+        const xAxis = d3
+            .axisBottom(xScale)
             .tickValues(tickValues)
             .tickFormat(d3.format("~s"));
 
-        const xGrid = d3.axisBottom(xScale)
+        const xGrid = d3
+            .axisBottom(xScale)
             .tickValues(tickValues)
             .tickSize(-innerHeight)
             .tickFormat("");
 
-        const yGrid = d3.axisLeft(yScale)
+        const yGrid = d3
+            .axisLeft(yScale)
             .ticks(ticks.y)
             .tickSize(-innerWidth)
             .tickFormat("");
 
-        xAxisGroup
-            .transition()
-            .duration(ANIMATION_TIME)
-            .call(xAxis);
+        xAxisGroup.transition().duration(ANIMATION_TIME).call(xAxis);
 
         xGridGroup
-          .transition()
-          .duration(ANIMATION_TIME)
-          .call(xGrid)
-          .call((g) =>
-            g
-              .selectAll("line")
-              .style("stroke", textColor)
-              .style("opacity", 0.2)
-              .style("stroke", "#F76B51")
-          )
-          .call((g) => g.select(".domain").remove());
+            .call(xGrid)
+            .call((g) => g.select(".domain").remove())
+            .transition()
+            .duration(ANIMATION_TIME)
+            .call((g) =>
+                g.selectAll("line").style("stroke", "var(--button-active-color)")
+            );
 
         yAxisGroup
-          .transition()
-          .duration(ANIMATION_TIME)
-          .call(d3.axisLeft(yScale).ticks(ticks.y));
+            .transition()
+            .duration(ANIMATION_TIME)
+            .call(d3.axisLeft(yScale).ticks(ticks.y));
 
         yGridGroup
-          .transition()
-          .duration(ANIMATION_TIME)
-          .call(yGrid)
-          .call((g) =>
-            g
-              .selectAll("line")
-              .style("stroke", textColor)
-              .style("opacity", 0.2)
-              .style("stroke", "#F76B51")
-          )
-          .call((g) => g.select(".domain").remove());
-
-        xAxisLabel.text(mode === "gdp" ? "Country GDP ($)" : "Country population");
-
-        allCircles.transition()
+            .transition()
+            .call(yGrid)
+            .call((g) => g.select(".domain").remove())
             .duration(ANIMATION_TIME)
-            .attr("cx", d => xScale(d[mode]))
-            .attr("cy", d => yScale(d.total))
-            .style("opacity", d => d.year == year ? 1 : 0)
-            .style("pointer-events", d => d.year == year ? "auto" : "none")
+            .call((g) =>
+                g.selectAll("line").style("stroke", "var(--button-active-color)")
+            );
+
+        xAxisLabel.text(
+            mode === "gdp" ? "Country GDP ($)" : "Country population"
+        );
+
+        allCircles
+            .transition()
+            .duration(ANIMATION_TIME)
+            .attr("cx", (d) => xScale(d[mode]))
+            .attr("cy", (d) => yScale(d.total))
+            .style("opacity", (d) => (d.year == year ? 1 : 0))
+            .style("pointer-events", (d) => (d.year == year ? "auto" : "none"));
     }
 
     // Initial mode/year
