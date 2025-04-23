@@ -163,7 +163,6 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
         .attr("x", innerWidth / 2)
         .attr("y", innerHeight + margin.bottom - 35)
         .attr("class", "x-axis-label")
-        .text("Population du pays");
 
     g.append("text")
       .attr("x", -innerHeight / 2)
