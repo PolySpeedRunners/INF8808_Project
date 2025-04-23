@@ -89,6 +89,7 @@ export function drawRadarChart({ containerSelector, data, index }) {
   const margin = { top: 50, right: 20, bottom: 0, left: 20 };
   const fontFamily = getComputedStyle(document.documentElement).getPropertyValue('--font-family').trim();
   const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim();
+  const radarColor = getComputedStyle(document.documentElement).getPropertyValue('--button-active-color').trim();
 
   const container = setupContainer(containerSelector);
   const { width, height, innerWidth, innerHeight } = getDimensions(container, margin);
@@ -111,7 +112,10 @@ export function drawRadarChart({ containerSelector, data, index }) {
     value: scale(data[key])
   }));
 
-  drawRadarShape(chartGroup, countryValues, radarAxis, textColor, data, container);
+  // Add the first value to the end of the array to close the radar shape
+  countryValues.push(countryValues[0]);
+
+  drawRadarShape(chartGroup, countryValues, radarAxis, radarColor, data, container);
 
   drawTitle(svg, width, margin.top, fontFamily, textColor, data.countryName);
 }
@@ -191,10 +195,13 @@ function drawRadarShape(group, values, axisScale, strokeColor, data, container) 
     .angle(d => axisScale(d.axis))
     .radius(d => d.value);
 
+   // crate a const for the fill color which is the same as the stroke color but with 0.2 opacity
+  const fillColor = d3.color(strokeColor).copy({ opacity: 0.2 }).toString();
+
   const path = group.append("path")
     .datum(values)
     .attr("d", radarLine)
-    .attr("fill", "rgba(70,130,180,0.7)")
+    .attr("fill", fillColor)
     .attr("stroke", strokeColor)
     .attr("stroke-width", 2)
     .style("pointer-events", "all");
@@ -211,15 +218,15 @@ function drawRadarShape(group, values, axisScale, strokeColor, data, container) 
         Athletes: ${data.minmax_AthCount.toFixed(2)}`);
   }).on("mousemove", (event) => {
     const bounds = container.node().getBoundingClientRect();
-    tooltip.style("left", `${event.clientX - bounds.left + 10}px`)
-      .style("top", `${event.clientY - bounds.top - 30}px`);
+    tooltip.style("left", `${event.pageX}px`)
+      .style("top", `${event.pageY}px`);
   }).on("mouseout", () => {
     tooltip.style("opacity", 0);
   });
 }
 
 function createTooltip(container) {
-  return container.append("div")
+  return d3.select(".chart-visualization-container").append("div")
     .attr("class", "tooltip")
     .style("position", "absolute")
     .style("padding", "8px")

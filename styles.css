@@ -309,7 +309,6 @@ body {
 .radar-chart-container {
     width: 200px;
     height: 200px; 
-    margin: 10px; 
     position: relative; 
 }
 
@@ -318,7 +317,6 @@ body {
     justify-content: space-between;
     align-items: flex-end; 
     flex-wrap: nowrap;
-    width: 100%;
   }
   
   .podium {
