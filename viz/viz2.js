@@ -27,6 +27,9 @@ function drawRadarCharts(yearData, selectedYear) {
   .sort(([, a], [, b]) => b.medalScore - a.medalScore)
   .slice(0, 5);
 
+  const top5Data = Object.fromEntries(sortedCountries);
+  applyMinMaxScaling(top5Data); 
+
   sortedCountries.forEach(([_, countryData], index) => {
     drawRadarChart({
       containerSelector: `#chart-container-${index + 1}`,
@@ -37,10 +40,17 @@ function drawRadarCharts(yearData, selectedYear) {
 }
 
 function applyMinMaxScaling(resultsData) {
-  const keysToScale = ["gdp", "percentage", "population", "tfr", "AthCount"];
+  const keysToScale = ["gdpPerCapita", "percentage", "population", "tfr", "AthCount"];
   const minMax = {};
 
   const countries = Object.values(resultsData);
+  countries.forEach(c => {
+    if (typeof c.gdp === "number" && typeof c.population === "number" && c.population !== 0) {
+      c.gdpPerCapita = c.gdp / c.population;
+    } else {
+      c.gdpPerCapita = 0;
+    }
+  });
 
   for (const key of keysToScale) {
     const values = countries
@@ -70,8 +80,8 @@ function applyMinMaxScaling(resultsData) {
 
 function formatRadarKey(key) {
   switch (key) {
-      case "minmax_gdp":
-          return "GDP";
+      case "minmax_gdpPerCapita":
+          return "GDP per Capita";
       case "minmax_population":
           return "Population";
       case "minmax_tfr":
@@ -86,21 +96,22 @@ function formatRadarKey(key) {
 }
 
 export function drawRadarChart({ containerSelector, data, index }) {
-  const margin = { top: 50, right: 20, bottom: 0, left: 20 };
+  const margin = { top: 50, right: 0, bottom: 0, left: 0 };
   const fontFamily = getComputedStyle(document.documentElement).getPropertyValue('--font-family').trim();
   const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim();
   const radarColor = getComputedStyle(document.documentElement).getPropertyValue('--button-active-color').trim();
 
   const container = setupContainer(containerSelector);
-  const { width, height, innerWidth, innerHeight } = getDimensions(container, margin);
-  const radius = Math.min(innerWidth, innerHeight) / 2;
+  let { width, height, innerWidth, innerHeight } = getDimensions(container, margin);
+  const radius = Math.min(innerWidth, innerHeight) / 2 * 0.7;
 
-  const radarKeys = ["minmax_gdp", "minmax_population", "minmax_tfr", "minmax_percentage", "minmax_AthCount"];
+  const radarKeys = ["minmax_gdpPerCapita", "minmax_population", "minmax_tfr", "minmax_percentage", "minmax_AthCount"];
+  console.log(width);
   const svg = createSVG(container, width, height);
   const chartGroup = svg.append("g")
     .attr("transform", `translate(${margin.left + innerWidth / 2}, ${margin.top + innerHeight / 2})`);
 
-  const scale = d3.scaleLinear().domain([1, 10]).range([0, radius]);
+  const scale = d3.scaleLinear().domain([1, 10]).range([radius * 0.1, radius]);
   const radarAxis = d3.scaleBand().domain(radarKeys).range([0, Math.PI * 2]);
 
   drawRadarGrid(chartGroup, radius);
@@ -176,8 +187,19 @@ function drawRadarAxes(group, keys, axisScale, valueScale, color) {
 function drawRadarLabels(group, keys, axisScale, valueScale, fontFamily, color) {
   keys.forEach((key) => {
     const angle = axisScale(key) - Math.PI / 2;
-    const xPos = valueScale(10) * Math.cos(angle);
-    const yPos = valueScale(10) * Math.sin(angle);
+    let xPos = valueScale(10) * Math.cos(angle) ;
+    let yPos = valueScale(10) * Math.sin(angle);
+    // Adjust positions for specific keys
+    if (key === "minmax_percentage" || key === "minmax_tfr") {
+      xPos *= 1.6;
+      yPos *= 1.6;
+    }
+    if (key === "minmax_AthCount") {
+      xPos -= 15;
+    }
+    if (key === "minmax_population") {
+      xPos += 15;
+    }
     group.append("text")
       .attr("x", xPos)
       .attr("y", yPos)
@@ -195,7 +217,6 @@ function drawRadarShape(group, values, axisScale, strokeColor, data, container) 
     .angle(d => axisScale(d.axis))
     .radius(d => d.value);
 
-   // crate a const for the fill color which is the same as the stroke color but with 0.2 opacity
   const fillColor = d3.color(strokeColor).copy({ opacity: 0.2 }).toString();
 
   const path = group.append("path")
@@ -211,22 +232,22 @@ function drawRadarShape(group, values, axisScale, strokeColor, data, container) 
   path.on("mouseover", () => {
     tooltip.style("opacity", 1)
       .html(`<strong>${data.countryName}</strong><br>
-        GDP: ${data.minmax_gdp.toFixed(2)}<br>
+        GDP per Capita: ${data.minmax_gdpPerCapita.toFixed(2)}<br>
         Population: ${data.minmax_population.toFixed(2)}<br>
         Fertility: ${data.minmax_tfr.toFixed(2)}<br>
         Youth %: ${data.minmax_percentage.toFixed(2)}<br>
         Athletes: ${data.minmax_AthCount.toFixed(2)}`);
   }).on("mousemove", (event) => {
-    const bounds = container.node().getBoundingClientRect();
-    tooltip.style("left", `${event.pageX}px`)
-      .style("top", `${event.pageY}px`);
+    tooltip
+      .style("left", `${event.pageX + 15}px`)
+      .style("top", `${event.pageY - 120}px`);
   }).on("mouseout", () => {
     tooltip.style("opacity", 0);
   });
 }
 
 function createTooltip(container) {
-  return d3.select(".chart-visualization-container").append("div")
+  return d3.select("main").append("div")
     .attr("class", "tooltip")
     .style("position", "absolute")
     .style("padding", "8px")

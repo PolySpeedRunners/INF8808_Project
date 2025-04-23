@@ -267,7 +267,7 @@ export function formatDemography(demographyData, gencData) {
     }
   });
 
-
+  console.log("Grouped Demography Data:", groupedData);
   return groupedData;
 }
 

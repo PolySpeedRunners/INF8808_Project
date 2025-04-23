@@ -307,8 +307,8 @@ body {
 }
 
 .radar-chart-container {
-    width: 200px;
-    height: 200px; 
+    width: 220px;
+    height: 220px; 
     position: relative; 
 }
 
@@ -324,7 +324,7 @@ body {
     flex-direction: column;
     align-items: center;
     flex: 1;
-    max-width: 20%;
+    max-width: 25%;
     position: relative;
   }
   
@@ -335,8 +335,8 @@ body {
   }
   
   .blocks > div {
-    width: 150px;
-    height: 50px;
+    width: 160px;
+    height: 55px;
     background-color: var(--button-hover-color);
     border-radius: 3px;
   }
