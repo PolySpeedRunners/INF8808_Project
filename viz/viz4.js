@@ -62,7 +62,8 @@ export function drawLineChart({ data, containerSelector, season = "Both" }) {
         return Object.entries(countries).map(([_, d]) => ({
           country: d.countryName,
           year,
-          medals: d.medalScore,
+          score: d.medalScore,
+          medals: d.totalMedals,
         }));
       });
 
@@ -70,14 +71,14 @@ export function drawLineChart({ data, containerSelector, season = "Both" }) {
         values.sort((a, b) => a.year - b.year);
         let cumulativeSum = 0;
         return values.map(d => {
-            cumulativeSum += d.medals;
-            return { ...d, medals: cumulativeSum };
+            cumulativeSum += d.score;
+            return { ...d, score: cumulativeSum };
         });
     }).flat();
 
     const totalByCountry = d3.rollups(
       cumulativeData,
-      (v) => d3.max(v, (d) => d.medals),
+      (v) => d3.max(v, (d) => d.score),
       (d) => d.country
     );
 
@@ -97,7 +98,7 @@ export function drawLineChart({ data, containerSelector, season = "Both" }) {
     const xScale = d3.scaleLinear().domain(d3.extent(years)).range([0, innerWidth*0.9]);
     const yScale = d3
       .scaleLinear()
-      .domain([0, d3.max(dataByCountry, ([, values]) => d3.max(values, (d) => d.medals))])
+      .domain([0, d3.max(dataByCountry, ([, values]) => d3.max(values, (d) => d.score))])
       .nice()
       .range([innerHeight, 0]);
   
@@ -119,7 +120,7 @@ export function drawLineChart({ data, containerSelector, season = "Both" }) {
   
     const lineGenerator = d3.line()
       .x((d) => xScale(d.year))
-      .y((d) => yScale(d.medals));
+      .y((d) => yScale(d.score));
   
     g.selectAll(".line")
       .data(dataByCountry)
@@ -137,7 +138,7 @@ export function drawLineChart({ data, containerSelector, season = "Both" }) {
         .append("circle")
         .attr("class", "dot")
         .attr("cx", (d) => xScale(d.year))
-        .attr("cy", (d) => yScale(d.medals))
+        .attr("cy", (d) => yScale(d.score))
         .attr("r", 4)
         .attr("fill", (d) => color(d.country))
         .on("mouseover", (event, d) => {
@@ -146,7 +147,8 @@ export function drawLineChart({ data, containerSelector, season = "Both" }) {
             .html(
                 "<strong>" + d.country + "</strong><br>" +
                 "Year: " + d.year + "<br>" +
-                "Medals: " + d.medals
+                "Total medals: " + d.medals +  "<br>" +
+                "Score: " + d.score
             );
         })
         .on("mousemove", (event) => {
@@ -165,7 +167,7 @@ export function drawLineChart({ data, containerSelector, season = "Both" }) {
       .enter()
       .append("text")
       .attr("x", ([, values]) => xScale(values[values.length - 1].year))
-      .attr("y", ([, values]) => yScale(values[values.length - 1].medals))
+      .attr("y", ([, values]) => yScale(values[values.length - 1].score))
       .attr("dy", "0.35em")
       .attr("dx", 4)
       .style("fill", ([name]) => color(name))
@@ -175,10 +177,8 @@ export function drawLineChart({ data, containerSelector, season = "Both" }) {
     g.append("text")
       .attr("x", -innerHeight / 2)
       .attr("y", -margin.left + 20)
-      .attr("transform", "rotate(-90)")
-      .attr("text-anchor", "middle")
-      .style("fill", CSS.TextColor)
-      .text("Number of medals");
+      .attr("class", "y-axis-label")
+      .text("Medal score");
   
     svg
       .append("text")

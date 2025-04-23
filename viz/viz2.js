@@ -99,10 +99,6 @@ function formatRadarKey(key) {
 
 export function drawRadarChart({ containerSelector, data, index }) {
   const margin = { top: 50, right: 0, bottom: 0, left: 0 };
-  const fontFamily = getComputedStyle(document.documentElement).getPropertyValue('--font-family').trim();
-  const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim();
-  const radarColor = getComputedStyle(document.documentElement).getPropertyValue('--button-active-color').trim();
-
   const container = setupContainer(containerSelector);
   let { width, height, innerWidth, innerHeight } = getDimensions(container, margin);
   const radius = Math.min(innerWidth, innerHeight) / 2 * 0.7;
@@ -161,14 +157,21 @@ function createSVG(container, width, height) {
 
 function drawRadarGrid(group, radius) {
   const gridLevels = 10;
-  for (let level = 0; level < gridLevels; level++) {
-    const radiusGrid = radius * ((level + 1) / gridLevels);
-    group.append("circle")
-      .attr("cx", 0)
-      .attr("cy", 0)
-      .attr("r", radiusGrid)
+  const radarKeys = 5;
+  const angleStep = (2 * Math.PI) / radarKeys;
+
+  for (let level = 1; level <= gridLevels; level++) {
+    const levelRadius = (radius * level) / gridLevels;
+    const points = Array.from({ length: radarKeys }, (_, i) => {
+      const angle = i * angleStep - Math.PI / 2;
+      return [levelRadius * Math.cos(angle), levelRadius * Math.sin(angle)];
+    });
+
+    group
+      .append("polygon")
+      .attr("points", points.map(([x, y]) => `${x},${y}`).join(" "))
       .style("fill", "none")
-      .style("stroke", "#ddd")
+      .style("stroke", "#F76B51")
       .style("stroke-width", "0.5px");
   }
 }

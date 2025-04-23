@@ -1,4 +1,4 @@
-import { CSS_CONSTANTS as CSS } from "../assets/constants.js";
+import { CSS_CONSTANTS as CSS, MEDAL_COLORS, MEDAL_VALUES } from "../assets/constants.js";
 
 export const yearSelect = document.getElementById("year-select");
 export const disciplineSelect = document.getElementById("discipline-select");
@@ -83,17 +83,17 @@ export function drawBarChart({
   container.selectAll("*").remove();
   container.selectAll("div.tooltip").remove();
   const tooltip = container
-        .append("div")
-        .attr("class", "tooltip")
-        .style("position", "absolute")
-        .style("padding", "8px")
-        .style("background", "var(--secondary-color)")
-        .style("border", "1px solid var(--text-color)")
-        .style("color", "var(--text-color)")
-        .style("border-radius", "4px")
-        .style("font-size", "14px")
-        .style("pointer-events", "none")
-        .style("opacity", 0);
+    .append("div")
+    .attr("class", "tooltip")
+    .style("position", "absolute")
+    .style("padding", "8px")
+    .style("background", "var(--secondary-color)")
+    .style("border", "1px solid var(--text-color)")
+    .style("color", "var(--text-color)")
+    .style("border-radius", "4px")
+    .style("font-size", "14px")
+    .style("pointer-events", "none")
+    .style("opacity", 0);
 
   const width = container.node().clientWidth;
   const height = container.node().clientHeight;
@@ -110,26 +110,33 @@ export function drawBarChart({
     .style("font-family", CSS.Font)
     .style("color", CSS.TextColor);
 
-
   const chart = svg
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
   const yearData = data[yearSeason] || {};
   const formattedData = Object.entries(yearData)
-    .map(([noc, values]) => ({
-      countryName: values.countryName,
-      score: values.disciplines?.[discipline]?.score || 0,
-      medals: values.disciplines?.[discipline]?.total || 0,
-      gold: values.disciplines?.[discipline]?.gold || 0,
-      silver: values.disciplines?.[discipline]?.silver || 0,
-      bronze: values.disciplines?.[discipline]?.bronze || 0,
-    }))
-    .filter((d) => d.medals > 0)
-    .sort((a, b) => b.medals - a.medals)
+    .map(([noc, values]) => {
+      const gold = values.disciplines?.[discipline]?.gold || 0;
+      const silver = values.disciplines?.[discipline]?.silver || 0;
+      const bronze = values.disciplines?.[discipline]?.bronze || 0;
+
+      return {
+        countryName: values.countryName,
+        score: values.disciplines?.[discipline]?.score || 0,
+        medals: values.disciplines?.[discipline]?.total || 0,
+        gold,
+        silver,
+        bronze,
+        goldScore: gold * MEDAL_VALUES.Gold,
+        silverScore: silver * MEDAL_VALUES.Silver,
+        bronzeScore: bronze * MEDAL_VALUES.Bronze,
+      };
+    })
+    .filter((d) => d.score > 0)
+    .sort((a, b) => b.score - a.score)
     .slice(0, 20); // Top 20
   const topCountryName = formattedData[0]?.countryName;
-
   const x = d3
     .scaleBand()
     .domain(formattedData.map((d) => d.countryName))
@@ -138,42 +145,49 @@ export function drawBarChart({
 
   const y = d3
     .scaleLinear()
-    .domain([0, d3.max(formattedData, (d) => d.medals)])
+    .domain([0, d3.max(formattedData, (d) => d.score)])
     .nice()
     .range([innerHeight, 0]);
 
+  const stack = d3.stack().keys(["bronzeScore", "silverScore", "goldScore"]);
+  const stackedData = stack(formattedData); // Stacks the data for the three types of medal.
+
   chart
+    .selectAll("g.stack")
+    .data(stackedData)
+    .enter()
     .append("g")
+    .attr("class", "stack")
+    .attr("fill", (d) => MEDAL_COLORS[d.key])
     .selectAll("rect")
-    .data(formattedData)
+    .data((d) => d)
     .enter()
     .append("rect")
-    .attr("x", (d) => x(d.countryName))
-    .attr("y", (d) => y(d.medals))
+    .attr("x", (d) => x(d.data.countryName))
+    .attr("y", (d) => y(d[1]))                // Use the upper value of the stack.
+    .attr("height", (d) => y(d[0]) - y(d[1])) // Height is the difference between stack values.
     .attr("width", x.bandwidth())
-    .attr("height", (d) => innerHeight - y(d.medals))
-    .attr("fill", (d) => d.countryName === topCountryName ? "red" : "blue")
     .on("mouseover", (event, d) => {
       tooltip
         .style("opacity", 1)
         .html(
-          `<strong>${d.countryName}</strong><br>` +
-            `Total Medals: ${d.medals}<br>` +
-            `Score: ${d.score}<br>` +
-            `🥇 Gold: ${d.gold || 0}<br>` +
-            `🥈 Silver: ${d.silver || 0}<br>` +
-            `🥉 Bronze: ${d.bronze || 0}`
+          `<strong>${d.data.countryName}</strong><br>` +
+            `Total Medals: ${d.data.medals}<br>` +
+            `Score: ${d.data.score}<br>` +
+            `🥇 Gold: ${d.data.gold}<br>` +
+            `🥈 Silver: ${d.data.silver}<br>` +
+            `🥉 Bronze: ${d.data.bronze}`
         );
-  })
-    .on("mousemove", event => {
-        const bounds = container.node().getBoundingClientRect();
-        tooltip
-            .style("left", `${event.clientX - bounds.left + 10}px`)
-            .style("top", `${event.clientY - bounds.top - 30}px`);
+    })
+    .on("mousemove", (event) => {
+      const bounds = container.node().getBoundingClientRect();
+      tooltip
+        .style("left", `${event.clientX - bounds.left + 10}px`)
+        .style("top", `${event.clientY - bounds.top - 30}px`);
     })
     .on("mouseout", () => {
-        tooltip.style("opacity", 0);
-    });;
+      tooltip.style("opacity", 0);
+    });
 
   chart
     .append("g")
@@ -184,22 +198,26 @@ export function drawBarChart({
     .attr("transform", "rotate(-45)")
     .style("font-family", CSS.Font)
     .style("fill", CSS.TextColor)
-    .style("font-weight", (d) => d === topCountryName ? "bold" : "normal");
+    .style("font-weight", (d) => (d === topCountryName ? "bold" : "normal"));
 
   chart
     .append("g")
-    .call(d3.axisLeft(y).ticks(ticks.y))
+    .call(  // Displays only integer values on the y-axis.
+      d3
+        .axisLeft(y)
+        .tickValues(y.ticks(ticks.y).filter((t) => Number.isInteger(t)))
+        .tickFormat(d3.format("d"))
+    )
     .selectAll("text")
     .style("font-family", CSS.Font)
     .style("fill", CSS.TextColor);
 
-  chart.append("text")
+  chart
+    .append("text")
     .attr("x", -innerHeight / 2)
     .attr("y", -margin.left + 20)
-    .attr("transform", "rotate(-90)")
-    .attr("text-anchor", "middle")
-    .style("fill", CSS.TextColor)
-    .text("Number of medals");
+    .attr("class", "y-axis-label")
+    .text("Medal score");
 
   svg
     .append("text")
