@@ -29,6 +29,9 @@ function drawRadarCharts(yearData, selectedYear) {
   .sort(([, a], [, b]) => b.medalScore - a.medalScore)
   .slice(0, 5);
 
+  // const top5Data = Object.fromEntries(sortedCountries);
+  // applyMinMaxScaling(top5Data); 
+
   sortedCountries.forEach(([_, countryData], index) => {
     drawRadarChart({
       containerSelector: `#chart-container-${index + 1}`,
@@ -232,11 +235,11 @@ function drawRadarShape(group, values, axisScale, data, container) {
   path.on("mouseover", () => {
     tooltip.style("opacity", 1)
       .html(`<strong>${data.countryName}</strong><br>
-        GDP per Capita: ${data.minmax_gdpPerCapita.toFixed(2)}<br>
-        Population: ${data.minmax_population.toFixed(2)}<br>
-        Fertility: ${data.minmax_tfr.toFixed(2)}<br>
-        Youth %: ${data.minmax_percentage.toFixed(2)}<br>
-        Athletes: ${data.minmax_AthCount.toFixed(2)}`);
+        GDP per Capita: ${data.gdpPerCapita.toFixed(2)}<br>
+        Population: ${data.population.toFixed(2)}<br>
+        Fertility: ${data.tfr.toFixed(2)}<br>
+        Youth %: ${data.percentage.toFixed(2)}<br>
+        Athletes: ${data.AthCount.toFixed(2)}`);
   }).on("mousemove", (event) => {
     tooltip
       .style("left", `${event.pageX + 15}px`)
@@ -263,7 +266,7 @@ function createTooltip(container) {
 function drawTitle(svg, width, topMargin, countryName) {
   svg.append("text")
     .attr("x", width / 2)
-    .attr("y", topMargin / 2)
+    .attr("y", topMargin / 1.2)
     .attr("text-anchor", "middle")
     .style("font-family", CSS.Font)
     .style("font-size", "25px")

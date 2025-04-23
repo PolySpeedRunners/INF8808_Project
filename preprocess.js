@@ -267,7 +267,6 @@ export function formatDemography(demographyData, gencData) {
     }
   });
 
-  console.log("Grouped Demography Data:", groupedData);
   return groupedData;
 }
 
@@ -276,7 +275,6 @@ export function addDemographyData(resultsData, formattedDemographyData) {
   for (const yearSeason in resultsData) {
     const [yearOnly] = yearSeason.split(',');
     const demographyByGenc = formattedDemographyData[yearOnly];
-
     if (!demographyByGenc) continue;
 
     const countries = resultsData[yearSeason];
@@ -297,6 +295,7 @@ export function addDemographyData(resultsData, formattedDemographyData) {
       }
       countries[noc].tfr = demography.tfr ? parseFloat(demography.tfr): 0;
       countries[noc].percentage = demography.percentage ? parseFloat(demography.percentage): 0;
+      countries[noc].population = demography.pop ? parseInt(demography.pop, 10): 0;
     }
   }
 }
