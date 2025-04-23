@@ -153,15 +153,23 @@ function createSVG(container, width, height) {
 }
 
 function drawRadarGrid(group, radius) {
-  const gridLevels = 10;
-  for (let level = 0; level < gridLevels; level++) {
-    const radiusGrid = radius * ((level + 1) / gridLevels);
-    group.append("circle")
-      .attr("cx", 0)
-      .attr("cy", 0)
-      .attr("r", radiusGrid)
+  const gridLevels = 10; // Number of grid levels (pentagon has 5 sides)
+  const radarKeys = 5; // Number of axes (dimensions)
+  const angleStep = (2 * Math.PI) / radarKeys;
+
+  for (let level = 1; level <= gridLevels; level++) {
+    const levelRadius = (radius * level) / gridLevels;
+
+    const points = Array.from({ length: radarKeys }, (_, i) => {
+      const angle = i * angleStep - Math.PI / 2; // Start at the top
+      return [levelRadius * Math.cos(angle), levelRadius * Math.sin(angle)];
+    });
+
+    group
+      .append("polygon")
+      .attr("points", points.map(([x, y]) => `${x},${y}`).join(" "))
       .style("fill", "none")
-      .style("stroke", "#ddd")
+      .style("stroke", "#F76B51")
       .style("stroke-width", "0.5px");
   }
 }
