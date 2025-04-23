@@ -86,7 +86,7 @@ function formatRadarKey(key) {
 }
 
 export function drawRadarChart({ containerSelector, data, index }) {
-  const margin = { top: 50, right: 20, bottom: 80, left: 80 };
+  const margin = { top: 50, right: 20, bottom: 0, left: 20 };
   const fontFamily = getComputedStyle(document.documentElement).getPropertyValue('--font-family').trim();
   const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim();
 
@@ -114,7 +114,6 @@ export function drawRadarChart({ containerSelector, data, index }) {
   drawRadarShape(chartGroup, countryValues, radarAxis, textColor, data, container);
 
   drawTitle(svg, width, margin.top, fontFamily, textColor, data.countryName);
-  drawSubtitle(svg, width, height, margin.bottom, fontFamily, textColor, index, data.totalMedals);
 }
 
 function setupContainer(selector) {
