@@ -237,12 +237,14 @@ function drawRadarShape(group, values, axisScale, data, container) {
 
   path.on("mouseover", () => {
     tooltip.style("opacity", 1)
-      .html(`<strong>${data.countryName}</strong><br>
-        GDP per Capita: ${data.gdpPerCapita.toFixed(2)}<br>
-        Population: ${data.population.toFixed(2)}<br>
-        Fertility: ${data.tfr.toFixed(2)}<br>
-        Youth %: ${data.percentage.toFixed(2)}<br>
-        Athletes: ${data.AthCount.toFixed(2)}`);
+    .html(
+      `<strong>${data.countryName}</strong><br>` +
+      `GDP per Capita: ${d3.format(",.0f")(data.gdpPerCapita)} $<br>` +
+      `Population: ${d3.format(",.0f")(data.population)}<br>` +
+      `Fertility: ${data.tfr.toFixed(2)}<br>` +
+      `Youth %: ${data.percentage.toFixed(2)}%<br>` +
+      `Athletes: ${d3.format(",")(data.AthCount)}`
+    );
   }).on("mousemove", (event) => {
     tooltip
       .style("left", `${event.pageX + 15}px`)
