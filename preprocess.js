@@ -1,3 +1,5 @@
+import { MEDAL_VALUES } from "./assets/constants.js";
+
 /**
  * Cleans the dataset by removing entries with falsy values for "discipline", "type", or "year".
  *
@@ -62,13 +64,7 @@ export function groupByYear(data) {
 }
 
 export function getMedalValue(medal) {
-  return medal === "Gold"
-    ? 3
-    : medal === "Silver"
-    ? 2
-    : medal === "Bronze"
-    ? 1
-    : 0;
+  return MEDAL_VALUES[medal] || 0;
 }
 
 export function computeScoresByYearSeason(resultsData) {
@@ -131,7 +127,7 @@ export function computeDisciplineScoresByCountry(resultsData, nocMap) {
 
           const result = {
             countryName,
-            totalMedals: 0,
+            medalScore: 0,
             disciplines: {},
           };
 
@@ -144,6 +140,7 @@ export function computeDisciplineScoresByCountry(resultsData, nocMap) {
 
               if (!result.disciplines[d.discipline]) {
                 result.disciplines[d.discipline] = {
+                  score: 0,
                   total: 0,
                   gold: 0,
                   silver: 0,
@@ -151,8 +148,9 @@ export function computeDisciplineScoresByCountry(resultsData, nocMap) {
                 };
               }
 
-              result.disciplines[d.discipline].total += medalValue;
-              result.totalMedals += medalValue;
+              result.disciplines[d.discipline].total += 1;
+              result.disciplines[d.discipline].score += medalValue;
+              result.medalScore += medalValue;
 
               if (d.medal === "Gold") {
                 result.disciplines[d.discipline].gold += 1;
