@@ -193,7 +193,12 @@ export function drawBarChart({
 
   chart
     .append("g")
-    .call(d3.axisLeft(y).ticks(ticks.y))
+    .call(  // Displays only integer values on the y-axis.
+      d3
+        .axisLeft(y)
+        .tickValues(y.ticks(ticks.y).filter((t) => Number.isInteger(t)))
+        .tickFormat(d3.format("d"))
+    )
     .selectAll("text")
     .style("font-family", CSS.Font)
     .style("fill", CSS.TextColor);
