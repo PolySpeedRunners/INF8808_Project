@@ -50,8 +50,12 @@ function updateDisciplinesList(year, data) {
   disciplineSelect.addEventListener('change', () => updateChart(data));
 }
 
-
-export function updateChart(resultsData) {
+/**
+ * Updates the chart based on the selected year and discipline.
+ *
+ * @param {*} resultsData The data to be used for the chart.
+ */
+function updateChart(resultsData) {
   const year = yearSelect.value;
   const discipline = disciplineSelect.value;
 
