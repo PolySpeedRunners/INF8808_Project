@@ -336,7 +336,7 @@ body {
   
   .blocks > div {
     width: 160px;
-    height: 55px;
+    height: 50px;
     background-color: var(--button-hover-color);
     border-radius: 3px;
   }
