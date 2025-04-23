@@ -50,8 +50,12 @@ function updateDisciplinesList(year, data) {
   disciplineSelect.addEventListener('change', () => updateChart(data));
 }
 
-
-export function updateChart(resultsData) {
+/**
+ * Updates the chart based on the selected year and discipline.
+ *
+ * @param {*} resultsData The data to be used for the chart.
+ */
+function updateChart(resultsData) {
   const year = yearSelect.value;
   const discipline = disciplineSelect.value;
 
@@ -103,8 +107,15 @@ export function drawBarChart({
 
   const svg = container
     .append("svg")
-    .attr("width", width)
-    .attr("height", height);
+    // .attr("width", width)
+    // .attr("height", height);
+    .attr("viewBox", `0 0 ${width} ${height}`)
+    .attr("preserveAspectRatio", "xMidYMid meet") // Maintain aspect ratio.
+    .style("width", "100%")
+    .style("height", "100%")
+    .style("font-family", fontFamily)
+    .style("color", textColor);
+
 
   const chart = svg
     .append("g")
