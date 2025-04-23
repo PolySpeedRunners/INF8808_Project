@@ -128,6 +128,7 @@ export function computeDisciplineScoresByCountry(resultsData, nocMap) {
           const result = {
             countryName,
             medalScore: 0,
+            totalMedals: 0,
             disciplines: {},
           };
 
@@ -150,6 +151,7 @@ export function computeDisciplineScoresByCountry(resultsData, nocMap) {
 
               result.disciplines[d.discipline].total += 1;
               result.disciplines[d.discipline].score += medalValue;
+              result.totalMedals += 1;
               result.medalScore += medalValue;
 
               if (d.medal === "Gold") {

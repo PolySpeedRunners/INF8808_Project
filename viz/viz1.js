@@ -54,7 +54,8 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
                 countryCode: code,
                 gdp: d.gdp,
                 population: d.population,
-                total: d.medalScore,
+                totalMedals: d.totalMedals,
+                medalScore: d.medalScore,
                 rank: i + 1,
                 year: year
             }));
@@ -142,7 +143,7 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
 
     const yScales = {};
     Object.entries(data).forEach(([year, yearData]) => {
-        const maxMedals = d3.max(yearData, d => d.total);
+        const maxMedals = d3.max(yearData, d => d.medalScore);
         yScales[year] = d3.scaleLinear()
             .domain([0, Math.ceil(maxMedals / 10) * 10 + 10])
             .range([innerHeight, 0]);
@@ -188,7 +189,7 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
         .style('font-family', 'Inter')
         .style("font-weight", "bold")
         .style("font-size", "18px")
-        .text("Number of medals");
+        .text("Medal score");
 
         //flattent the data, and then print me all instance where a country fails getColorByCountryCode (returns #999)
     const missingCountries = Object.values(data).flat().filter(d => getColorByCountryCode(d.countryCode) === "#999");
@@ -205,12 +206,15 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
         .style("pointer-events", "none")
         .on("mouseover", (event, d) => {
             tooltip
-                .style("opacity", 1)
-                .html(`<strong>${d.country}</strong><br>` +
-                      `Medals: ${d.total}<br>` +
-                      `Country rank: ${d.rank}<br>` +
-                      `GDP: ${d3.format(",.0f")(d.gdp)} $<br>` +
-                      `Population: ${d3.format(",.0f")(d.population)}`);
+              .style("opacity", 1)
+              .html(
+                `<strong>${d.country}</strong><br>` +
+                  `Score: ${d.medalScore}<br>` +
+                  `Medals: ${d.totalMedals}<br>` +
+                  `Country rank: ${d.rank}<br>` +
+                  `GDP: ${d3.format(",.0f")(d.gdp)} $<br>` +
+                  `Population: ${d3.format(",.0f")(d.population)}`
+              );
         })
         .on("mousemove", event => {
             const bounds = container.node().getBoundingClientRect();
@@ -275,7 +279,7 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
             .transition()
             .duration(ANIMATION_TIME)
             .attr("cx", (d) => xScale(d[mode]))
-            .attr("cy", (d) => yScale(d.total))
+            .attr("cy", (d) => yScale(d.medalScore))
             .style("opacity", (d) => (d.year == year ? 1 : 0))
             .style("pointer-events", (d) => (d.year == year ? "auto" : "none"));
         updateTitle(mode);
@@ -377,6 +381,6 @@ function updateTitle(mode) {
     const graphTitle = document.querySelector(".graph-title");
     graphTitle.textContent =
         mode === "gdp"
-        ? "Number of Olympic medals in relation to GDP"
-        : "Number of Olympic medals in relation to Population";
+        ? "Score of Olympic medals in relation to GDP"
+        : "Score of Olympic medals in relation to Population";
 }
