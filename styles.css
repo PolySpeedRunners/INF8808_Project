@@ -377,6 +377,10 @@ body {
     padding: 5px 10px;
 }
 
+.y-axis-label {
+    transform: rotate(-90deg);
+}
+
 .x-axis-label,
 .y-axis-label {
     fill: var(--axis-title-color);

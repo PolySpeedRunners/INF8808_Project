@@ -167,7 +167,6 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
     g.append("text")
       .attr("x", -innerHeight / 2)
       .attr("y", -margin.left + 20)
-      .attr("transform", "rotate(-90)")
       .attr("class", "y-axis-label")
       .text("Medal score");
 

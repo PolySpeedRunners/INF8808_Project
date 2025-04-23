@@ -175,9 +175,7 @@ export function drawLineChart({ data, containerSelector, season = "Both" }) {
     g.append("text")
       .attr("x", -innerHeight / 2)
       .attr("y", -margin.left + 20)
-      .attr("transform", "rotate(-90)")
-      .attr("text-anchor", "middle")
-      .style("fill", CSS.TextColor)
+      .attr("class", "y-axis-label")
       .text("Number of medals");
   
     svg
