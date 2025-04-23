@@ -29,9 +29,6 @@ function drawRadarCharts(yearData, selectedYear) {
   .sort(([, a], [, b]) => b.medalScore - a.medalScore)
   .slice(0, 5);
 
-  const top5Data = Object.fromEntries(sortedCountries);
-  applyMinMaxScaling(top5Data); 
-
   sortedCountries.forEach(([_, countryData], index) => {
     drawRadarChart({
       containerSelector: `#chart-container-${index + 1}`,
