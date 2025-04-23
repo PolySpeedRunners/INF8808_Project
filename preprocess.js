@@ -1,3 +1,5 @@
+import MEDAL_VALUES from "./constants.js";
+
 /**
  * Cleans the dataset by removing entries with falsy values for "discipline", "type", or "year".
  *
@@ -62,13 +64,7 @@ export function groupByYear(data) {
 }
 
 export function getMedalValue(medal) {
-  return medal === "Gold"
-    ? 3
-    : medal === "Silver"
-    ? 2
-    : medal === "Bronze"
-    ? 1
-    : 0;
+  return MEDAL_VALUES[medal] || 0;
 }
 
 export function computeScoresByYearSeason(resultsData) {
