@@ -1,10 +1,4 @@
-const CONTINENT_LEGEND_COLOR = {
-    Europe:     "#0B7AC9",
-    Asia:       "#EAA935",
-    Africa:     "#2B2A29",
-    Australia:  "#00A357",
-    America:    "#E34556",
-};
+import { CSS_CONSTANTS as CSS, CONTINENT_LEGEND_COLOR } from "../assets/constants.js";
 
 export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
     const ANIMATION_TIME = 500;
@@ -73,10 +67,6 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
 
     const margin = { top: 20, right: 20, bottom: 80, left: 80 };
     const ticks = { x: 6, y: 10 };
-    const fontFamily = getComputedStyle(document.documentElement).getPropertyValue('--font-family').trim();
-    const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim();
-    const axisTextColor = getComputedStyle(document.documentElement).getPropertyValue('--axis-title-color').trim();
-
     const container = d3.select(containerSelector + " .graph");
     const width = container.node().clientWidth;
     const height = container.node().clientHeight;
@@ -95,8 +85,8 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
         .attr("preserveAspectRatio", "xMidYMid meet")
         .style("width", "100%")
         .style("height", "100%")
-        .style("font-family", fontFamily)
-        .style("color", textColor);
+        .style("font-family", CSS.Font)
+        .style("color", CSS.TextColor);
 
     const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top + 30})`);
     const tooltip = container.append("div")
@@ -174,7 +164,7 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
         .attr("y", innerHeight + margin.bottom - 35)
         .attr("text-anchor", "middle")
         .attr("class", "x-axis-label")
-        .style("fill", axisTextColor)
+        .style("fill", CSS.AxisTitleColor)
         .style('font-family', 'Inter')
         .style("font-weight", "bold")
         .style("font-size", "18px")
@@ -185,7 +175,7 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
         .attr("y", -margin.left + 20)
         .attr("transform", "rotate(-90)")
         .attr("text-anchor", "middle")
-        .style("fill", axisTextColor)
+        .style("fill", CSS.AxisTitleColor)
         .style('font-family', 'Inter')
         .style("font-weight", "bold")
         .style("font-size", "18px")
@@ -200,7 +190,7 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
         .append("circle")
         .attr("r", 6)
         .attr("fill", d => getColorByCountryCode(d.countryCode))
-        .attr("stroke", textColor)
+        .attr("stroke", CSS.TextColor)
         .attr("stroke-width", 1)
         .style("opacity", 0)
         .style("pointer-events", "none")
@@ -327,10 +317,10 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
     });
     updateActiveYearLabel(parseInt(yearSlider.value));
 
-    createLegend(svg, margin, CONTINENT_LEGEND_COLOR, fontFamily, textColor);
+    createLegend(svg, margin);
 }
 
-function createLegend(svg, margin, fontFamily, textColor) {
+function createLegend(svg, margin) {
     const legendGroup = svg.append("g")
         .attr("class", "graph-legend");
 
@@ -365,9 +355,9 @@ function createLegend(svg, margin, fontFamily, textColor) {
         legendItem.append("text")
             .attr("x", legendSquareSize + legendSpacing) // Position text to the right of the square
             .attr("y", legendSquareSize - 3) // Vertically align text with the square
-            .style("font-family", fontFamily)
+            .style("font-family", CSS.Font)
             .style("font-size", "14px")
-            .style("fill", textColor)
+            .style("fill", CSS.TextColor)
             .text(continent);
     });
 }

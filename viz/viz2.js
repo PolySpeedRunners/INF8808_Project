@@ -1,3 +1,5 @@
+import { CSS_CONSTANTS as CSS } from "../assets/constants.js";
+
 export const yearSelect = document.getElementById("year-select-podium");
 
 export function chooseYearRadarChart(data) {
@@ -115,8 +117,8 @@ export function drawRadarChart({ containerSelector, data, index }) {
   const radarAxis = d3.scaleBand().domain(radarKeys).range([0, Math.PI * 2]);
 
   drawRadarGrid(chartGroup, radius);
-  drawRadarAxes(chartGroup, radarKeys, radarAxis, scale, textColor);
-  drawRadarLabels(chartGroup, radarKeys, radarAxis, scale, fontFamily, textColor);
+  drawRadarAxes(chartGroup, radarKeys, radarAxis, scale);
+  drawRadarLabels(chartGroup, radarKeys, radarAxis, scale);
 
   const countryValues = radarKeys.map(key => ({
     axis: key,
@@ -126,9 +128,9 @@ export function drawRadarChart({ containerSelector, data, index }) {
   // Add the first value to the end of the array to close the radar shape
   countryValues.push(countryValues[0]);
 
-  drawRadarShape(chartGroup, countryValues, radarAxis, radarColor, data, container);
+  drawRadarShape(chartGroup, countryValues, radarAxis, data, container);
 
-  drawTitle(svg, width, margin.top, fontFamily, textColor, data.countryName);
+  drawTitle(svg, width, margin.top, data.countryName);
 }
 
 function setupContainer(selector) {
@@ -171,7 +173,7 @@ function drawRadarGrid(group, radius) {
   }
 }
 
-function drawRadarAxes(group, keys, axisScale, valueScale, color) {
+function drawRadarAxes(group, keys, axisScale, valueScale) {
   keys.forEach((key) => {
     const angle = axisScale(key) - Math.PI / 2;
     group.append("line")
@@ -179,12 +181,12 @@ function drawRadarAxes(group, keys, axisScale, valueScale, color) {
       .attr("y1", 0)
       .attr("x2", valueScale(10) * Math.cos(angle))
       .attr("y2", valueScale(10) * Math.sin(angle))
-      .attr("stroke", color)
+      .attr("stroke", CSS.TextColor)
       .attr("stroke-width", 2);
   });
 }
 
-function drawRadarLabels(group, keys, axisScale, valueScale, fontFamily, color) {
+function drawRadarLabels(group, keys, axisScale, valueScale) {
   keys.forEach((key) => {
     const angle = axisScale(key) - Math.PI / 2;
     let xPos = valueScale(10) * Math.cos(angle) ;
@@ -205,25 +207,26 @@ function drawRadarLabels(group, keys, axisScale, valueScale, fontFamily, color) 
       .attr("y", yPos)
       .attr("dy", "-10px")
       .style("text-anchor", "middle")
-      .style("font-family", fontFamily)
-      .style("fill", color)
+      .style("font-family", CSS.Font)
+      .style("fill", CSS.TextColor)
       .style("font-size", "12px")
       .text(formatRadarKey(key));
   });
 }
 
-function drawRadarShape(group, values, axisScale, strokeColor, data, container) {
+function drawRadarShape(group, values, axisScale, data, container) {
   const radarLine = d3.lineRadial()
     .angle(d => axisScale(d.axis))
     .radius(d => d.value);
 
-  const fillColor = d3.color(strokeColor).copy({ opacity: 0.2 }).toString();
+   // crate a const for the fill color which is the same as the stroke color but with 0.2 opacity
+  const fillColor = d3.color(CSS.RadarColor).copy({ opacity: 0.2 }).toString();
 
   const path = group.append("path")
     .datum(values)
     .attr("d", radarLine)
     .attr("fill", fillColor)
-    .attr("stroke", strokeColor)
+    .attr("stroke", CSS.RadarColor)
     .attr("stroke-width", 2)
     .style("pointer-events", "all");
 
@@ -260,24 +263,24 @@ function createTooltip(container) {
     .style("opacity", 0);
 }
 
-function drawTitle(svg, width, topMargin, fontFamily, color, countryName) {
+function drawTitle(svg, width, topMargin, countryName) {
   svg.append("text")
     .attr("x", width / 2)
     .attr("y", topMargin / 2)
     .attr("text-anchor", "middle")
-    .style("font-family", fontFamily)
+    .style("font-family", CSS.Font)
     .style("font-size", "25px")
-    .style("fill", color)
+    .style("fill", CSS.TextColor)
     .text(`${countryName}`);
 }
 
-function drawSubtitle(svg, width, height, bottomMargin, fontFamily, color, rank, medals) {
+function drawSubtitle(svg, width, height, bottomMargin, rank, medals) {
   svg.append("text")
     .attr("x", width / 2)
     .attr("y", height - bottomMargin / 2)
     .attr("text-anchor", "middle")
-    .style("font-family", fontFamily)
+    .style("font-family", CSS.Font)
     .style("font-size", "25px")
-    .style("fill", color)
+    .style("fill", CSS.TextColor)
     .text(`${rank + 1} place with ${medals} medals`);
 }

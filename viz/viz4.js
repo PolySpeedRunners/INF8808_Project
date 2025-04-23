@@ -1,3 +1,5 @@
+import { CSS_CONSTANTS as CSS } from "../assets/constants.js";
+
 export function setLineChartListener(data, containerSelector, initialSeason = "Both") {
     const seasonSelect = document.getElementById("seasonSelect");
   
@@ -18,16 +20,7 @@ export function setLineChartListener(data, containerSelector, initialSeason = "B
 export function drawLineChart({ data, containerSelector, season = "Both" }) {
     const margin = { top: 50, right: 20, bottom: 80, left: 80 };
     const ticks = { x: 6, y: 10 };
-    const fontFamily = getComputedStyle(document.documentElement)
-      .getPropertyValue("--font-family")
-      .trim();
-    const textColor = getComputedStyle(document.documentElement)
-      .getPropertyValue("--text-color")
-      .trim();
-    const axisTextColor = getComputedStyle(document.documentElement)
-      .getPropertyValue("--axis-title-color")
-      .trim();
-  
+
     const container = d3.select(containerSelector + " .graph");
     container.selectAll("*").remove();
     container.selectAll("div.tooltip").remove();
@@ -54,8 +47,8 @@ export function drawLineChart({ data, containerSelector, season = "Both" }) {
       .append("svg")
       .attr("width", width)
       .attr("height", height)
-      .style("font-family", fontFamily)
-      .style("color", textColor);
+      .style("font-family", CSS.Font)
+      .style("color", CSS.TextColor);
   
     const g = svg
       .append("g")
@@ -115,12 +108,12 @@ export function drawLineChart({ data, containerSelector, season = "Both" }) {
       .attr("transform", `translate(0,${innerHeight})`)
       .call(xAxis)
       .selectAll("text")
-      .style("fill", axisTextColor);
+      .style("fill", CSS.AxisTitleColor);
   
     g.append("g")
       .call(yAxis)
       .selectAll("text")
-      .style("fill", axisTextColor);
+      .style("fill", CSS.AxisTitleColor);
   
     const color = d3.scaleOrdinal(d3.schemeTableau10).domain([...topCountries]);
   
@@ -177,14 +170,14 @@ export function drawLineChart({ data, containerSelector, season = "Both" }) {
       .attr("dx", 4)
       .style("fill", ([name]) => color(name))
       .text(([name]) => name)
-      .style("font-family", fontFamily);
+      .style("font-family", CSS.Font);
   
     g.append("text")
       .attr("x", -innerHeight / 2)
       .attr("y", -margin.left + 20)
       .attr("transform", "rotate(-90)")
       .attr("text-anchor", "middle")
-      .style("fill", textColor)
+      .style("fill", CSS.TextColor)
       .text("Number of medals");
   
     svg
@@ -192,9 +185,9 @@ export function drawLineChart({ data, containerSelector, season = "Both" }) {
       .attr("x", width / 2)
       .attr("y", margin.top / 2)
       .attr("text-anchor", "middle")
-      .style("font-family", fontFamily)
+      .style("font-family", CSS.Font)
       .style("font-size", "18px")
-      .style("fill", textColor)
+      .style("fill", CSS.TextColor)
       .text(`Top 10 Countries (${season})`);
   }
   
