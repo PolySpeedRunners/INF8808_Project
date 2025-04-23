@@ -96,10 +96,6 @@ function formatRadarKey(key) {
 
 export function drawRadarChart({ containerSelector, data, index }) {
   const margin = { top: 50, right: 0, bottom: 0, left: 0 };
-  const fontFamily = getComputedStyle(document.documentElement).getPropertyValue('--font-family').trim();
-  const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim();
-  const radarColor = getComputedStyle(document.documentElement).getPropertyValue('--button-active-color').trim();
-
   const container = setupContainer(containerSelector);
   let { width, height, innerWidth, innerHeight } = getDimensions(container, margin);
   const radius = Math.min(innerWidth, innerHeight) / 2 * 0.7;
