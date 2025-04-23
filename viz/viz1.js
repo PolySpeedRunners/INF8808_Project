@@ -162,24 +162,15 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
     const xAxisLabel = g.append("text")
         .attr("x", innerWidth / 2)
         .attr("y", innerHeight + margin.bottom - 35)
-        .attr("text-anchor", "middle")
         .attr("class", "x-axis-label")
-        .style("fill", CSS.AxisTitleColor)
-        .style('font-family', 'Inter')
-        .style("font-weight", "bold")
-        .style("font-size", "18px")
         .text("Population du pays");
 
     g.append("text")
-        .attr("x", -innerHeight / 2)
-        .attr("y", -margin.left + 20)
-        .attr("transform", "rotate(-90)")
-        .attr("text-anchor", "middle")
-        .style("fill", CSS.AxisTitleColor)
-        .style('font-family', 'Inter')
-        .style("font-weight", "bold")
-        .style("font-size", "18px")
-        .text("Medal score");
+      .attr("x", -innerHeight / 2)
+      .attr("y", -margin.left + 20)
+      .attr("transform", "rotate(-90)")
+      .attr("class", "y-axis-label")
+      .text("Medal score");
 
         //flattent the data, and then print me all instance where a country fails getColorByCountryCode (returns #999)
     const missingCountries = Object.values(data).flat().filter(d => getColorByCountryCode(d.countryCode) === "#999");

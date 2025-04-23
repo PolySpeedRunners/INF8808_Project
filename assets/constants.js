@@ -1,3 +1,7 @@
+/**
+ * Medal values used for the bar chart.
+ * This is used to calculate the total medal score for each country.
+ */
 export const MEDAL_VALUES = {
   Gold: 3,
   Silver: 2,
@@ -35,4 +39,14 @@ export const CONTINENT_LEGEND_COLOR = {
   Africa: "#2B2A29",
   Australia: "#00A357",
   America: "#E34556",
+};
+
+/**
+ * Colors used for medals in the bar chart.
+ * Independant from styles.css.
+ */
+export const MEDAL_COLORS = {
+  gold: "#D6AF35",
+  silver: "#A7A7AD",
+  bronze: "#A77044",
 };

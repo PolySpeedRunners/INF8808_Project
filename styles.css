@@ -376,3 +376,12 @@ body {
     gap: 10px;
     padding: 5px 10px;
 }
+
+.x-axis-label,
+.y-axis-label {
+    fill: var(--axis-title-color);
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+    font-size: 18px;
+    text-anchor: middle;
+}
