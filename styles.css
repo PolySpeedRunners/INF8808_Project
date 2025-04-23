@@ -125,6 +125,12 @@ body {
     padding-block: 15px;
 }
 
+.tooltip {
+    position: absolute;
+    z-index: 99999;
+    pointer-events: none;
+}
+
 .toggle-buttons {
     display: flex;
     flex-direction: row;

@@ -6,12 +6,11 @@ const CONTINENT_LEGEND_COLOR = {
     America:    "#E34556",
 };
 
-
-export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYear }) {
-    /* Default constants */
-    const ANIMATION_TIME = 500; // ms
+export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
+    const ANIMATION_TIME = 500;
 
     const COUNTRY_TO_CONTINENT_MAP = {
+        // Existing entries
         USA: "America", CHN: "Asia", JPN: "Asia", AUS: "Australia", FRA: "Europe",
         GBR: "Europe", KOR: "Asia", ITA: "Europe", NZL: "Australia", CAN: "America",
         UZB: "Asia", HUN: "Europe", ESP: "Europe", SWE: "Europe", KEN: "Africa",
@@ -28,16 +27,54 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
         SVK: "Europe", FIN: "Europe", BLR: "Europe", EST: "Europe", SMR: "Europe",
         MKD: "Europe", TKM: "Asia", SYR: "Asia", GHA: "Africa", CUB: "America",
         LIE: "Europe", LAT: "Europe", RUS: "Europe", DEU: "Europe", NED: "Europe",
-        NLD: "Europe", CHE: "Europe", POR: "Europe", SVN: "Europe", MKD: "Europe",
+        NLD: "Europe", CHE: "Europe", POR: "Europe", SVN: "Europe",
+        BUL: "Europe", GRE: "Europe", SUI: "Europe", DEN: "Europe", INA: "Asia",
+        IRI: "Asia", ALG: "Africa", BAH: "America", NGR: "Africa", RSA: "Africa",
+        SLO: "Europe", CRO: "Europe", KSA: "Asia", TTO: "America", CMR: "Africa",
+        MOZ: "Africa", URU: "America", SRI: "Asia", CRC: "America", KUW: "Asia",
+        ISL: "Europe", BAR: "America", ZIM: "Africa", UAE: "Asia", VEN: "America",
+        PAR: "America", MGL: "Asia", ERI: "Africa", SUD: "Africa", SAM: "Oceania",
+        MRI: "Africa", TOG: "Africa", AFG: "Asia", PHI: "Asia", KOS: "Europe",
+        BDI: "Africa", GRN: "America", GUA: "America", BOT: "Africa", GAB: "Africa",
+        MNE: "Europe", NAM: "Africa", BUR: "Africa", PUR: "America", NIG: "Africa",
+        BER: "America", FIJ: "Oceania"
     };
+    const processedDataByYear = {};
+
+    for (const yearSeasonKey of Object.keys(data)) {
+        const [yearStr, season] = yearSeasonKey.split(',');
+        const year = parseInt(yearStr);
+
+        const countries = data[yearSeasonKey];
+        const yearEntries = Object.entries(countries)
+            .filter(([code, d]) => d.gdp >= 2 && d.totalMedals > 0)
+            .sort((a, b) => b[1].totalMedals - a[1].totalMedals)
+            .map(([code, d], i) => ({
+                country: d.countryName,
+                countryCode: code,
+                gdp: d.gdp,
+                population: d.population,
+                total: d.totalMedals,
+                rank: i + 1,
+                year: year
+            }));
+
+        if (yearEntries.length > 0) {
+            processedDataByYear[year] = yearEntries;
+        }
+    }
+
+    data = processedDataByYear;
+
+    const availableYears = Object.keys(data).map(Number).sort((a, b) => a - b);
+    const latestYear = availableYears[availableYears.length - 1];
+    if (!defaultYear || !data[defaultYear]) defaultYear = latestYear;
 
     const margin = { top: 20, right: 20, bottom: 80, left: 80 };
     const ticks = { x: 6, y: 10 };
-
     const fontFamily = getComputedStyle(document.documentElement).getPropertyValue('--font-family').trim();
     const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim();
     const axisTextColor = getComputedStyle(document.documentElement).getPropertyValue('--axis-title-color').trim();
-
 
     const container = d3.select(containerSelector + " .graph");
     const width = container.node().clientWidth;
@@ -54,7 +91,7 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
 
     const svg = container.append("svg")
         .attr("viewBox", `0 0 ${width} ${height}`)
-        .attr("preserveAspectRatio", "xMidYMid meet") // Maintain aspect ratio.
+        .attr("preserveAspectRatio", "xMidYMid meet")
         .style("width", "100%")
         .style("height", "100%")
         .style("font-family", fontFamily)
@@ -73,26 +110,25 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
         .style("pointer-events", "none")
         .style("opacity", 0);
 
-    // Compute shared X scale
-    const allData = Object.values(dataByYear).flat();
-    const maxPopulation = d3.max(allData, d => d.population);
-    const minPopulation = Math.max(1, d3.min(allData, d => d.population));
-    const maxGdp = d3.max(allData, d => d.gdp);
-    const minGdp = Math.max(1, d3.min(allData, d => d.gdp));
+    const maxPopulation = d3.max(Object.values(data).flat(), d => d.population);
+    const minPopulation = Math.max(1, d3.min(Object.values(data).flat(), d => d.population));
+    const maxGdp = d3.max(Object.values(data).flat(), d => d.gdp);
+    const minGdp = Math.max(1, d3.min(Object.values(data).flat(), d => d.gdp));
     const minPopulationRounded = Math.pow(10, Math.floor(Math.log10(minPopulation)));
     const minGdpRounded = Math.pow(10, Math.floor(Math.log10(minGdp)));
+    const maxPopulationRounded = Math.pow(10, Math.ceil(Math.log10(maxPopulation)));
+    const maxGdpRounded = Math.pow(10, Math.ceil(Math.log10(maxGdp)));
 
     const tickValuesPopulation = d3.range(
         Math.floor(Math.log10(minPopulationRounded)),
-        Math.ceil(Math.log10(maxPopulation)) + 1
+        Math.ceil(Math.log10(maxPopulationRounded))
     ).map(d => Math.pow(10, d));
 
     const tickValuesGdp = d3.range(
         Math.floor(Math.log10(minGdpRounded)),
-        Math.ceil(Math.log10(maxGdp)) + 1
+        Math.ceil(Math.log10(maxGdpRounded))
     ).map(d => Math.pow(10, d));
 
-    // Build x scales
     const xScales = {
         population: d3.scaleLog()
             .domain([minPopulationRounded, maxPopulation * 1.1])
@@ -104,12 +140,11 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
             .base(10)
     };
 
-    // Precompute Y scales for all years
     const yScales = {};
-    Object.entries(dataByYear).forEach(([year, yearData]) => {
+    Object.entries(data).forEach(([year, yearData]) => {
         const maxMedals = d3.max(yearData, d => d.total);
         yScales[year] = d3.scaleLinear()
-            .domain([0, Math.ceil(maxMedals / 10) * 10])
+            .domain([0, Math.ceil(maxMedals / 10) * 10 + 10])
             .range([innerHeight, 0]);
     });
 
@@ -155,12 +190,11 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
         .style("font-size", "18px")
         .text("Number of medals");
 
+        //flattent the data, and then print me all instance where a country fails getColorByCountryCode (returns #999)
+    const missingCountries = Object.values(data).flat().filter(d => getColorByCountryCode(d.countryCode) === "#999");
+
     const allCircles = g.selectAll("circle")
-        .data(
-            allData
-                .filter(d => getColorByCountryCode(d.countryCode) !== "#999")
-                .map(d => ({ ...d }))
-        )
+        .data(Object.values(data).flat())
         .enter()
         .append("circle")
         .attr("r", 6)
@@ -172,7 +206,11 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
         .on("mouseover", (event, d) => {
             tooltip
                 .style("opacity", 1)
-                .html(`<strong>${d.country}</strong><br>Medals: ${d.total}<br>Country rank: ${d.rank}`);
+                .html(`<strong>${d.country}</strong><br>` +
+                      `Medals: ${d.total}<br>` +
+                      `Country rank: ${d.rank}<br>` +
+                      `GDP: ${d3.format(",.0f")(d.gdp)} $<br>` +
+                      `Population: ${d3.format(",.0f")(d.population)}`);
         })
         .on("mousemove", event => {
             const bounds = container.node().getBoundingClientRect();
@@ -240,7 +278,6 @@ export function drawMedalsVsGdpGraph({ containerSelector, dataByYear, defaultYea
             .attr("cy", (d) => yScale(d.total))
             .style("opacity", (d) => (d.year == year ? 1 : 0))
             .style("pointer-events", (d) => (d.year == year ? "auto" : "none"));
-
         updateTitle(mode);
     }
 
