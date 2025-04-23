@@ -24,7 +24,7 @@ export function chooseYearRadarChart(data) {
 
 function drawRadarCharts(yearData, selectedYear) {
   const sortedCountries = Object.entries(yearData)
-  .sort(([, a], [, b]) => b.totalMedals - a.totalMedals)
+  .sort(([, a], [, b]) => b.medalScore - a.medalScore)
   .slice(0, 5);
 
   sortedCountries.forEach(([_, countryData], index) => {

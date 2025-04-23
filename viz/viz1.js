@@ -47,14 +47,14 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
 
         const countries = data[yearSeasonKey];
         const yearEntries = Object.entries(countries)
-            .filter(([code, d]) => d.gdp >= 2 && d.totalMedals > 0)
-            .sort((a, b) => b[1].totalMedals - a[1].totalMedals)
+            .filter(([code, d]) => d.gdp >= 2 && d.medalScore > 0)
+            .sort((a, b) => b[1].medalScore - a[1].medalScore)
             .map(([code, d], i) => ({
                 country: d.countryName,
                 countryCode: code,
                 gdp: d.gdp,
                 population: d.population,
-                total: d.totalMedals,
+                total: d.medalScore,
                 rank: i + 1,
                 year: year
             }));

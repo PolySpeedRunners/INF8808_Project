@@ -69,7 +69,7 @@ export function drawLineChart({ data, containerSelector, season = "Both" }) {
         return Object.entries(countries).map(([_, d]) => ({
           country: d.countryName,
           year,
-          medals: d.totalMedals,
+          medals: d.medalScore,
         }));
       });
 

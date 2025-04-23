@@ -1,4 +1,4 @@
-import MEDAL_VALUES from "./constants.js";
+import { MEDAL_VALUES } from "./assets/constants.js";
 
 /**
  * Cleans the dataset by removing entries with falsy values for "discipline", "type", or "year".
@@ -127,7 +127,7 @@ export function computeDisciplineScoresByCountry(resultsData, nocMap) {
 
           const result = {
             countryName,
-            totalMedals: 0,
+            medalScore: 0,
             disciplines: {},
           };
 
@@ -148,7 +148,7 @@ export function computeDisciplineScoresByCountry(resultsData, nocMap) {
               }
 
               result.disciplines[d.discipline].total += medalValue;
-              result.totalMedals += medalValue;
+              result.medalScore += medalValue;
 
               if (d.medal === "Gold") {
                 result.disciplines[d.discipline].gold += 1;
