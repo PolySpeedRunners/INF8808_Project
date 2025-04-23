@@ -123,6 +123,7 @@ export function drawBarChart({
   const formattedData = Object.entries(yearData)
     .map(([noc, values]) => ({
       countryName: values.countryName,
+      score: values.disciplines?.[discipline]?.score || 0,
       medals: values.disciplines?.[discipline]?.total || 0,
       gold: values.disciplines?.[discipline]?.gold || 0,
       silver: values.disciplines?.[discipline]?.silver || 0,
@@ -158,14 +159,15 @@ export function drawBarChart({
     .attr("fill", (d) => d.countryName === topCountryName ? "red" : "blue")
     .on("mouseover", (event, d) => {
       tooltip
-          .style("opacity", 1)
-          .html(
-            `<strong>${d.countryName}</strong><br>` +
+        .style("opacity", 1)
+        .html(
+          `<strong>${d.countryName}</strong><br>` +
             `Total Medals: ${d.medals}<br>` +
+            `Score: ${d.score}<br>` +
             `🥇 Gold: ${d.gold || 0}<br>` +
             `🥈 Silver: ${d.silver || 0}<br>` +
             `🥉 Bronze: ${d.bronze || 0}`
-          );
+        );
   })
     .on("mousemove", event => {
         const bounds = container.node().getBoundingClientRect();

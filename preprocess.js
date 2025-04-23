@@ -140,6 +140,7 @@ export function computeDisciplineScoresByCountry(resultsData, nocMap) {
 
               if (!result.disciplines[d.discipline]) {
                 result.disciplines[d.discipline] = {
+                  score: 0,
                   total: 0,
                   gold: 0,
                   silver: 0,
@@ -147,7 +148,8 @@ export function computeDisciplineScoresByCountry(resultsData, nocMap) {
                 };
               }
 
-              result.disciplines[d.discipline].total += medalValue;
+              result.disciplines[d.discipline].total += 1;
+              result.disciplines[d.discipline].score += medalValue;
               result.medalScore += medalValue;
 
               if (d.medal === "Gold") {
