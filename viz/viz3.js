@@ -116,16 +116,25 @@ export function drawBarChart({
 
   const yearData = data[yearSeason] || {};
   const formattedData = Object.entries(yearData)
-    .map(([noc, values]) => ({
-      countryName: values.countryName,
-      score: values.disciplines?.[discipline]?.score || 0,
-      medals: values.disciplines?.[discipline]?.total || 0,
-      gold: values.disciplines?.[discipline]?.gold || 0,
-      silver: values.disciplines?.[discipline]?.silver || 0,
-      bronze: values.disciplines?.[discipline]?.bronze || 0,
-    }))
-    .filter((d) => d.medals > 0)
-    .sort((a, b) => b.medals - a.medals)
+    .map(([noc, values]) => {
+      const gold = values.disciplines?.[discipline]?.gold || 0;
+      const silver = values.disciplines?.[discipline]?.silver || 0;
+      const bronze = values.disciplines?.[discipline]?.bronze || 0;
+
+      return {
+        countryName: values.countryName,
+        score: values.disciplines?.[discipline]?.score || 0,
+        medals: values.disciplines?.[discipline]?.total || 0,
+        gold,
+        silver,
+        bronze,
+        goldScore: gold * MEDAL_VALUES.Gold,
+        silverScore: silver * MEDAL_VALUES.Silver,
+        bronzeScore: bronze * MEDAL_VALUES.Bronze,
+      };
+    })
+    .filter((d) => d.score > 0)
+    .sort((a, b) => b.score - a.score)
     .slice(0, 20); // Top 20
   const topCountryName = formattedData[0]?.countryName;
   const x = d3
@@ -136,11 +145,11 @@ export function drawBarChart({
 
   const y = d3
     .scaleLinear()
-    .domain([0, d3.max(formattedData, (d) => d.medals)])
+    .domain([0, d3.max(formattedData, (d) => d.score)])
     .nice()
     .range([innerHeight, 0]);
 
-  const stack = d3.stack().keys(["bronze", "silver", "gold"]);
+  const stack = d3.stack().keys(["bronzeScore", "silverScore", "goldScore"]);
   const stackedData = stack(formattedData); // Stacks the data for the three types of medal.
 
   chart

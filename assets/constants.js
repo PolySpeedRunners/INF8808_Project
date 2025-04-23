@@ -46,7 +46,7 @@ export const CONTINENT_LEGEND_COLOR = {
  * Independant from styles.css.
  */
 export const MEDAL_COLORS = {
-  gold: "#D6AF35",
-  silver: "#A7A7AD",
-  bronze: "#A77044",
+  goldScore: "#D6AF35",
+  silverScore: "#A7A7AD",
+  bronzeScore: "#A77044",
 };
