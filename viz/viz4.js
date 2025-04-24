@@ -24,12 +24,41 @@ export function setLineChartListener(
 export function drawLineChart({ data, containerSelector, season = "Both" }) {
   const margin = { top: 50, right: 20, bottom: 80, left: 80 };
   const ticks = { x: 6, y: 10 };
+  
+  const container = setupContainer(containerSelector);
+  const tooltip = createTooltip(container);
+  const width = container.node().clientWidth;
+  const height = container.node().clientHeight;
+  const innerWidth = width - margin.left - margin.right;
+  const innerHeight = height - margin.top - margin.bottom;
 
+  const {svg, g } = setupSVG(container, margin, width, height);
+  
+  const cumulativeData = processData(data, season);
+  const topCountries = getTopCountries(cumulativeData);
+  const filtered = cumulativeData.filter(d => topCountries.has(d.country));
+  const dataByCountry = d3.groups(filtered, d => d.country);
+  const years = Array.from(new Set(filtered.map(d => d.year))).sort((a, b) => a - b);
+
+  const { xScale, yScale } = createScales(years, dataByCountry, innerWidth, innerHeight);
+  drawAxes(g, xScale, yScale, innerHeight, ticks);
+
+  const color = d3.scaleOrdinal(d3.schemeTableau10).domain([...topCountries]);
+  drawLines(g, dataByCountry, xScale, yScale, color);
+  drawDots(g, filtered, xScale, yScale, color, tooltip, container);
+  drawLegend(svg, topCountries, innerWidth, innerHeight, color);
+  drawYAxisLabel(g, innerHeight, margin);
+}
+
+function setupContainer(containerSelector) {
   const container = d3.select(containerSelector + " .graph");
   container.selectAll("*").remove();
   container.selectAll("div.tooltip").remove();
+  return container;
+}
 
-  const tooltip = container
+function createTooltip(container) {
+  return container
     .append("div")
     .attr("class", "tooltip")
     .style("position", "absolute")
@@ -41,11 +70,9 @@ export function drawLineChart({ data, containerSelector, season = "Both" }) {
     .style("font-size", "14px")
     .style("pointer-events", "none")
     .style("opacity", 0);
+}
 
-  const width = container.node().clientWidth;
-  const height = container.node().clientHeight;
-  const innerWidth = width - margin.left - margin.right;
-  const innerHeight = height - margin.top - margin.bottom;
+function setupSVG(container, margin, width, height) {
 
   const svg = container
     .append("svg")
@@ -54,10 +81,12 @@ export function drawLineChart({ data, containerSelector, season = "Both" }) {
     .style("font-family", CSS.Font)
     .style("color", CSS.TextColor);
 
-  const g = svg
-    .append("g")
-    .attr("transform", `translate(${margin.left},${margin.top})`);
+  const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
 
+  return {svg, g};
+}
+
+function processData(data, season) {
   const flattened = Object.entries(data)
     .filter(([key]) => season === "Both" || key.includes(season))
     .flatMap(([key, countries]) => {
@@ -71,54 +100,47 @@ export function drawLineChart({ data, containerSelector, season = "Both" }) {
       }));
     });
 
-  const cumulativeData = d3
-    .groups(flattened, (d) => d.country)
-    .map(([country, values]) => {
+  return d3.groups(flattened, d => d.country)
+    .map(([_, values]) => {
       values.sort((a, b) => a.year - b.year);
       let cumulativeSum = 0;
-      return values.map((d) => {
-        cumulativeSum += d.score;
-        return { ...d, score: cumulativeSum };
-      });
+      return values.map(d => ({ ...d, score: cumulativeSum += d.score }));
     })
     .flat();
+}
 
+function getTopCountries(data) {
   const totalByCountry = d3.rollups(
-    cumulativeData,
-    (v) => d3.max(v, (d) => d.score),
-    (d) => d.country
+    data,
+    v => d3.max(v, d => d.score),
+    d => d.country
   );
 
-  const topCountries = new Set(
+  return new Set(
     totalByCountry
       .sort((a, b) => d3.descending(a[1], b[1]))
       .slice(0, 10)
       .map(([country]) => country)
   );
+}
 
-  const filtered = cumulativeData.filter((d) => topCountries.has(d.country));
-  const dataByCountry = d3.groups(filtered, (d) => d.country);
-  const years = Array.from(new Set(filtered.map((d) => d.year))).sort(
-    (a, b) => a - b
-  );
-
+function createScales(years, dataByCountry, innerWidth, innerHeight) {
   const xScale = d3
     .scaleLinear()
     .domain(d3.extent(years))
     .range([0, innerWidth * 0.9]);
+
   const yScale = d3
     .scaleLinear()
-    .domain([
-      0,
-      d3.max(dataByCountry, ([, values]) => d3.max(values, (d) => d.score)),
-    ])
+    .domain([0, d3.max(dataByCountry, ([, values]) => d3.max(values, d => d.score))])
     .nice()
     .range([innerHeight, 0]);
 
-  const xAxis = d3
-    .axisBottom(xScale)
-    .ticks(d3.tickStep(d3.min(years), d3.max(years), 2))
-    .tickFormat(d3.format("d"));
+  return { xScale, yScale };
+}
+
+function drawAxes(g, xScale, yScale, innerHeight, ticks) {
+  const xAxis = d3.axisBottom(xScale).ticks(d3.tickStep(...xScale.domain(), 2)).tickFormat(d3.format("d"));
   const yAxis = d3.axisLeft(yScale).ticks(ticks.y);
 
   g.append("g")
@@ -127,14 +149,16 @@ export function drawLineChart({ data, containerSelector, season = "Both" }) {
     .selectAll("text")
     .style("fill", CSS.AxisTitleColor);
 
-  g.append("g").call(yAxis).selectAll("text").style("fill", CSS.AxisTitleColor);
+  g.append("g")
+    .call(yAxis)
+    .selectAll("text")
+    .style("fill", CSS.AxisTitleColor);
+}
 
-  const color = d3.scaleOrdinal(d3.schemeTableau10).domain([...topCountries]);
-
-  const lineGenerator = d3
-    .line()
-    .x((d) => xScale(d.year))
-    .y((d) => yScale(d.score));
+function drawLines(g, dataByCountry, xScale, yScale, color) {
+  const lineGenerator = d3.line()
+    .x(d => xScale(d.year))
+    .y(d => yScale(d.score));
 
   g.selectAll(".line")
     .data(dataByCountry)
@@ -145,90 +169,79 @@ export function drawLineChart({ data, containerSelector, season = "Both" }) {
     .attr("stroke", ([name]) => color(name))
     .attr("stroke-width", 2)
     .attr("d", ([, values]) => lineGenerator(values));
+}
 
+function drawDots(g, data, xScale, yScale, color, tooltip, container) {
   g.selectAll(".dot")
-    .data(filtered)
+    .data(data)
     .enter()
     .append("circle")
-    .attr("class", (d) => `dot dot-${d.country.replace(/\s+/g, "_")}`)
-    .attr("cx", (d) => xScale(d.year))
-    .attr("cy", (d) => yScale(d.score))
+    .attr("class", d => `dot dot-${d.country.replace(/\s+/g, "_")}`)
+    .attr("cx", d => xScale(d.year))
+    .attr("cy", d => yScale(d.score))
     .attr("r", 4)
-    .attr("fill", (d) => color(d.country))
+    .attr("fill", d => color(d.country))
     .on("mouseover", (event, d) => {
       tooltip
         .style("opacity", 1)
-        .html(
-          "<strong>" +
-            d.country +
-            "</strong><br>" +
-            "Year: " +
-            d.year +
-            "<br>" +
-            "Score: " +
-            d.score
-        );
+        .html(`<strong>${d.country}</strong><br>Year: ${d.year}<br>Score: ${d.score}`);
     })
-    .on("mousemove", (event) => {
+    .on("mousemove", event => {
       const bounds = container.node().getBoundingClientRect();
       tooltip
-        .style("left", `${event.clientX - bounds.left + 0}px`)
+        .style("left", `${event.clientX - bounds.left}px`)
         .style("top", `${event.clientY - bounds.top + 20}px`);
     })
-    .on("mouseout", () => {
-      tooltip.style("opacity", 0);
-    });
+    .on("mouseout", () => tooltip.style("opacity", 0));
+}
 
-  const legendItemHeight = 20;
-  const visibleCountries = new Set([...topCountries]);
-
+function drawLegend(svg, countries, innerWidth, innerHeight, color) {
   const legend = svg
     .append("g")
     .attr("class", "legend")
-    .attr("transform", `translate(${innerWidth + 10}, ${innerHeight * 0.2})`);
-  legend
-    .append("text")
-    .attr("x", 0)
+    .attr("transform", `translate(${innerWidth + 5}, ${innerHeight * 0.2})`);
+
+  legend.append("text")
     .attr("y", -10)
-    .attr("width", 150)
     .text("Legend")
     .style("fill", CSS.TextColor)
     .style("font-family", CSS.Font)
     .style("font-size", "12px")
     .style("font-weight", "bold");
 
-  
+  const visibleCountries = new Set([...countries]);
+  const legendItemHeight = 20;
 
-  [...topCountries].forEach((country, i) => {
+  [...countries].forEach((country, i) => {
     const className = country.replace(/\s+/g, "_");
-
-    const legendItem = legend
-      .append("g")
+    const legendItem = legend.append("g")
       .attr("transform", `translate(0, ${i * legendItemHeight})`)
       .style("cursor", "pointer");
 
-      const switchWidth = 30;
-      const switchHeight = 14;
-      const knobRadius = 6;
-  
-      const switchGroup = legendItem.append("g");
-  
-      switchGroup
-        .append("rect")
-        .attr("x", 0)
-        .attr("y", 0)
-        .attr("rx", switchHeight / 2)
-        .attr("ry", switchHeight / 2)
-        .attr("width", switchWidth)
-        .attr("height", switchHeight)
-        .attr("fill", "#ccc");
-  
-      const knob = switchGroup
-        .append("circle")
-        .attr("cx", switchWidth - knobRadius - 2)
-        .attr("cy", switchHeight / 2)
-        .attr("r", knobRadius)
-        .attr("fill", color(country));
+    const switchWidth = 25, switchHeight = 14, knobRadius = 6;
+    const switchGroup = legendItem.append("g");
+
+    switchGroup.append("rect")
+      .attr("rx", switchHeight / 2)
+      .attr("ry", switchHeight / 2)
+      .attr("width", switchWidth)
+      .attr("height", switchHeight)
+      .attr("fill", "#D3D3D3");
+
+    const knob = switchGroup.append("circle")
+      .attr("cx", switchWidth - knobRadius - 2)
+      .attr("cy", switchHeight / 2)
+      .attr("r", knobRadius)
+      .attr("fill", color(country));
+
+    const text = legendItem.append("text")
+      .attr("x", switchWidth + 5)
+      .attr("y", 10)
+      .text(country)
+      .style("fill", CSS.TextColor)
+      .style("font-family", CSS.Font)
+      .style("font-size", "11px")
+      .style("font-weight", "bold");
 
     legendItem.on("click", () => {
       const lines = svg.selectAll(`.line-${className}`);
@@ -240,34 +253,18 @@ export function drawLineChart({ data, containerSelector, season = "Both" }) {
 
       if (isVisible) {
         visibleCountries.delete(country);
-        knob
-          .transition()
-          .duration(400)
-          .attr("cx", knobRadius + 2);
-        switchGroup.select("rect").attr("fill", "#ccc");
+        knob.transition().duration(400).attr("cx", knobRadius + 2);
         text.style("font-weight", "normal");
       } else {
         visibleCountries.add(country);
-        knob
-          .transition()
-          .duration(400)
-          .attr("cx", switchWidth - knobRadius - 2);
-        switchGroup.select("rect").attr("fill", "#ccc");
+        knob.transition().duration(400).attr("cx", switchWidth - knobRadius - 2);
         text.style("font-weight", "bold");
       }
     });
-
-    legendItem
-      .append("text")
-      .attr("x", switchWidth + 8)
-      .attr("y", 10)
-      .text(country)
-      .style("fill", CSS.TextColor)
-      .style("font-family", CSS.Font)
-      .style("font-size", "10px")
-      .style("font-weight", "bold");
   });
+}
 
+function drawYAxisLabel(g, innerHeight, margin) {
   g.append("text")
     .attr("x", -innerHeight / 2)
     .attr("y", -margin.left + 20)
