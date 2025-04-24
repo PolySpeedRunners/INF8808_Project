@@ -7,7 +7,9 @@ export function chooseYearRadarChart(data) {
   years.forEach((year) => {
     const option = document.createElement("option");
     option.value = year;
-    option.textContent = year;
+    const [yearStr, season] = year.split(",");
+    const formattedYear = `${yearStr} ${season.charAt(0).toUpperCase() + season.slice(1)}`; 
+    option.textContent = formattedYear;
     yearSelect.appendChild(option);
   });
 
