@@ -10,7 +10,9 @@ export function populateYearAndDisciplineOptions(data) {
   years.forEach((year) => {
     const option = document.createElement("option");
     option.value = year;
-    option.textContent = year;
+    const [yearStr, season] = year.split(",");
+    const formattedYear = `${season.charAt(0).toUpperCase() + season.slice(1)} ${yearStr}`; 
+    option.textContent = formattedYear;
     yearSelect.appendChild(option);
   });
 
@@ -219,13 +221,24 @@ export function drawBarChart({
     .attr("class", "y-axis-label")
     .text("Medal score");
 
+  chart
+    .append("text")
+    .attr("x", innerWidth / 2)
+    .attr("y", innerHeight + margin.top + 10)
+    .attr("class", "x-axis-label")
+    .text("Countries")
+
+    // make a const for the formatted season, it should be Season XXXX
+  const [year, season] = yearSeason.split(",");
+  const yearSeasonFormatted = season.charAt(0).toUpperCase() + season.slice(1) + " " + year;
   svg
     .append("text")
-    .attr("x", width / 2)
+    .attr("x", (width / 2))
     .attr("y", margin.top / 2)
     .attr("text-anchor", "middle")
     .style("font-family", CSS.Font)
-    .style("font-size", "18px")
+    .style("font-size", "22px")
+    .style("font-weight", "bold")
     .style("fill", CSS.TextColor)
-    .text(`${discipline} Medals in ${yearSeason} Olympics`);
+    .text(`${discipline} Medals in ${yearSeasonFormatted} Olympics`);
 }
