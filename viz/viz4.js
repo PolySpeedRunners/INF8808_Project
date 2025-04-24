@@ -22,7 +22,7 @@ export function setLineChartListener(
 }
 
 export function drawLineChart({ data, containerSelector, season = "Both" }) {
-  const margin = { top: 50, right: 20, bottom: 80, left: 80 };
+  const margin = { top: 20, right: -20, bottom: 80, left: 80 };
   const ticks = { x: 6, y: 10 };
   
   const container = setupContainer(containerSelector);
@@ -46,8 +46,9 @@ export function drawLineChart({ data, containerSelector, season = "Both" }) {
   const color = d3.scaleOrdinal(d3.schemeTableau10).domain([...topCountries]);
   drawLines(g, dataByCountry, xScale, yScale, color);
   drawDots(g, filtered, xScale, yScale, color, tooltip, container);
-  drawLegend(svg, topCountries, innerWidth, innerHeight, color);
+  drawLegend(svg, topCountries, color, containerSelector);
   drawYAxisLabel(g, innerHeight, margin);
+  drawXAxisLabel(g, innerWidth, innerHeight, margin);
 }
 
 function setupContainer(containerSelector) {
@@ -195,11 +196,13 @@ function drawDots(g, data, xScale, yScale, color, tooltip, container) {
     .on("mouseout", () => tooltip.style("opacity", 0));
 }
 
-function drawLegend(svg, countries, innerWidth, innerHeight, color) {
-  const legend = svg
+function drawLegend(svg, countries, color, containerSelector) {
+
+  d3.selectAll(containerSelector + " .legend").remove();
+  const legend = d3.select(containerSelector + " .legend-container")
     .append("g")
     .attr("class", "legend")
-    .attr("transform", `translate(${innerWidth + 5}, ${innerHeight * 0.2})`);
+    .attr("width", "100%")
 
   legend.append("text")
     .attr("y", -10)
@@ -210,7 +213,7 @@ function drawLegend(svg, countries, innerWidth, innerHeight, color) {
     .style("font-weight", "bold");
 
   const visibleCountries = new Set([...countries]);
-  const legendItemHeight = 20;
+  const legendItemHeight = 40;
 
   [...countries].forEach((country, i) => {
     const className = country.replace(/\s+/g, "_");
@@ -218,7 +221,7 @@ function drawLegend(svg, countries, innerWidth, innerHeight, color) {
       .attr("transform", `translate(0, ${i * legendItemHeight})`)
       .style("cursor", "pointer");
 
-    const switchWidth = 25, switchHeight = 14, knobRadius = 6;
+    const switchWidth = 50, switchHeight = 30, knobRadius = 12;
     const switchGroup = legendItem.append("g");
 
     switchGroup.append("rect")
@@ -226,7 +229,8 @@ function drawLegend(svg, countries, innerWidth, innerHeight, color) {
       .attr("ry", switchHeight / 2)
       .attr("width", switchWidth)
       .attr("height", switchHeight)
-      .attr("fill", "#D3D3D3");
+      .attr("fill", CSS.BackGroundColor)
+      .attr("stroke", CSS.ActiveButtonColor)
 
     const knob = switchGroup.append("circle")
       .attr("cx", switchWidth - knobRadius - 2)
@@ -236,11 +240,11 @@ function drawLegend(svg, countries, innerWidth, innerHeight, color) {
 
     const text = legendItem.append("text")
       .attr("x", switchWidth + 5)
-      .attr("y", 10)
+      .attr("y", switchHeight/2 + 5)
       .text(country)
       .style("fill", CSS.TextColor)
       .style("font-family", CSS.Font)
-      .style("font-size", "11px")
+      .style("font-size", "12px")
       .style("font-weight", "bold");
 
     legendItem.on("click", () => {
@@ -270,4 +274,12 @@ function drawYAxisLabel(g, innerHeight, margin) {
     .attr("y", -margin.left + 20)
     .attr("class", "y-axis-label")
     .text("Medal score");
+}
+
+function drawXAxisLabel(g, innerWidth, innerHeight, margin) {
+  g.append("text")
+    .attr("x", innerWidth / 2)
+    .attr("y", innerHeight + margin.bottom/2 + 10)
+    .attr("class", "x-axis-label")
+    .text("Years");
 }

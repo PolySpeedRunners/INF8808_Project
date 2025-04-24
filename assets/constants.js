@@ -27,6 +27,14 @@ export const CSS_CONSTANTS = {
   RadarColor: getComputedStyle(document.documentElement)
     .getPropertyValue("--button-active-color")
     .trim(),
+
+  BackGroundColor: getComputedStyle(document.documentElement)
+    .getPropertyValue("--background-color")
+    .trim(),
+
+  ActiveButtonColor: getComputedStyle(document.documentElement)
+    .getPropertyValue("--button-active-color")
+    .trim(),
 };
 
 /**
