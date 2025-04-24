@@ -93,8 +93,8 @@ body {
 }
 
 .visualization-container {
-    width: 90%;
-    height: calc(60vw * 9 / 16);
+    width: 1510px;
+    height: 920px;
     padding: 20px;
     background-color: var(--secondary-color);
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
