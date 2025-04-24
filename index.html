@@ -35,7 +35,7 @@
                             <button class="toggle-button" data-mode="gdp">GDP</button>
                         </div>
                         <div class="slider-wrapper">
-                            <input  type="range" id="yearRange" min="2000" max="2022" step="2" value="2022" class="vertical-slider">
+                            <input  type="range" id="yearRange" min="2000" max="2022" step="2" value="2022" class="vertical-slider slider">
                             <div class="slider-labels">
                                 <span class="year-label" data-year="2022">2022</span>
                                 <span class="year-label" data-year="2020">2020</span>
@@ -53,64 +53,50 @@
                     </div>
                 </div>
             </div>
-           
         </section>
         
         <section id="section2" class="visual-section">
             <h1 class="title">Visualisation 2</h1>
             <div class="visualization-container">
-                <h1 class="graph-title">
-                    Radar Comparison of Leading Olympic Nations by Socioeconomic and Demographic Indicators
-                </h1>
-                <div class="controlsPodium controls-wrapper">
-                    <label for="year-select-podium">Year :</label>
-                    <select id="year-select-podium"></select>
+              <h1 class="graph-title">
+                Radar Comparison of Leading Olympic Nations by Socioeconomic and Demographic Indicators
+              </h1>
+          
+              <div class="controlsPodium controls-wrapper">
+                <label for="year-select-podium">Year :</label>
+                <select id="year-select-podium"></select>
+              </div>
+          
+              <div class="rader-chart-graph">
+                <div class="chart-visualization-container">
+                  <!-- Podiums -->
+                  <div class="podium"><div class="chart-wrapper"><div class="radar-chart-container" id="chart-container-4"></div></div><div class="blocks"><div></div><div></div></div></div>
+                  <div class="podium"><div class="chart-wrapper"><div class="radar-chart-container" id="chart-container-2"></div></div><div class="blocks"><div></div><div></div><div></div><div></div></div></div>
+                  <div class="podium"><div class="chart-wrapper"><div class="radar-chart-container" id="chart-container-1"></div></div><div class="blocks"><div></div><div></div><div></div><div></div><div></div></div></div>
+                  <div class="podium"><div class="chart-wrapper"><div class="radar-chart-container" id="chart-container-3"></div></div><div class="blocks"><div></div><div></div><div></div></div></div>
+                  <div class="podium"><div class="chart-wrapper"><div class="radar-chart-container" id="chart-container-5"></div></div><div class="blocks"><div></div></div></div>
                 </div>
-                <div class="rader-chart-graph">
-                    <div class="chart-visualization-container">
-                        <div class="podium">
-                        <div class="chart-wrapper">
-                            <div class="radar-chart-container" id="chart-container-4"></div>
-                          </div>
-                        <div class="blocks">
-                          <div></div><div></div> 
-                        </div>
-                      </div>
-                      <div class="podium">
-                        <div class="chart-wrapper">
-                            <div class="radar-chart-container" id="chart-container-2"></div>
-                          </div>
-                        <div class="blocks">
-                          <div></div><div></div><div></div><div></div> 
-                        </div>
-                      </div>
-                      <div class="podium">
-                        <div class="chart-wrapper">
-                            <div class="radar-chart-container" id="chart-container-1"></div>
-                          </div>
-                        <div class="blocks">
-                          <div></div><div></div><div></div><div></div><div></div>
-                        </div>
-                      </div>
-                      <div class="podium">
-                        <div class="chart-wrapper">
-                            <div class="radar-chart-container" id="chart-container-3"></div>
-                          </div>
-                        <div class="blocks">
-                          <div></div><div></div><div></div> 
-                        </div>
-                      </div>
-                      <div class="podium">
-                        <div class="chart-wrapper">
-                            <div class="radar-chart-container" id="chart-container-5"></div>
-                          </div>
-                        <div class="blocks">
-                          <div></div> 
-                        </div>
-                      </div>
+          
+                <div class="horizontal-slider-wrapper">
+                  <input type="range" id="yearRangeHorizontal" min="2000" max="2022" step="2" value="2022" class="horizontal-slider slider">
+                  <div class="slider-labels-horizontal">
+                    <span class="year-label" data-year="2000">2000</span>
+                    <span class="year-label" data-year="2002">2002</span>
+                    <span class="year-label" data-year="2004">2004</span>
+                    <span class="year-label" data-year="2006">2006</span>
+                    <span class="year-label" data-year="2008">2008</span>
+                    <span class="year-label" data-year="2010">2010</span>
+                    <span class="year-label" data-year="2012">2012</span>
+                    <span class="year-label" data-year="2014">2014</span>
+                    <span class="year-label" data-year="2016">2016</span>
+                    <span class="year-label" data-year="2018">2018</span>
+                    <span class="year-label" data-year="2020">2020</span>
+                    <span class="year-label" data-year="2022">2022</span>
                   </div>
                 </div>
+              </div>
             </div>
+          
             <p class="description">Deuxième visualisation</p>
           </section>
         
