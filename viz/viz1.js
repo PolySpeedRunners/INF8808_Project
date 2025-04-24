@@ -31,7 +31,7 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
         MRI: "Africa", TOG: "Africa", AFG: "Asia", PHI: "Asia", KOS: "Europe",
         BDI: "Africa", GRN: "America", GUA: "America", BOT: "Africa", GAB: "Africa",
         MNE: "Europe", NAM: "Africa", BUR: "Africa", PUR: "America", NIG: "Africa",
-        BER: "America", FIJ: "Oceania"
+        BER: "America", FIJ: "Oceania", GER: "Europe", HUN: "Europe",
     };
     const processedDataByYear = {};
 
