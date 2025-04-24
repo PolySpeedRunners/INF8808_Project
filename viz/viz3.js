@@ -11,7 +11,7 @@ export function populateYearAndDisciplineOptions(data) {
     const option = document.createElement("option");
     option.value = year;
     const [yearStr, season] = year.split(",");
-    const formattedYear = `${season.charAt(0).toUpperCase() + season.slice(1)} ${yearStr}`; 
+    const formattedYear = `${season.charAt(0).toUpperCase() + season.slice(1)} ${yearStr}`;
     option.textContent = formattedYear;
     yearSelect.appendChild(option);
   });
@@ -78,7 +78,7 @@ export function drawBarChart({
   discipline,
 }) {
   console.log(data);
-  const margin = { top: 50, right: 20, bottom: 80, left: 80 };
+  const margin = { top: 50, right: 20, bottom: 90, left: 80 };
   const ticks = { x: 6, y: 10 };
 
   const container = d3.select(containerSelector + " .graph");
@@ -174,11 +174,11 @@ export function drawBarChart({
         .style("opacity", 1)
         .html(
           `<strong>${d.data.countryName}</strong><br>` +
-            `Total Medals: ${d.data.medals}<br>` +
-            `Score: ${d.data.score}<br>` +
-            `🥇 Gold: ${d.data.gold}<br>` +
-            `🥈 Silver: ${d.data.silver}<br>` +
-            `🥉 Bronze: ${d.data.bronze}`
+          `Total Medals: ${d.data.medals}<br>` +
+          `Score: ${d.data.score}<br>` +
+          `🥇 Gold: ${d.data.gold}<br>` +
+          `🥈 Silver: ${d.data.silver}<br>` +
+          `🥉 Bronze: ${d.data.bronze}`
         );
     })
     .on("mousemove", (event) => {
@@ -197,7 +197,7 @@ export function drawBarChart({
     .call(d3.axisBottom(x).tickSizeOuter(0))
     .selectAll("text")
     .style("text-anchor", "end")
-    .attr("transform", "rotate(-45)")
+    .attr("transform", "rotate(-35)")
     .style("font-family", CSS.Font)
     .style("fill", CSS.TextColor)
     .style("font-weight", (d) => (d === topCountryName ? "bold" : "normal"));
@@ -224,11 +224,11 @@ export function drawBarChart({
   chart
     .append("text")
     .attr("x", innerWidth / 2)
-    .attr("y", innerHeight + margin.top + 10)
+    .attr("y", innerHeight + margin.top + 20)
     .attr("class", "x-axis-label")
     .text("Countries")
 
-    // make a const for the formatted season, it should be Season XXXX
+  // make a const for the formatted season, it should be Season XXXX
   const [year, season] = yearSeason.split(",");
   const yearSeasonFormatted = season.charAt(0).toUpperCase() + season.slice(1) + " " + year;
   svg

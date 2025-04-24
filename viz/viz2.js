@@ -8,7 +8,7 @@ export function chooseYearRadarChart(data) {
     const option = document.createElement("option");
     option.value = year;
     const [yearStr, season] = year.split(",");
-    const formattedYear = `${season.charAt(0).toUpperCase() + season.slice(1)} ${yearStr}`; 
+    const formattedYear = `${season.charAt(0).toUpperCase() + season.slice(1)} ${yearStr}`;
     option.textContent = formattedYear;
     yearSelect.appendChild(option);
   });
@@ -29,8 +29,8 @@ export function chooseYearRadarChart(data) {
 
 function drawRadarCharts(yearData, selectedYear) {
   const sortedCountries = Object.entries(yearData)
-  .sort(([, a], [, b]) => b.medalScore - a.medalScore)
-  .slice(0, 5);
+    .sort(([, a], [, b]) => b.medalScore - a.medalScore)
+    .slice(0, 5);
   console.log(sortedCountries);
 
   // const top5Data = Object.fromEntries(sortedCountries);
@@ -86,18 +86,18 @@ function applyMinMaxScaling(resultsData) {
 
 function formatRadarKey(key) {
   switch (key) {
-      case "minmax_gdpPerCapita":
-          return "GDP per Capita";
-      case "minmax_population":
-          return "Population";
-      case "minmax_tfr":
-          return "Fertility Rate";
-      case "minmax_percentage":
-          return "Youth % (15-25)";
-      case "minmax_AthCount":
-          return "Athlete Count";
-      default:
-          return key;
+    case "minmax_gdpPerCapita":
+      return "GDP per Capita";
+    case "minmax_population":
+      return "Population";
+    case "minmax_tfr":
+      return "Fertility Rate";
+    case "minmax_percentage":
+      return "Youth % (15-25)";
+    case "minmax_AthCount":
+      return "Athlete Count";
+    default:
+      return key;
   }
 }
 
@@ -180,7 +180,7 @@ function createSVG(container, width, height) {
       allPodiums
         .filter((_, i, nodes) => nodes[i] !== currentPodium)
         .transition()
-        .duration(200)
+        .duration(100)
         .style("width", "18%")
     })
     .on("mouseout", () => {
@@ -233,7 +233,7 @@ function drawRadarAxes(group, keys, axisScale, valueScale) {
 function drawRadarLabels(group, keys, axisScale, valueScale) {
   keys.forEach((key) => {
     const angle = axisScale(key) - Math.PI / 2;
-    let xPos = valueScale(10) * Math.cos(angle) ;
+    let xPos = valueScale(10) * Math.cos(angle);
     let yPos = valueScale(10) * Math.sin(angle);
     // Adjust positions for specific keys
     if (key === "minmax_percentage" || key === "minmax_tfr") {
@@ -263,7 +263,7 @@ function drawRadarShape(group, values, axisScale, data, container) {
     .angle(d => axisScale(d.axis))
     .radius(d => d.value);
 
-   // create a const for the fill color which is the same as the stroke color but with 0.2 opacity
+  // create a const for the fill color which is the same as the stroke color but with 0.2 opacity
   const fillColor = d3.color(CSS.RadarColor).copy({ opacity: 0.2 }).toString();
 
   const path = group.append("path")
@@ -278,15 +278,15 @@ function drawRadarShape(group, values, axisScale, data, container) {
 
   path.on("mouseover", () => {
     tooltip.style("opacity", 1)
-    .html(
-      `<strong>${data.countryName}</strong><br>` +
-      `GDP per Capita: ${d3.format(",.0f")(data.gdpPerCapita)} $<br>` +
-      `Population: ${d3.format(",.0f")(data.population)}<br>` +
-      `Fertility: ${data.tfr.toFixed(2)}<br>` +
-      `Youth %: ${data.percentage.toFixed(2)}%<br>` +
-      `Athletes: ${d3.format(",")(data.AthCount)}<br>`+
-      `Score: ${d3.format(",")(data.medalScore)}`
-    );
+      .html(
+        `<strong>${data.countryName}</strong><br>` +
+        `GDP per Capita: ${d3.format(",.0f")(data.gdpPerCapita)} $<br>` +
+        `Population: ${d3.format(",.0f")(data.population)}<br>` +
+        `Fertility: ${data.tfr.toFixed(2)}<br>` +
+        `Youth %: ${data.percentage.toFixed(2)}%<br>` +
+        `Athletes: ${d3.format(",")(data.AthCount)}<br>` +
+        `Score: ${d3.format(",")(data.medalScore)}`
+      );
   }).on("mousemove", (event) => {
     tooltip
       .style("left", `${event.pageX + 15}px`)
