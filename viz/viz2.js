@@ -4,7 +4,7 @@ export const yearSelect = document.getElementById("year-select-podium");
 
 export function chooseYearRadarChart(data) {
   const years = Object.keys(data).sort();
-  years.forEach((year) => {
+  years.slice().reverse().forEach((year) => {
     const option = document.createElement("option");
     option.value = year;
     const [yearStr, season] = year.split(",");
@@ -19,8 +19,9 @@ export function chooseYearRadarChart(data) {
     applyMinMaxScaling(yearData);
     drawRadarCharts(yearData, selectedYear);
   });
-
-  const initialYear = years[0];
+  // the initial year should be the last year in the list
+  const initialYear = years[years.length - 1];
+  yearSelect.value = initialYear;
   const initialYearData = structuredClone(data[initialYear]);
   applyMinMaxScaling(initialYearData);
   drawRadarCharts(initialYearData, initialYear);
