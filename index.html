@@ -68,9 +68,6 @@
                 This visualization presents the performance scores of countries based on their GDP or population for a specific Olympic season.<br>
             </p>       
         </section>
-        
-        
-        
         <section id="section2" class="visual-section data-viz">
             <!-- <h1 class="title">Visualisation 2</h1> -->
             <div class="visualization-container">
@@ -108,14 +105,14 @@
                 <h1 class="graph-title">
                     Number of olympic medals by discipline
                 </h1>
-                <div class="controls">
-                    <label for="year-select">Year :</label>
+                <div class="controls-viz3">
+                    <label for="year-select">Season :</label>
                     <select id="year-select"></select>
                     <label for="discipline-select">Discipline :</label>
                     <select id="discipline-select"></select>
                 </div>
-                <div class="graph-and-controls">
-                <div class="graph"></div>
+                <div class="graph-container">
+                    <div class="graph graph3"></div>
                 </div>
             </div>
             <p class="description center">Countries are ranked in this visualization according to their medal scores, categorized by their Olympic Season and Discipline.</p>
@@ -126,15 +123,22 @@
                 <h1 class="graph-title">
                     Number of olympic medals by season
                 </h1>
-                <label for="seasonSelect">Season:</label>
-                <select id="seasonSelect">
-                    <option value="Both">Both</option>
-                    <option value="Summer">Summer</option>
-                    <option value="Winter">Winter</option>
-                </select>
                 <div class="graph-and-controls">
                     <div class="graph"></div>
+                    <div class="controls-column">
+                        <div class="season-select">
+                            <label for="seasonSelect">Season :</label>
+                            <select id="seasonSelect">
+                                <option value="Both">Both</option>
+                                <option value="Summer">Summer</option>
+                                <option value="Winter">Winter</option>
+                            </select>
+                        </div>
+
+                        <SVG  class="legend-container"></SVG >
+                    </div>
                 </div>
+
             </div>
             <p class="description center">
                 This visualization showcases the top 10 countries ranked by their medal scores, along with their performance trends over the years, for the Winter Olympics, Summer Olympics, or both.
