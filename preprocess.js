@@ -249,7 +249,7 @@ export function formatDemography(demographyData, gencData) {
     const pop = parseInt(item.pop, 10);
     const pop15_19 = parseInt(item.pop15_19, 10);
     const pop20_24 = parseInt(item.pop20_24, 10);
-    const percentage = ((pop15_19 + pop20_24) / pop);
+    const percentage = ((pop15_19 + pop20_24) / pop)*100;
 
     const plusItem = {
       ...item,

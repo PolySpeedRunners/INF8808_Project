@@ -225,7 +225,7 @@ function drawRadarShape(group, values, axisScale, data, container) {
     .angle(d => axisScale(d.axis))
     .radius(d => d.value);
 
-   // crate a const for the fill color which is the same as the stroke color but with 0.2 opacity
+   // create a const for the fill color which is the same as the stroke color but with 0.2 opacity
   const fillColor = d3.color(CSS.RadarColor).copy({ opacity: 0.2 }).toString();
 
   const path = group.append("path")
@@ -236,7 +236,7 @@ function drawRadarShape(group, values, axisScale, data, container) {
     .attr("stroke-width", 2)
     .style("pointer-events", "all");
 
-  const tooltip = createTooltip(container);
+  const tooltip = createTooltip();
 
   path.on("mouseover", () => {
     tooltip.style("opacity", 1)
@@ -246,7 +246,8 @@ function drawRadarShape(group, values, axisScale, data, container) {
       `Population: ${d3.format(",.0f")(data.population)}<br>` +
       `Fertility: ${data.tfr.toFixed(2)}<br>` +
       `Youth %: ${data.percentage.toFixed(2)}%<br>` +
-      `Athletes: ${d3.format(",")(data.AthCount)}`
+      `Athletes: ${d3.format(",")(data.AthCount)}<br>`+
+      `Score: ${d3.format(",")(data.totalMedals)}`
     );
   }).on("mousemove", (event) => {
     tooltip
@@ -257,7 +258,7 @@ function drawRadarShape(group, values, axisScale, data, container) {
   });
 }
 
-function createTooltip(container) {
+function createTooltip() {
   return d3.select("main").append("div")
     .attr("class", "tooltip")
     .style("position", "absolute")
@@ -280,15 +281,4 @@ function drawTitle(svg, width, topMargin, countryName) {
     .style("font-size", "25px")
     .style("fill", CSS.TextColor)
     .text(`${countryName}`);
-}
-
-function drawSubtitle(svg, width, height, bottomMargin, rank, medals) {
-  svg.append("text")
-    .attr("x", width / 2)
-    .attr("y", height - bottomMargin / 2)
-    .attr("text-anchor", "middle")
-    .style("font-family", CSS.Font)
-    .style("font-size", "25px")
-    .style("fill", CSS.TextColor)
-    .text(`${rank + 1} place with ${medals} medals`);
 }

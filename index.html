@@ -10,10 +10,11 @@
 </head>
 <body>
     <header class="header">
-        <h1>Projet INF8808</h1>
+        <h1>Olympic Performance of Countries</h1>
     </header>
     
     <nav class="sidebar">
+        <button data-target="#main">Main</button>
         <button data-target="#section1">1</button>
         <button data-target="#section2">2</button>
         <button data-target="#section3">3</button>
@@ -21,8 +22,18 @@
     </nav>
     
     <main>
+        <section id="main" class="visual-section">
+            <p class="description center">
+                The main goal of this webpage is to provide the general public with a series of visualizations that offer insights into the performance of countries at the Olympic Games.<br><br>
+                Users will be able to explore how various factors—such as the number of participating coaches, a country’s GDP, national investment in sports, and the popularity of different sports—can influence a country's performance and trends across various disciplines.<br><br>
+                These visualizations are designed for anyone interested in learning more about the Olympics, regardless of their background.<br><br>
+                By transforming complex datasets into intuitive visual formats, the webpage aims to make it easier for the general public to identify trends, correlations, and disparities between countries and sports disciplines.<br><br>
+                This helps facilitate a quicker and more accessible understanding of Olympic performance, even for those without specialized knowledge.<br><br>
+                <strong>A performance score is attributed to each country using the formula: Score = 3 × Gold + 2 × Silver + 1 × Bronze.</strong>
+              </p>
+        </section>
         <section id="section1" class="visual-section">
-            <h1 class="title">Visualisation 1</h1>
+            <!-- <h1 class="title">Visualisation 1</h1> -->
             <div class="visualization-container">
                 <h1 class="graph-title">
                     Number of olympic medals in relation to population
@@ -52,11 +63,18 @@
                             </div>
                     </div>
                 </div>
-            </div>
+            </div>           
         </section>
+        <div class="visual-section">
+            <p class="description center">
+                This visualization presents the performance scores of countries based on their GDP or population for a specific Olympic season.<br>
+            </p>  
+        </div>
+        
+        
         
         <section id="section2" class="visual-section">
-            <h1 class="title">Visualisation 2</h1>
+            <!-- <h1 class="title">Visualisation 2</h1> -->
             <div class="visualization-container">
               <h1 class="graph-title">
                 Radar Comparison of Leading Olympic Nations by Socioeconomic and Demographic Indicators
@@ -79,11 +97,15 @@
               </div>
             </div>
           
-            <p class="description">Deuxième visualisation</p>
-          </section>
+            <p class="description center">
+                This visualization ranks countries based on their medal scores, utilizing a radar chart to showcase their demographic and economic profiles.<br><br>
+                A min-max scaling technique is applied to normalize the variables, ensuring each is represented on a scale from 1 to 10 in the radar chart.
+            </p>
+              
+        </section>
         
         <section id="section3" class="visual-section">
-            <h1 class="title">Visualisation 3</h1>
+            <!-- <h1 class="title">Visualisation 3</h1> -->
             <div class="visualization-container">
                 <h1 class="graph-title">
                     Number of olympic medals by discipline
@@ -98,10 +120,10 @@
                 <div class="graph"></div>
                 </div>
             </div>
-            <p class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sodales...</p>
+            <p class="description center">Countries are ranked in this visualization according to their medal scores, categorized by their Olympic Season and Discipline.</p>
         </section>
         <section id="section4" class="visual-section">
-            <h1 class="title">Visualisation 4</h1>
+            <!-- <h1 class="title">Visualisation 4</h1> -->
             <div class="visualization-container">
                 <h1 class="graph-title">
                     Number of olympic medals by season
@@ -116,6 +138,10 @@
                     <div class="graph"></div>
                 </div>
             </div>
+            <p class="description center">
+                This visualization showcases the top 10 countries ranked by their medal scores, along with their performance trends over the years, for the Winter Olympics, Summer Olympics, or both.
+              </p>              
+              
         </section>
     </main>
 
