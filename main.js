@@ -25,8 +25,8 @@ Promise.all([
     drawBarChart({
         containerSelector: "#section3",
         data: resultsData,
-        yearSeason: "2000,Summer",
-        discipline: "Archery"
+        yearSeason: "2022,Winter",
+        discipline: "Alpine Skiing (Skiing)"
     });
     setLineChartListener(resultsData, "#section4", "Both");
     drawLineChart({data:resultsData, containerSelector:"#section4"});

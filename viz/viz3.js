@@ -7,7 +7,7 @@ const section3Container = "#section3";
 export function populateYearAndDisciplineOptions(data) {
   const years = Object.keys(data).sort();
 
-  years.forEach((year) => {
+  years.slice().reverse().forEach((year) => {
     const option = document.createElement("option");
     option.value = year;
     const [yearStr, season] = year.split(",");
@@ -23,7 +23,7 @@ export function populateYearAndDisciplineOptions(data) {
   });
 
   // Initial population for the first year
-  const firstYear = years[0];
+  const firstYear = years[years.length - 1];
   updateDisciplinesList(firstYear, data);
 }
 
