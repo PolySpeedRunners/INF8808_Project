@@ -152,11 +152,41 @@ function getDimensions(container, margin) {
 }
 
 function createSVG(container, width, height) {
-  return container.append("svg")
+  const svg = container
+    .append("svg")
     .attr("viewBox", `0 0 ${width} ${height}`)
     .attr("preserveAspectRatio", "xMidYMid meet")
     .style("width", "100%")
     .style("height", "100%");
+
+  // Add mouseover and mouseout events to the SVG.
+  const podium = container.node().parentNode?.parentNode;
+  svg
+    .on("mouseover", () => {
+      svg
+        .transition()
+        .duration(100)
+        .attr("transform", `scale(1.4) translate(${0}, ${-height / 5})`);
+
+      d3
+        .select(podium)
+        .transition()
+        .duration(200)
+        .style("width", "60%");
+    })
+    .on("mouseout", () => {
+      svg
+        .transition()
+        .duration(200)
+        .attr("transform", "scale(1)");
+      d3
+        .select(podium)
+        .transition()
+        .duration(100)
+        .style("width", "20%");
+    });
+
+  return svg;
 }
 
 function drawRadarGrid(group, radius) {

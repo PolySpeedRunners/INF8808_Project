@@ -356,9 +356,8 @@ input[type=range] {
     display: flex;
     flex-direction: column;
     align-items: center;
-    flex: 1;
-    max-width: 20%;
     position: relative;
+    width: 20%;
 }
   
 .blocks {
