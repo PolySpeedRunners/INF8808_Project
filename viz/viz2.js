@@ -31,6 +31,7 @@ function drawRadarCharts(yearData, selectedYear) {
   const sortedCountries = Object.entries(yearData)
   .sort(([, a], [, b]) => b.medalScore - a.medalScore)
   .slice(0, 5);
+  console.log(sortedCountries);
 
   // const top5Data = Object.fromEntries(sortedCountries);
   // applyMinMaxScaling(top5Data); 
@@ -247,7 +248,7 @@ function drawRadarShape(group, values, axisScale, data, container) {
       `Fertility: ${data.tfr.toFixed(2)}<br>` +
       `Youth %: ${data.percentage.toFixed(2)}%<br>` +
       `Athletes: ${d3.format(",")(data.AthCount)}<br>`+
-      `Score: ${d3.format(",")(data.totalMedals)}`
+      `Score: ${d3.format(",")(data.medalScore)}`
     );
   }).on("mousemove", (event) => {
     tooltip
