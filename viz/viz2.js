@@ -159,8 +159,13 @@ function createSVG(container, width, height) {
     .style("width", "100%")
     .style("height", "100%");
 
-  // Add mouseover and mouseout events to the SVG.
-  const podium = container.node().parentNode?.parentNode;
+  // Get all podiums
+  const allPodiums = d3
+    .select(container.node().parentNode?.parentNode?.parentNode)
+    .selectAll(".podium");
+
+  const currentPodium = container.node().parentNode?.parentNode;
+
   svg
     .on("mouseover", () => {
       svg
@@ -168,22 +173,24 @@ function createSVG(container, width, height) {
         .duration(100)
         .attr("transform", `scale(1.4) translate(${0}, ${-height / 5})`);
 
-      d3
-        .select(podium)
+      // Make the current podium larger
+      d3.select(currentPodium).transition().duration(200).style("width", "80%");
+
+      // Make all other podiums smaller
+      allPodiums
+        .filter((_, i, nodes) => nodes[i] !== currentPodium)
         .transition()
         .duration(200)
-        .style("width", "60%");
+        .style("width", "18%")
     })
     .on("mouseout", () => {
-      svg
-        .transition()
-        .duration(200)
-        .attr("transform", "scale(1)");
-      d3
-        .select(podium)
-        .transition()
-        .duration(100)
-        .style("width", "20%");
+      svg.transition().duration(200).attr("transform", "scale(1)");
+
+      // Reset the current podium
+      d3.select(currentPodium).transition().duration(200).style("width", "20%");
+
+      // Reset all other podiums
+      allPodiums.transition().duration(200).style("width", "20%");
     });
 
   return svg;
