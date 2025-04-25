@@ -249,7 +249,7 @@ export function drawBarChart ({
   chart
     .append('text')
     .attr('x', innerWidth / 2)
-    .attr('y', innerHeight + margin.top + 20)
+    .attr('y', innerHeight + margin.top + 35)
     .attr('class', 'x-axis-label')
     .text('Countries');
 
