@@ -1,19 +1,31 @@
 {
-  "dependencies": {
-    "d3": "^7.9.0"
-  },
-  "name": "src",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "devDependencies": {
-    "lite-server": "^2.6.1"
-  },
-  "scripts": {
-    "start": "lite-server"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs"
+    "dependencies": {
+        "d3": "^7.9.0"
+    },
+    "name": "src",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "devDependencies": {
+        "lite-server": "^2.6.1",
+        "eslint": "^7.4.0",
+        "eslint-config-standard": "^14.1.1",
+        "eslint-config-prettier": "8.5.0",
+        "eslint-plugin-prettier": "4.2.1",
+        "eslint-plugin-import": "^2.22.0",
+        "eslint-plugin-jsdoc": "^29.1.0",
+        "eslint-plugin-node": "^11.1.0",
+        "eslint-plugin-promise": "^4.2.1",
+        "eslint-plugin-standard": "^4.0.1",
+        "prettier": "2.7.1"
+    },
+    "scripts": {
+        "start": "lite-server",
+        "lint": "npx eslint .",
+        "lint:fix": "npx eslint . --fix"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "commonjs"
 }

@@ -1,0 +1,18 @@
+{
+    "env": {
+        "browser": true,
+        "es2020": true
+    },
+    "extends": ["standard", "plugin:jsdoc/recommended"],
+    "parserOptions": {
+        "ecmaVersion": 11,
+        "sourceType": "module"
+    },
+    "globals": {
+        "d3": true
+    },
+    "plugins": ["jsdoc"],
+    "rules": {
+        "semi": ["error", "always"]
+    }
+}
