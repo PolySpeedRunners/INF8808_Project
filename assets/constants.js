@@ -5,36 +5,19 @@
 export const MEDAL_VALUES = {
   Gold: 3,
   Silver: 2,
-  Bronze: 1,
+  Bronze: 1
 };
 
 /**
  * Constants imported from the stylesheet.
  */
 export const CSS_CONSTANTS = {
-  AxisTitleColor: getComputedStyle(document.documentElement)
-    .getPropertyValue("--axis-title-color")
-    .trim(),
-
-  Font: getComputedStyle(document.documentElement)
-    .getPropertyValue("--font-family")
-    .trim(),
-
-  TextColor: getComputedStyle(document.documentElement)
-    .getPropertyValue("--text-color")
-    .trim(),
-
-  RadarColor: getComputedStyle(document.documentElement)
-    .getPropertyValue("--button-active-color")
-    .trim(),
-
-  BackGroundColor: getComputedStyle(document.documentElement)
-    .getPropertyValue("--background-color")
-    .trim(),
-
-  ActiveButtonColor: getComputedStyle(document.documentElement)
-    .getPropertyValue("--button-active-color")
-    .trim(),
+  AxisTitleColor: getComputedStyle(document.documentElement).getPropertyValue('--axis-title-color').trim(),
+  Font: getComputedStyle(document.documentElement).getPropertyValue('--font-family').trim(),
+  TextColor: getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim(),
+  RadarColor: getComputedStyle(document.documentElement).getPropertyValue('--button-active-color').trim(),
+  BackGroundColor: getComputedStyle(document.documentElement).getPropertyValue('--background-color').trim(),
+  ActiveButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--button-active-color').trim()
 };
 
 /**
@@ -42,11 +25,11 @@ export const CSS_CONSTANTS = {
  * Independant from styles.css.
  */
 export const CONTINENT_LEGEND_COLOR = {
-  Europe: "#0B7AC9",
-  Asia: "#EAA935",
-  Africa: "#2B2A29",
-  Oceania: "#00A357",
-  America: "#E34556",
+  Europe: '#0B7AC9',
+  Asia: '#EAA935',
+  Africa: '#2B2A29',
+  Oceania: '#00A357',
+  America: '#E34556'
 };
 
 /**
@@ -54,7 +37,143 @@ export const CONTINENT_LEGEND_COLOR = {
  * Independant from styles.css.
  */
 export const MEDAL_COLORS = {
-  goldScore: "#D6AF35",
-  silverScore: "#A7A7AD",
-  bronzeScore: "#A77044",
+  goldScore: '#D6AF35',
+  silverScore: '#A7A7AD',
+  bronzeScore: '#A77044'
+};
+
+// The map of country codes to continent names. No dataset was found for this, so it was created manually.
+export const COUNTRY_TO_CONTINENT_MAP = {
+  USA: 'America',
+  CHN: 'Asia',
+  JPN: 'Asia',
+  AUS: 'Oceania',
+  FRA: 'Europe',
+  GBR: 'Europe',
+  KOR: 'Asia',
+  ITA: 'Europe',
+  NZL: 'Oceania',
+  CAN: 'America',
+  UZB: 'Asia',
+  HUN: 'Europe',
+  ESP: 'Europe',
+  SWE: 'Europe',
+  KEN: 'Africa',
+  NOR: 'Europe',
+  IRL: 'Europe',
+  BRA: 'America',
+  UKR: 'Europe',
+  ROU: 'Europe',
+  GEO: 'Europe',
+  BEL: 'Europe',
+  SRB: 'Europe',
+  CZE: 'Europe',
+  AZE: 'Asia',
+  BRN: 'Asia',
+  AUT: 'Europe',
+  HKG: 'Asia',
+  ISR: 'Asia',
+  POL: 'Europe',
+  KAZ: 'Asia',
+  JAM: 'America',
+  THA: 'Asia',
+  ETH: 'Africa',
+  ECU: 'America',
+  ARG: 'America',
+  EGY: 'Africa',
+  TUN: 'Africa',
+  CHI: 'America',
+  LCA: 'America',
+  UGA: 'Africa',
+  DOM: 'America',
+  MAR: 'Africa',
+  DMA: 'America',
+  PAK: 'Asia',
+  TUR: 'Europe',
+  MEX: 'America',
+  ARM: 'Asia',
+  COL: 'America',
+  KGZ: 'Asia',
+  LTU: 'Europe',
+  IND: 'Asia',
+  MDA: 'Europe',
+  CYP: 'Europe',
+  JOR: 'Asia',
+  PAN: 'America',
+  TJK: 'Asia',
+  ALB: 'Europe',
+  CPV: 'Africa',
+  CIV: 'Africa',
+  PER: 'America',
+  QAT: 'Asia',
+  SGP: 'Asia',
+  SVK: 'Europe',
+  FIN: 'Europe',
+  BLR: 'Europe',
+  EST: 'Europe',
+  SMR: 'Europe',
+  MKD: 'Europe',
+  TKM: 'Asia',
+  SYR: 'Asia',
+  GHA: 'Africa',
+  CUB: 'America',
+  LIE: 'Europe',
+  LAT: 'Europe',
+  RUS: 'Europe',
+  DEU: 'Europe',
+  NED: 'Europe',
+  NLD: 'Europe',
+  CHE: 'Europe',
+  POR: 'Europe',
+  SVN: 'Europe',
+  BUL: 'Europe',
+  GRE: 'Europe',
+  SUI: 'Europe',
+  DEN: 'Europe',
+  INA: 'Asia',
+  IRI: 'Asia',
+  ALG: 'Africa',
+  BAH: 'America',
+  NGR: 'Africa',
+  RSA: 'Africa',
+  SLO: 'Europe',
+  CRO: 'Europe',
+  KSA: 'Asia',
+  TTO: 'America',
+  CMR: 'Africa',
+  MOZ: 'Africa',
+  URU: 'America',
+  SRI: 'Asia',
+  CRC: 'America',
+  KUW: 'Asia',
+  ISL: 'Europe',
+  BAR: 'America',
+  ZIM: 'Africa',
+  UAE: 'Asia',
+  VEN: 'America',
+  PAR: 'America',
+  MGL: 'Asia',
+  ERI: 'Africa',
+  SUD: 'Africa',
+  SAM: 'Oceania',
+  MRI: 'Africa',
+  TOG: 'Africa',
+  AFG: 'Asia',
+  PHI: 'Asia',
+  KOS: 'Europe',
+  BDI: 'Africa',
+  GRN: 'America',
+  GUA: 'America',
+  BOT: 'Africa',
+  GAB: 'Africa',
+  MNE: 'Europe',
+  NAM: 'Africa',
+  BUR: 'Africa',
+  PUR: 'America',
+  NIG: 'Africa',
+  BER: 'America',
+  FIJ: 'Oceania',
+  GER: 'Europe',
+  HUN: 'Europe',
+  FJI: 'Oceania',
 };
