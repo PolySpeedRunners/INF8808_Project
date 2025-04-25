@@ -1,5 +1,8 @@
 import { CSS_CONSTANTS as CSS } from '../assets/constants.js';
 
+/* Local Constants */
+const ANIMATION_TIME = 500; // ms
+
 export const yearSelect = document.getElementById('year-select-podium');
 
 /**
@@ -384,23 +387,37 @@ function drawRadarLabels (group, keys, axisScale, valueScale) {
  * @param {Array<object>} values - Scaled values, each with `axis` and `value`.
  * @param {Function} axisScale - Angular scale.
  */
-function drawRadarShape (group, values, axisScale) {
+function drawRadarShape(group, values, axisScale) {
   const radarLine = d3
     .lineRadial()
     .angle((d) => axisScale(d.axis))
     .radius((d) => d.value);
 
-  // create a const for the fill color which is the same as the stroke color but with 0.2 opacity
+  // Create a fill color with opacity
   const fillColor = d3.color(CSS.RadarColor).copy({ opacity: 0.2 }).toString();
 
-  group
+  // Append the path
+  const path = group
     .append('path')
     .datum(values)
     .attr('d', radarLine)
     .attr('fill', fillColor)
     .attr('stroke', CSS.RadarColor)
     .attr('stroke-width', 2)
-    .style('pointer-events', 'all');
+    .style('pointer-events', 'all')
+    .attr('stroke-dasharray', function () {
+      return this.getTotalLength(); // Set the dash array to the total path length.
+    })
+    .attr('stroke-dashoffset', function () {
+      return this.getTotalLength(); // Initially offset the dash array by the total length.
+    });
+
+  // Add the animation
+  path
+    .transition()
+    .duration(ANIMATION_TIME)
+    .ease(d3.easeLinear)
+    .attr('stroke-dashoffset', 0);
 }
 
 /**
