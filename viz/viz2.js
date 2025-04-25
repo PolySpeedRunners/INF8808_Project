@@ -1,16 +1,21 @@
-import { CSS_CONSTANTS as CSS } from "../assets/constants.js";
+import { CSS_CONSTANTS as CSS } from '../assets/constants.js';
 
-export const yearSelect = document.getElementById("year-select-podium");
+export const yearSelect = document.getElementById('year-select-podium');
 
-export function chooseYearRadarChart(data) {
+/**
+ * Populates the year selector dropdown with available seasons/years from the data
+ *
+ * @param {object} data - The full dataset with keys in the form of "year,season" (e.g., "2022,Winter").
+ */
+export function chooseYearRadarChart (data) {
   const years = Object.keys(data).sort();
   years
     .slice()
     .reverse()
     .forEach((year) => {
-      const option = document.createElement("option");
+      const option = document.createElement('option');
       option.value = year;
-      const [yearStr, season] = year.split(",");
+      const [yearStr, season] = year.split(',');
       const formattedYear = `${
         season.charAt(0).toUpperCase() + season.slice(1)
       } ${yearStr}`;
@@ -18,7 +23,7 @@ export function chooseYearRadarChart(data) {
       yearSelect.appendChild(option);
     });
 
-  yearSelect.addEventListener("change", () => {
+  yearSelect.addEventListener('change', () => {
     const selectedYear = yearSelect.value;
     const yearData = structuredClone(data[selectedYear]);
     applyMinMaxScaling(yearData);
@@ -33,7 +38,13 @@ export function chooseYearRadarChart(data) {
   drawRadarCharts(initialYearData, initialYear);
 }
 
-function drawRadarCharts(yearData, selectedYear) {
+/**
+ * Draws radar charts for the top 5 countries based on `medalScore` for the selected year.
+ *
+ * @param {object} yearData - Country data for a specific year/season.
+ * @param {string} selectedYear - The selected year string (e.g., "2022,Winter").
+ */
+function drawRadarCharts (yearData, selectedYear) {
   const sortedCountries = Object.entries(yearData)
     .sort(([, a], [, b]) => b.medalScore - a.medalScore)
     .slice(0, 5);
@@ -43,26 +54,33 @@ function drawRadarCharts(yearData, selectedYear) {
     drawRadarChart({
       containerSelector: `#chart-container-${index + 1}`,
       data: countryData,
-      index: index,
+      index: index
     });
   });
 }
 
-function applyMinMaxScaling(resultsData) {
+/**
+ * Calculates min-max scaling for selected features across all countries and appends
+ * scaled values to each country's data under `minmax_` prefixed keys.
+ * The values goes from 1 to 10.
+ *
+ * @param {object} resultsData - Country data to scale.
+ */
+function applyMinMaxScaling (resultsData) {
   const keysToScale = [
-    "gdpPerCapita",
-    "percentage",
-    "population",
-    "tfr",
-    "AthCount",
+    'gdpPerCapita',
+    'percentage',
+    'population',
+    'tfr',
+    'AthCount'
   ];
   const minMax = {};
 
   const countries = Object.values(resultsData);
   countries.forEach((c) => {
     if (
-      typeof c.gdp === "number" &&
-      typeof c.population === "number" &&
+      typeof c.gdp === 'number' &&
+      typeof c.population === 'number' &&
       c.population !== 0
     ) {
       c.gdpPerCapita = c.gdp / c.population;
@@ -74,10 +92,10 @@ function applyMinMaxScaling(resultsData) {
   for (const key of keysToScale) {
     const values = countries
       .map((c) => c[key])
-      .filter((v) => typeof v === "number" && !isNaN(v));
+      .filter((v) => typeof v === 'number' && !isNaN(v));
     minMax[key] = {
       min: Math.min(...values),
-      max: Math.max(...values),
+      max: Math.max(...values)
     };
   }
 
@@ -87,7 +105,7 @@ function applyMinMaxScaling(resultsData) {
       const value = countryData[key];
       const { min, max } = minMax[key];
       let scaled = null;
-      if (typeof value === "number" && !isNaN(value) && max !== min) {
+      if (typeof value === 'number' && !isNaN(value) && max !== min) {
         scaled = 1 + (value - min) * (9 / (max - min));
       } else {
         scaled = 1;
@@ -97,45 +115,59 @@ function applyMinMaxScaling(resultsData) {
   }
 }
 
-function formatRadarKey(key) {
+/**
+ * Converts internal radar key names into human-readable labels for display on the chart.
+ *
+ * @param {string} key - A string key like `minmax_population`.
+ * @returns {string} A formatted label like "Population".
+ */
+function formatRadarKey (key) {
   switch (key) {
-    case "minmax_gdpPerCapita":
-      return "GDP per Capita";
-    case "minmax_population":
-      return "Population";
-    case "minmax_tfr":
-      return "Fertility Rate";
-    case "minmax_percentage":
-      return "Youth % (15-25)";
-    case "minmax_AthCount":
-      return "Athlete Count";
+    case 'minmax_gdpPerCapita':
+      return 'GDP per Capita';
+    case 'minmax_population':
+      return 'Population';
+    case 'minmax_tfr':
+      return 'Fertility Rate';
+    case 'minmax_percentage':
+      return 'Youth % (15-25)';
+    case 'minmax_AthCount':
+      return 'Athlete Count';
     default:
       return key;
   }
 }
 
-export function drawRadarChart({ containerSelector, data, index }) {
+/**
+ * Renders a radar chart into the specified container using scaled data for one country.
+ *
+ * @param {object} params - Chart configuration.
+ * @param {string} params.containerSelector - CSS selector for the chart's container div.
+ * @param {object} params.data - The country data including scaled values.
+ * @param {number} params.index - The chart index (used to assign container ID).
+ */
+export function drawRadarChart ({ containerSelector, data, index }) {
   const margin = { top: 50, right: 0, bottom: 0, left: 0 };
   const container = setupContainer(containerSelector);
-  let { width, height, innerWidth, innerHeight } = getDimensions(
+  const { width, height, innerWidth, innerHeight } = getDimensions(
     container,
     margin
   );
   const radius = (Math.min(innerWidth, innerHeight) / 2) * 0.7;
 
   const radarKeys = [
-    "minmax_gdpPerCapita",
-    "minmax_population",
-    "minmax_tfr",
-    "minmax_percentage",
-    "minmax_AthCount",
+    'minmax_gdpPerCapita',
+    'minmax_population',
+    'minmax_tfr',
+    'minmax_percentage',
+    'minmax_AthCount'
   ];
   console.log(width);
   const svg = createSVG(container, width, height, data);
   const chartGroup = svg
-    .append("g")
+    .append('g')
     .attr(
-      "transform",
+      'transform',
       `translate(${margin.left + innerWidth / 2}, ${
         margin.top + innerHeight / 2
       })`
@@ -156,90 +188,118 @@ export function drawRadarChart({ containerSelector, data, index }) {
 
   const countryValues = radarKeys.map((key) => ({
     axis: key,
-    value: scale(data[key]),
+    value: scale(data[key])
   }));
 
   // Add the first value to the end of the array to close the radar shape
   countryValues.push(countryValues[0]);
 
-  const sectionContainer = d3.select(container.node().closest("#section2"));
-  sectionContainer.style("position", "relative");
+  const sectionContainer = d3.select(container.node().closest('#section2'));
+  sectionContainer.style('position', 'relative');
   drawRadarShape(chartGroup, countryValues, radarAxis);
 
   drawTitle(svg, width, margin.top, data.countryName);
 }
 
-function setupContainer(selector) {
+/**
+ * Selects and clears the radar chart container and removes any existing tooltips.
+ *
+ * @param {string} selector - The CSS selector for the chart container.
+ * @returns {d3.Selection} The cleaned D3 selection of the container.
+ */
+function setupContainer (selector) {
   const container = d3.select(selector);
-  container.selectAll("*").remove();
-  container.selectAll("div.tooltip").remove();
+  container.selectAll('*').remove();
+  container.selectAll('div.tooltip').remove();
   return container;
 }
 
-function getDimensions(container, margin) {
+/**
+ * Calculates SVG dimensions from a container and provided margins.
+ *
+ * @param {d3.Selection} container - The D3 container selection.
+ * @param {object} margin - An object with top, right, bottom, and left margins.
+ * @returns {object} Object containing full and inner dimensions.
+ */
+function getDimensions (container, margin) {
   const width = container.node().clientWidth;
   const height = container.node().clientHeight;
   return {
     width,
     height,
     innerWidth: width - margin.left - margin.right,
-    innerHeight: height - margin.top - margin.bottom,
+    innerHeight: height - margin.top - margin.bottom
   };
 }
 
-function createSVG(container, width, height, data) {
+/**
+ * Appends an SVG element to the container with hover behavior.
+ *
+ * @param {d3.Selection} container - The chart container.
+ * @param {number} width - SVG width.
+ * @param {number} height - SVG height.
+ * @param {object} data - The country data used for the tooltip.
+ * @returns {d3.Selection} The created SVG element.
+ */
+function createSVG (container, width, height, data) {
   const svg = container
-    .append("svg")
-    .attr("viewBox", `0 0 ${width} ${height}`)
-    .attr("preserveAspectRatio", "xMidYMid meet")
-    .style("width", "100%")
-    .style("height", "100%");
+    .append('svg')
+    .attr('viewBox', `0 0 ${width} ${height}`)
+    .attr('preserveAspectRatio', 'xMidYMid meet')
+    .style('width', '100%')
+    .style('height', '100%');
 
   const currentPodium = container.node().parentNode?.parentNode;
-  const sectionContainer = d3.select(container.node().closest("#section2"));
+  const sectionContainer = d3.select(container.node().closest('#section2'));
   const tooltip = createTooltip(sectionContainer);
-  const allPodiums = d3.select(currentPodium.parentNode).selectAll(".podium");
+  const allPodiums = d3.select(currentPodium.parentNode).selectAll('.podium');
 
   svg
-    .on("mouseover", () => {
+    .on('mouseover', () => {
       svg
         .transition()
         .duration(100)
-        .attr("transform", `scale(1.4) translate(${0}, ${-height / 5})`);
+        .attr('transform', `scale(1.4) translate(${0}, ${-height / 5})`);
       tooltip
-        .style("opacity", 1)
+        .style('opacity', 1)
         .html(
           `<strong>${data.countryName}</strong><br>` +
-            `GDP per Capita: ${d3.format(",.0f")(data.gdpPerCapita)} $<br>` +
-            `Population: ${d3.format(",.0f")(data.population)}<br>` +
+            `GDP per Capita: ${d3.format(',.0f')(data.gdpPerCapita)} $<br>` +
+            `Population: ${d3.format(',.0f')(data.population)}<br>` +
             `Fertility: ${data.tfr.toFixed(2)}<br>` +
             `Youth %: ${data.percentage.toFixed(2)}%<br>` +
-            `Athletes: ${d3.format(",")(data.AthCount)}<br>` +
-            `Score: ${d3.format(",")(data.medalScore)}`
+            `Athletes: ${d3.format(',')(data.AthCount)}<br>` +
+            `Score: ${d3.format(',')(data.medalScore)}`
         );
 
       // Making the hovered podium larger.
-      d3.select(currentPodium).transition().duration(200).style("width", "80%");
+      d3.select(currentPodium).transition().duration(200).style('width', '80%');
       // Making all other podiums smaller.
       allPodiums
         .filter((_, i, nodes) => nodes[i] !== currentPodium)
         .transition()
         .duration(100)
-        .style("width", "18%");
+        .style('width', '18%');
     })
-    .on("mouseout", () => {
-      svg.transition().duration(200).attr("transform", "scale(1)");
-      tooltip.style("opacity", 0);
+    .on('mouseout', () => {
+      svg.transition().duration(200).attr('transform', 'scale(1)');
+      tooltip.style('opacity', 0);
       // Reset the current podium.
-      d3.select(currentPodium).transition().duration(200).style("width", "20%");
+      d3.select(currentPodium).transition().duration(200).style('width', '20%');
       // Reset all other podiums.
-      allPodiums.transition().duration(200).style("width", "20%");
+      allPodiums.transition().duration(200).style('width', '20%');
     });
 
   return svg;
 }
 
-function drawRadarGrid(group, radius) {
+/**
+ * Draws concentric polygon grid levels on the radar chart.
+ *
+ * @param {d3.Selection} group - The chart group (g element).
+ * @param {number} radius - The outer radius of the radar chart.
+ */
+function drawRadarGrid (group, radius) {
   const gridLevels = 10;
   const radarKeys = 5;
   const angleStep = (2 * Math.PI) / radarKeys;
@@ -252,58 +312,81 @@ function drawRadarGrid(group, radius) {
     });
 
     group
-      .append("polygon")
-      .attr("points", points.map(([x, y]) => `${x},${y}`).join(" "))
-      .style("fill", "none")
-      .style("stroke", "#F76B51")
-      .style("stroke-width", "0.5px");
+      .append('polygon')
+      .attr('points', points.map(([x, y]) => `${x},${y}`).join(' '))
+      .style('fill', 'none')
+      .style('stroke', '#F76B51')
+      .style('stroke-width', '0.5px');
   }
 }
 
-function drawRadarAxes(group, keys, axisScale, valueScale) {
+/**
+ * Draws axis lines for each feature around the radar chart.
+ *
+ * @param {d3.Selection} group - The chart group.
+ * @param {Array<string>} keys - List of radar metric keys.
+ * @param {Function} axisScale - Angular scale for axes.
+ * @param {Function} valueScale - Radial scale.
+ */
+function drawRadarAxes (group, keys, axisScale, valueScale) {
   keys.forEach((key) => {
     const angle = axisScale(key) - Math.PI / 2;
     group
-      .append("line")
-      .attr("x1", 0)
-      .attr("y1", 0)
-      .attr("x2", valueScale(10) * Math.cos(angle))
-      .attr("y2", valueScale(10) * Math.sin(angle))
-      .attr("stroke", CSS.TextColor)
-      .attr("stroke-width", 2);
+      .append('line')
+      .attr('x1', 0)
+      .attr('y1', 0)
+      .attr('x2', valueScale(10) * Math.cos(angle))
+      .attr('y2', valueScale(10) * Math.sin(angle))
+      .attr('stroke', CSS.TextColor)
+      .attr('stroke-width', 2);
   });
 }
 
-function drawRadarLabels(group, keys, axisScale, valueScale) {
+/**
+ * Draws labels at the end of each axis in the radar chart.
+ *
+ * @param {d3.Selection} group - The chart group.
+ * @param {Array<string>} keys - List of radar metric keys.
+ * @param {Function} axisScale - Angular scale.
+ * @param {Function} valueScale - Radial scale.
+ */
+function drawRadarLabels (group, keys, axisScale, valueScale) {
   keys.forEach((key) => {
     const angle = axisScale(key) - Math.PI / 2;
     let xPos = valueScale(10) * Math.cos(angle);
     let yPos = valueScale(10) * Math.sin(angle);
     // Adjust positions for specific keys
-    if (key === "minmax_percentage" || key === "minmax_tfr") {
+    if (key === 'minmax_percentage' || key === 'minmax_tfr') {
       xPos *= 1.6;
       yPos *= 1.6;
     }
-    if (key === "minmax_AthCount") {
+    if (key === 'minmax_AthCount') {
       xPos -= 15;
     }
-    if (key === "minmax_population") {
+    if (key === 'minmax_population') {
       xPos += 15;
     }
     group
-      .append("text")
-      .attr("x", xPos)
-      .attr("y", yPos)
-      .attr("dy", "-10px")
-      .style("text-anchor", "middle")
-      .style("font-family", CSS.Font)
-      .style("fill", CSS.TextColor)
-      .style("font-size", "12px")
+      .append('text')
+      .attr('x', xPos)
+      .attr('y', yPos)
+      .attr('dy', '-10px')
+      .style('text-anchor', 'middle')
+      .style('font-family', CSS.Font)
+      .style('fill', CSS.TextColor)
+      .style('font-size', '12px')
       .text(formatRadarKey(key));
   });
 }
 
-function drawRadarShape(group, values, axisScale) {
+/**
+ * Draws the radar area (polygon) connecting scaled values.
+ *
+ * @param {d3.Selection} group - The chart group.
+ * @param {Array<object>} values - Scaled values, each with `axis` and `value`.
+ * @param {Function} axisScale - Angular scale.
+ */
+function drawRadarShape (group, values, axisScale) {
   const radarLine = d3
     .lineRadial()
     .angle((d) => axisScale(d.axis))
@@ -313,46 +396,54 @@ function drawRadarShape(group, values, axisScale) {
   const fillColor = d3.color(CSS.RadarColor).copy({ opacity: 0.2 }).toString();
 
   group
-    .append("path")
+    .append('path')
     .datum(values)
-    .attr("d", radarLine)
-    .attr("fill", fillColor)
-    .attr("stroke", CSS.RadarColor)
-    .attr("stroke-width", 2)
-    .style("pointer-events", "all");
+    .attr('d', radarLine)
+    .attr('fill', fillColor)
+    .attr('stroke', CSS.RadarColor)
+    .attr('stroke-width', 2)
+    .style('pointer-events', 'all');
 }
 
 /**
  * Creates a tooltip div element which appears when hovering on a radar chart.
- * 
+ *
  * @param {*} container The d3 selection of the graph's container.
- * @returns The tooltip div element.
+ * @returns {object} The tooltip div element.
  */
-function createTooltip(container) {
+function createTooltip (container) {
   return container
-    .append("div")
-    .attr("class", "tooltip")
-    .style("position", "absolute")
-    .style("top", "100px")
-    .style("right", "70px")
-    .style("padding", "8px")
-    .style("background", "var(--secondary-color)")
-    .style("border", "1px solid var(--text-color)")
-    .style("color", "var(--text-color)")
-    .style("border-radius", "4px")
-    .style("font-size", "14px")
-    .style("pointer-events", "none")
-    .style("opacity", 0);
+    .append('div')
+    .attr('class', 'tooltip')
+    .style('position', 'absolute')
+    .style('top', '100px')
+    .style('right', '70px')
+    .style('padding', '8px')
+    .style('background', 'var(--secondary-color)')
+    .style('border', '1px solid var(--text-color)')
+    .style('color', 'var(--text-color)')
+    .style('border-radius', '4px')
+    .style('font-size', '14px')
+    .style('pointer-events', 'none')
+    .style('opacity', 0);
 }
 
-function drawTitle(svg, width, topMargin, countryName) {
+/**
+ * Draws the chart title (country name) at the top of the radar chart.
+ *
+ * @param {d3.Selection} svg - The main SVG element.
+ * @param {number} width - Width of the SVG.
+ * @param {number} topMargin - Top margin for placing the title.
+ * @param {string} countryName - Name of the country.
+ */
+function drawTitle (svg, width, topMargin, countryName) {
   svg
-    .append("text")
-    .attr("x", width / 2)
-    .attr("y", topMargin / 1.2)
-    .attr("text-anchor", "middle")
-    .style("font-family", CSS.Font)
-    .style("font-size", "25px")
-    .style("fill", CSS.TextColor)
+    .append('text')
+    .attr('x', width / 2)
+    .attr('y', topMargin / 1.2)
+    .attr('text-anchor', 'middle')
+    .style('font-family', CSS.Font)
+    .style('font-size', '25px')
+    .style('fill', CSS.TextColor)
     .text(`${countryName}`);
 }
