@@ -45,7 +45,7 @@ export const CONTINENT_LEGEND_COLOR = {
   Europe: "#0B7AC9",
   Asia: "#EAA935",
   Africa: "#2B2A29",
-  Australia: "#00A357",
+  Oceania: "#00A357",
   America: "#E34556",
 };
 
