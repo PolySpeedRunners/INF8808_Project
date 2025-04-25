@@ -204,7 +204,6 @@ body {
     flex-direction: column;
     align-items: flex-start;
     font-size: 14px;
-    width: 150px;
     color: var(--text-color);
 }
 
@@ -216,12 +215,10 @@ body {
 .slider-wrapper {
     display: flex;
     flex-direction: row;
-    align-items: center;
     height: 75%;
-    position: relative;
     margin-top: 40px;
     margin-left: 20px;
-    gap: 20px;
+    gap: 15px;
 }
 
 .slider-labels {
@@ -229,14 +226,12 @@ body {
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
-    margin-right: 10px;
     font-size: 14px;
     color: var(--text-color);
 }
 
 .vertical-slider {
     writing-mode: vertical-lr;
-    width: 20px;
     height: 100%;
     transform: rotate(180deg);
 }
