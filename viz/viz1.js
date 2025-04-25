@@ -15,7 +15,7 @@ const ANIMATION_TIME = 500;
  * @param {object} data The data to be displayed in the graph.
  * @param {number} defaultYear The default year to be displayed in the graph.
  */
-export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
+export function drawMedalsVsGdpGraph ({ containerSelector, data, defaultYear }) {
   const processedDataByYear = {};
 
   for (const yearSeasonKey of Object.keys(data)) {
@@ -35,7 +35,7 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
         totalMedals: d.totalMedals,
         medalScore: d.medalScore,
         rank: i + 1,
-        year: year,
+        year: year
       }));
 
     if (yearEntries.length > 0) {
@@ -93,12 +93,12 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
   const maxPopulation = d3.max(Object.values(data).flat(), (d) => d.population);
   const minPopulation = Math.max(
     1,
-    d3.min(Object.values(data).flat(), (d) => d.population),
+    d3.min(Object.values(data).flat(), (d) => d.population)
   );
   const maxGdp = d3.max(Object.values(data).flat(), (d) => d.gdp);
   const minGdp = Math.max(
     1,
-    d3.min(Object.values(data).flat(), (d) => d.gdp),
+    d3.min(Object.values(data).flat(), (d) => d.gdp)
   );
   const minPopulationRounded = Math.pow(10, Math.floor(Math.log10(minPopulation)));
   const minGdpRounded = Math.pow(10, Math.floor(Math.log10(minGdp)));
@@ -121,7 +121,7 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
       .scaleLog()
       .domain([minGdpRounded, maxGdp * 1.1])
       .range([0, innerWidth])
-      .base(10),
+      .base(10)
   };
 
   const yScales = {};
@@ -179,7 +179,7 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
             `Medals: ${d.totalMedals}<br>` +
             `Country rank: ${d.rank}<br>` +
             `GDP: ${d3.format(',.0f')(d.gdp)} $<br>` +
-            `Population: ${d3.format(',.0f')(d.population)}`,
+            `Population: ${d3.format(',.0f')(d.population)}`
         );
     })
     .on('mousemove', (event) => {
@@ -190,10 +190,11 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
 
   /**
    * Creates the graph and updates it based on the selected mode and year.
+   *
    * @param {*} mode The mode of the graph, either "gdp" or "population".
    * @param {*} year The year to display the data for.
    */
-  function updateGraph(mode, year) {
+  function updateGraph (mode, year) {
     const xScale = xScales[mode];
     const yScale = yScales[year];
     const tickValues = mode === 'gdp' ? tickValuesGdp : tickValuesPopulation;
@@ -254,7 +255,10 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
 
   if (yearSlider) yearSlider.value = defaultYear;
 
-  function updateActiveYearLabel(year) {
+  /**
+   * @param year
+   */
+  function updateActiveYearLabel (year) {
     yearLabels.forEach((label) => {
       label.classList.toggle('active', parseInt(label.dataset.year) === year);
     });
@@ -285,7 +289,7 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
  * @param {object} svg The SVG element to append the legend to.
  * @param {object} margin The margin object containing top, right, bottom, and left values.
  */
-function createLegend(svg, margin) {
+function createLegend (svg, margin) {
   const legendGroup = svg.append('g').attr('class', 'graph-legend');
 
   const legendData = Object.entries(CONTINENT_LEGEND_COLOR);
@@ -334,7 +338,7 @@ function createLegend(svg, margin) {
  *
  * @param {string} mode The mode of the graph, either "gdp" or "population".
  */
-function updateTitle(mode) {
+function updateTitle (mode) {
   const graphTitle = document.querySelector('.graph-title');
   graphTitle.textContent = mode === 'gdp' ? 'Score of Olympic medals in relation to GDP' : 'Score of Olympic medals in relation to Population';
 }
