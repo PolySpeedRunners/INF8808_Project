@@ -1,4 +1,8 @@
-import { CSS_CONSTANTS as CSS, MEDAL_COLORS, MEDAL_VALUES } from "../assets/constants.js";
+import {
+  CSS_CONSTANTS as CSS,
+  MEDAL_COLORS,
+  MEDAL_VALUES,
+} from "../assets/constants.js";
 
 export const yearSelect = document.getElementById("year-select");
 export const disciplineSelect = document.getElementById("discipline-select");
@@ -7,16 +11,21 @@ const section3Container = "#section3";
 export function populateYearAndDisciplineOptions(data) {
   const years = Object.keys(data).sort();
 
-  years.slice().reverse().forEach((year) => {
-    const option = document.createElement("option");
-    option.value = year;
-    const [yearStr, season] = year.split(",");
-    const formattedYear = `${season.charAt(0).toUpperCase() + season.slice(1)} ${yearStr}`;
-    option.textContent = formattedYear;
-    yearSelect.appendChild(option);
-  });
+  years
+    .slice()
+    .reverse()
+    .forEach((year) => {
+      const option = document.createElement("option");
+      option.value = year;
+      const [yearStr, season] = year.split(",");
+      const formattedYear = `${
+        season.charAt(0).toUpperCase() + season.slice(1)
+      } ${yearStr}`;
+      option.textContent = formattedYear;
+      yearSelect.appendChild(option);
+    });
 
-  yearSelect.addEventListener('change', () => {
+  yearSelect.addEventListener("change", () => {
     const selectedYear = yearSelect.value;
     updateDisciplinesList(selectedYear, data);
     updateChart(data); // to redraw the chart on year change
@@ -28,7 +37,7 @@ export function populateYearAndDisciplineOptions(data) {
 }
 
 function updateDisciplinesList(year, data) {
-  disciplineSelect.innerHTML = '';
+  disciplineSelect.innerHTML = "";
 
   const yearData = data[year] || {};
   const disciplines = new Set();
@@ -51,7 +60,7 @@ function updateDisciplinesList(year, data) {
   if (sortedDisciplines.length > 0) {
     disciplineSelect.value = sortedDisciplines[0];
   }
-  disciplineSelect.addEventListener('change', () => updateChart(data));
+  disciplineSelect.addEventListener("change", () => updateChart(data));
 }
 
 /**
@@ -142,32 +151,30 @@ export function drawBarChart({
 
   const stack = d3.stack().keys(["bronzeScore", "silverScore", "goldScore"]);
   const stackedData = stack(formattedData); // Stacks the data for the three types of medal.
-
-  chart
+  const bars = chart
     .selectAll("g.stack")
     .data(stackedData)
-    .enter()
-    .append("g")
+    .join("g")
     .attr("class", "stack")
     .attr("fill", (d) => MEDAL_COLORS[d.key])
     .selectAll("rect")
     .data((d) => d)
-    .enter()
-    .append("rect")
+    .join("rect")
     .attr("x", (d) => x(d.data.countryName))
-    .attr("y", (d) => y(d[1]))                // Use the upper value of the stack.
-    .attr("height", (d) => y(d[0]) - y(d[1])) // Height is the difference between stack values.
     .attr("width", x.bandwidth())
+    .attr("y", innerHeight)
+    .attr("height", 0)
+    // Add tool tips events.
     .on("mouseover", (event, d) => {
       tooltip
         .style("opacity", 1)
         .html(
           `<strong>${d.data.countryName}</strong><br>` +
-          `Total Medals: ${d.data.medals}<br>` +
-          `Score: ${d.data.score}<br>` +
-          `🥇 Gold: ${d.data.gold}<br>` +
-          `🥈 Silver: ${d.data.silver}<br>` +
-          `🥉 Bronze: ${d.data.bronze}`
+            `Total Medals: ${d.data.medals}<br>` +
+            `Score: ${d.data.score}<br>` +
+            `🥇 Gold: ${d.data.gold}<br>` +
+            `🥈 Silver: ${d.data.silver}<br>` +
+            `🥉 Bronze: ${d.data.bronze}`
         );
     })
     .on("mousemove", (event) => {
@@ -178,7 +185,12 @@ export function drawBarChart({
     })
     .on("mouseout", () => {
       tooltip.style("opacity", 0);
-    });
+    })
+    // Adds a transition to the bars when they are drawn.
+    .transition()
+    .duration(1000)
+    .attr("y", (d) => y(d[1]))                 // Use the upper value of the stack.
+    .attr("height", (d) => y(d[0]) - y(d[1])); // Height is the difference between stack values.
 
   chart
     .append("g")
@@ -193,7 +205,8 @@ export function drawBarChart({
 
   chart
     .append("g")
-    .call(  // Displays only integer values on the y-axis.
+    .call(
+      // Displays only integer values on the y-axis.
       d3
         .axisLeft(y)
         .tickValues(y.ticks(ticks.y).filter((t) => Number.isInteger(t)))
@@ -215,14 +228,15 @@ export function drawBarChart({
     .attr("x", innerWidth / 2)
     .attr("y", innerHeight + margin.top + 20)
     .attr("class", "x-axis-label")
-    .text("Countries")
+    .text("Countries");
 
-  // make a const for the formatted season, it should be Season XXXX
+  // Makes a const for the formatted season, it should be Season XXXX.
   const [year, season] = yearSeason.split(",");
-  const yearSeasonFormatted = season.charAt(0).toUpperCase() + season.slice(1) + " " + year;
+  const yearSeasonFormatted =
+    season.charAt(0).toUpperCase() + season.slice(1) + " " + year;
   svg
     .append("text")
-    .attr("x", (width / 2))
+    .attr("x", width / 2)
     .attr("y", margin.top / 2)
     .attr("text-anchor", "middle")
     .style("font-family", CSS.Font)
@@ -234,7 +248,7 @@ export function drawBarChart({
 
 /**
  * Creates a tooltip div element which appears when hovering on a bar chart.
- * 
+ *
  * @param {*} container The d3 selection of the graph's container.
  * @returns The tooltip div element.
  */
