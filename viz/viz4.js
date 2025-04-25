@@ -324,7 +324,7 @@ function drawLegend (svg, countries, color, containerSelector) {
 
   const visibleCountries = new Set([...countries]);
 
-  const originalFill = 'var(--background-color)';
+  const originalFill = getComputedStyle(document.documentElement).getPropertyValue('--background-color').trim();
   const darkerFill = d3.color(originalFill).darker(1.5).toString();
 
   [...countries].forEach((country, i) => {
