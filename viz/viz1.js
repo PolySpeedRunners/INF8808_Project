@@ -176,12 +176,12 @@ export function drawMedalsVsGdpGraph ({ containerSelector, data, defaultYear }) 
           <tr><td> 🥉 Bronze</td><td>${d.totalBronze}</td></tr>
           <tr><td>GDP</td><td>${d3.format(',.0f')(d.gdp)} $</td></tr>
           <tr><td>Population</td><td>${d3.format(',.0f')(d.population)}</td></tr>
-        </table>`,
+        </table>`
       );
     })
     .on('mousemove', (event) => {
       const bounds = container.node().getBoundingClientRect();
-      tooltip.style('left', `${event.clientX - bounds.left + 20}px`).style('top', `${event.clientY - bounds.top - 80}px`);
+      tooltip.style('left', `${event.clientX - bounds.left + 20}px`).style('top', `${event.clientY - bounds.top - 60}px`);
     })
     .on('mouseout', () => tooltip.style('opacity', 0));
 

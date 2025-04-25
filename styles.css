@@ -184,12 +184,13 @@ h1 {
 }
 
 .tooltip table {
+    margin-top: 5px;
     border-collapse: collapse;
     width: 100%;
 }
 
 .tooltip td {
-    padding: 2px 4px;
+    padding: 0px 4px;
     vertical-align: top;
 }
 

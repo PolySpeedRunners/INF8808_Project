@@ -184,22 +184,22 @@ export function drawBarChart ({
     .attr('height', 0)
     // Add tool tips events.
     .on('mouseover', (event, d) => {
-      tooltip
-        .style('opacity', 1)
-        .html(
-          `<strong>${d.data.countryName}</strong><br>` +
-            `Total Medals: ${d.data.medals}<br>` +
-            `Score: ${d.data.score}<br>` +
-            `🥇 Gold: ${d.data.gold}<br>` +
-            `🥈 Silver: ${d.data.silver}<br>` +
-            `🥉 Bronze: ${d.data.bronze}`
-        );
+      tooltip.style('opacity', 1).html(
+        `<strong>${d.data.countryName}</strong><br>` +
+          `<table>
+            <tr><td>Total Medals</td><td>${d.data.medals}</td></tr>
+            <tr><td>Score</td><td>${d.data.score}</td></tr>
+            <tr><td>🥇 Gold</td><td>${d.data.gold}</td></tr>
+            <tr><td>🥈 Silver</td><td>${d.data.silver}</td></tr>
+            <tr><td>🥉 Bronze</td><td>${d.data.bronze}</td></tr>
+         </table>`
+      );
     })
     .on('mousemove', (event) => {
       const bounds = container.node().getBoundingClientRect();
       tooltip
         .style('left', `${event.clientX - bounds.left + 25}px`)
-        .style('top', `${event.clientY - bounds.top}px`);
+        .style('top', `${event.clientY - bounds.top + 20}px`);
     })
     .on('mouseout', () => {
       tooltip.style('opacity', 0);
