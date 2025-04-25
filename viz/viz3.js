@@ -97,7 +97,7 @@ function updateChart (resultsData) {
 /**
  * Draws a stacked bar chart of medal scores by country for a given year and discipline.
  *
- * @param {object} params
+ * @param {object} params - Params of the function
  * @param {string} params.containerSelector - CSS selector for the chart container.
  * @param {object} params.data - Full dataset.
  * @param {string} params.yearSeason - The selected year-season key (e.g., "2022,Winter").
