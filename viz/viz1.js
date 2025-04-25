@@ -78,16 +78,7 @@ export function drawMedalsVsGdpGraph ({ containerSelector, data, defaultYear }) 
   const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top + 30})`);
   const tooltip = container
     .append('div')
-    .attr('class', 'tooltip')
-    .style('position', 'absolute')
-    .style('padding', '8px')
-    .style('background', 'var(--secondary-color)')
-    .style('border', '1px solid var(--text-color)')
-    .style('color', 'var(--text-color)')
-    .style('border-radius', '4px')
-    .style('font-size', '14px')
-    .style('pointer-events', 'none')
-    .style('opacity', 0);
+    .attr('class', 'tooltip');
 
   // The values are used to calculate the min and max values for the x axis.
   const maxPopulation = d3.max(Object.values(data).flat(), (d) => d.population);

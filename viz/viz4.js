@@ -91,16 +91,7 @@ function setupContainer (containerSelector) {
 function createTooltip (container) {
   return container
     .append('div')
-    .attr('class', 'tooltip')
-    .style('position', 'absolute')
-    .style('padding', '8px')
-    .style('background', 'var(--secondary-color)')
-    .style('border', '1px solid var(--text-color)')
-    .style('color', 'var(--text-color)')
-    .style('border-radius', '4px')
-    .style('font-size', '14px')
-    .style('pointer-events', 'none')
-    .style('opacity', 0);
+    .attr('class', 'tooltip');
 }
 
 /**

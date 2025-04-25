@@ -277,14 +277,5 @@ export function drawBarChart ({
 function createToolTip (container) {
   return container
     .append('div')
-    .attr('class', 'tooltip')
-    .style('position', 'absolute')
-    .style('padding', '8px')
-    .style('background', CSS.BackGroundColor)
-    .style('border', `1px solid ${CSS.TextColor}`)
-    .style('color', CSS.TextColor)
-    .style('border-radius', '4px')
-    .style('font-size', '14px')
-    .style('pointer-events', 'none')
-    .style('opacity', 0);
+    .attr('class', 'tooltip');
 }

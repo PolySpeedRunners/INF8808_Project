@@ -167,7 +167,20 @@ h1 {
 .tooltip {
     position: absolute;
     z-index: 99999;
+    padding: 8px;
+    background: var(--background-color);
+    border: 1px solid var(--text-color);
+    color: var(--text-color);
+    border-radius: 4px;
+    font-size: 14px;
     pointer-events: none;
+    opacity: 0;
+}
+
+.tooltip > :first-child {
+    font-size: 15px;
+    border-bottom: 2px solid var(--text-color);
+    width: 100%;
 }
 
 .toggle-buttons {
