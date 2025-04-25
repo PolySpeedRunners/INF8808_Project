@@ -147,7 +147,7 @@ export function drawMedalsVsGdpGraph ({ containerSelector, data, defaultYear }) 
     .attr('x', -innerHeight / 2)
     .attr('y', -margin.left + 20)
     .attr('class', 'y-axis-label')
-    .text('Medal Score');
+    .text('Medal score');
 
   // Creates the circles for each country for each year. Keeps them transparent until the year is selected.
   const allCircles = g

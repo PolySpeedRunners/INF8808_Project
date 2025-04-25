@@ -397,7 +397,7 @@ function drawYAxisLabel (g, innerHeight, margin) {
     .attr('x', -innerHeight / 2)
     .attr('y', -margin.left + 20)
     .attr('class', 'y-axis-label')
-    .text('Medal Score');
+    .text('Cumulative medal score');
 }
 
 /**
