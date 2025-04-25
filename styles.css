@@ -164,7 +164,6 @@ h1 {
 }
 
 
-
 .tooltip {
     position: absolute;
     z-index: 99999;
@@ -273,7 +272,6 @@ input[type=range] {
     width: 6px;
     border-radius: 3px;
 }
-
 
 .vertical-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
