@@ -219,7 +219,9 @@ function drawLegend(svg, countries, color, containerSelector) {
 
   const visibleCountries = new Set([...countries]);
 
-
+  const originalFill = CSS.BackGroundColor;
+  const darkerFill = d3.color(originalFill).darker(1.5).toString();
+  
   [...countries].forEach((country, i) => {
     const className = country.replace(/\s+/g, "_");
     const legendItem = legend.append("g")
@@ -252,24 +254,27 @@ function drawLegend(svg, countries, color, containerSelector) {
       .style("font-size", "12px")
       .style("font-weight", "bold");
 
-    legendItem.on("click", () => {
-      const lines = svg.selectAll(`.line-${className}`);
-      const dots = svg.selectAll(`.dot-${className}`);
-      const isVisible = visibleCountries.has(country);
-
-      lines.style("display", isVisible ? "none" : "inline");
-      dots.style("display", isVisible ? "none" : "inline");
-
-      if (isVisible) {
-        visibleCountries.delete(country);
-        knob.transition().duration(400).attr("cx", knobRadius + 2);
-        text.style("font-weight", "normal");
-      } else {
-        visibleCountries.add(country);
-        knob.transition().duration(400).attr("cx", switchWidth - knobRadius - 2);
-        text.style("font-weight", "bold");
-      }
-    });
+      legendItem.on("click", () => {
+        const lines = svg.selectAll(`.line-${className}`);
+        const dots = svg.selectAll(`.dot-${className}`);
+        const isVisible = visibleCountries.has(country);
+      
+        lines.style("display", isVisible ? "none" : "inline");
+        dots.style("display", isVisible ? "none" : "inline");
+      
+        const rect = switchGroup.select("rect");
+        if (isVisible) {
+          visibleCountries.delete(country);
+          knob.transition().duration(400).attr("cx", knobRadius + 2);
+          rect.transition().duration(400).attr("fill", darkerFill); 
+          text.style("font-weight", "normal");
+        } else {
+          visibleCountries.add(country);
+          knob.transition().duration(400).attr("cx", switchWidth - knobRadius - 2);
+          rect.transition().duration(400).attr("fill", originalFill); 
+          text.style("font-weight", "bold");
+        }
+      });
   });
 }
 
