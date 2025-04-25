@@ -41,6 +41,14 @@ h1 {
     color: var(--text-color);
 }
 
+.olympic-logo {
+    width: 175px;
+    height: auto;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
 /* Sidebar styles */
 .sidebar {
     position: fixed;
