@@ -197,8 +197,13 @@ function drawDots(g, data, xScale, yScale, color, tooltip, container) {
 }
 
 function drawLegend(svg, countries, color, containerSelector) {
-
   d3.selectAll(containerSelector + " .legend").remove();
+  const legendItemHeight = 40;
+  const legendHeight = countries.size * legendItemHeight + 30
+  console.log(legendHeight)
+  d3.select(containerSelector + " .legend-container")
+    .attr("height", legendHeight)
+    .style("height", `${legendHeight}px`);
   const legend = d3.select(containerSelector + " .legend-container")
     .append("g")
     .attr("class", "legend")
@@ -213,7 +218,7 @@ function drawLegend(svg, countries, color, containerSelector) {
     .style("font-weight", "bold");
 
   const visibleCountries = new Set([...countries]);
-  const legendItemHeight = 40;
+
 
   [...countries].forEach((country, i) => {
     const className = country.replace(/\s+/g, "_");

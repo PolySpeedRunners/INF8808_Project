@@ -195,7 +195,6 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
     height: 90%;
     align-self: center;
 }
@@ -464,26 +463,24 @@ select {
     width: 90%;
 }
 
-.legend{
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 10px;
-}
 
 .legend-container {
-    margin-top: 50px;
-    margin-left: 40px;
+    margin-top: 20px;
     width:  100%;
     height: 100%;
     max-width: 130px;
-    max-height: fit-content;
 }
 
 .season-select {
     display: flex;
-    flex-direction: row;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: -70px;
     gap: 10px;
+    padding: 5px 10px;
+}
+
+.season-select > *:first-child {
+    border-bottom: 2px solid var(--text-color);
+    width: 100%;
 }
