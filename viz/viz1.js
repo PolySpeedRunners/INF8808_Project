@@ -166,8 +166,8 @@ export function drawMedalsVsGdpGraph ({ containerSelector, data, defaultYear }) 
         .style('opacity', 1)
         .html(
           `<strong>${d.country}</strong><br>` +
-            `Score: ${d.medalScore}<br>` +
-            `Medals: ${d.totalMedals}<br>` +
+            `Medal score: ${d.medalScore}<br>` +
+            `Medals obtained: ${d.totalMedals}<br>` +
             `Country rank: ${d.rank}<br>` +
             `GDP: ${d3.format(',.0f')(d.gdp)} $<br>` +
             `Population: ${d3.format(',.0f')(d.population)}`
