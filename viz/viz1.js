@@ -168,7 +168,7 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
       .attr("x", -innerHeight / 2)
       .attr("y", -margin.left + 20)
       .attr("class", "y-axis-label")
-      .text("Medal score");
+      .text("Medal Score");
 
         //flattent the data, and then print me all instance where a country fails getColorByCountryCode (returns #999)
     const missingCountries = Object.values(data).flat().filter(d => getColorByCountryCode(d.countryCode) === "#999");
