@@ -54,7 +54,7 @@ function drawRadarCharts (yearData, selectedYear) {
     drawRadarChart({
       containerSelector: `#chart-container-${index + 1}`,
       data: countryData,
-      index: index
+      rank: index + 1
     });
   });
 }
@@ -144,9 +144,9 @@ function formatRadarKey (key) {
  * @param {object} params - Chart configuration.
  * @param {string} params.containerSelector - CSS selector for the chart's container div.
  * @param {object} params.data - The country data including scaled values.
- * @param {number} params.index - The chart index (used to assign container ID).
+ * @param {number} params.rank - The rank of the country
  */
-export function drawRadarChart ({ containerSelector, data, index }) {
+export function drawRadarChart ({ containerSelector, data, rank }) {
   const margin = { top: 50, right: 0, bottom: 0, left: 0 };
   const container = setupContainer(containerSelector);
   const { width, height, innerWidth, innerHeight } = getDimensions(
@@ -162,7 +162,7 @@ export function drawRadarChart ({ containerSelector, data, index }) {
     'minmax_percentage',
     'minmax_AthCount'
   ];
-  const svg = createSVG(container, width, height, data);
+  const svg = createSVG(container, width, height, data, rank);
   const chartGroup = svg
     .append('g')
     .attr(
@@ -238,9 +238,10 @@ function getDimensions (container, margin) {
  * @param {number} width - SVG width.
  * @param {number} height - SVG height.
  * @param {object} data - The country data used for the tooltip.
+ * @param {number} rank - The rank of the country
  * @returns {d3.Selection} The created SVG element.
  */
-function createSVG (container, width, height, data) {
+function createSVG (container, width, height, data, rank) {
   const svg = container
     .append('svg')
     .attr('viewBox', `0 0 ${width} ${height}`)
@@ -263,12 +264,17 @@ function createSVG (container, width, height, data) {
         .style('opacity', 1)
         .html(
           `<strong>${data.countryName}</strong><br>` +
+            `Rank: ${rank}<br>` +
             `GDP per Capita: ${d3.format(',.0f')(data.gdpPerCapita)} $<br>` +
             `Population: ${d3.format(',.0f')(data.population)}<br>` +
             `Fertility: ${data.tfr.toFixed(2)}<br>` +
             `Youth %: ${data.percentage.toFixed(2)}%<br>` +
             `Athletes: ${d3.format(',')(data.AthCount)}<br>` +
-            `Score: ${d3.format(',')(data.medalScore)}`
+            `Medal Score: ${d3.format(',')(data.medalScore)}<br>` +
+            `Medals obtained: ${data.totalMedals}<br>` +
+            `🥇 Gold: ${data.totalGold}<br>` +
+            `🥈 Silver: ${data.totalSilver}<br>` +
+            `🥉 Bronze: ${data.totalBronze}<br>`
         );
 
       // Making the hovered podium larger.
@@ -385,7 +391,7 @@ function drawRadarLabels (group, keys, axisScale, valueScale) {
  * @param {Array<object>} values - Scaled values, each with `axis` and `value`.
  * @param {Function} axisScale - Angular scale.
  */
-function drawRadarShape(group, values, axisScale) {
+function drawRadarShape (group, values, axisScale) {
   const radarLine = d3
     .lineRadial()
     .angle((d) => axisScale(d.axis))

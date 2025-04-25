@@ -33,6 +33,9 @@ export function drawMedalsVsGdpGraph ({ containerSelector, data, defaultYear }) 
         gdp: d.gdp,
         population: d.population,
         totalMedals: d.totalMedals,
+        totalGold: d.totalGold,
+        totalSilver: d.totalSilver,
+        totalBronze: d.totalBronze,
         medalScore: d.medalScore,
         rank: i + 1,
         year: year
@@ -168,6 +171,9 @@ export function drawMedalsVsGdpGraph ({ containerSelector, data, defaultYear }) 
           `<strong>${d.country}</strong><br>` +
             `Medal score: ${d.medalScore}<br>` +
             `Medals obtained: ${d.totalMedals}<br>` +
+            `🥇 Gold: ${d.totalGold}<br>` +
+            `🥈 Silver: ${d.totalSilver}<br>` +
+            `🥉 Bronze: ${d.totalBronze}<br>` +
             `Country rank: ${d.rank}<br>` +
             `GDP: ${d3.format(',.0f')(d.gdp)} $<br>` +
             `Population: ${d3.format(',.0f')(d.population)}`
