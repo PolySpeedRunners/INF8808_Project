@@ -122,6 +122,7 @@ function setupSVG (container, margin, width, height) {
  * @returns {Array<object>} The processed and sorted cumulative data array.
  */
 function processData (data, season) {
+  console.log(data);
   const flattened = Object.entries(data)
     .filter(([key]) => season === 'Both' || key.includes(season))
     .flatMap(([key, countries]) => {
@@ -131,16 +132,20 @@ function processData (data, season) {
         country: d.countryName,
         year,
         score: d.medalScore,
-        medals: d.totalMedals
+        medals: d.totalMedals,
+        totalGold: d.totalGold,
+        totalSilver: d.totalSilver,
+        totalBronze: d.totalBronze
       }));
     });
 
   return d3.groups(flattened, d => d.country)
     .map(([_, values]) => {
       values.sort((a, b) => a.year - b.year);
-      let cumulativeSum = 0;
+      let cumulativeScore = 0;
+      let cumulativeMedals = 0;
       // eslint-disable-next-line no-return-assign
-      return values.map(d => ({ ...d, score: cumulativeSum += d.score }));
+      return values.map(d => ({ ...d, score: cumulativeScore += d.score, medals: cumulativeMedals += d.medals }));
     })
     .flat();
 }

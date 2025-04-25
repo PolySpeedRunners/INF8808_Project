@@ -152,6 +152,9 @@ export function computeDisciplineScoresByCountry (resultsData, nocMap) {
             countryName,
             medalScore: 0,
             totalMedals: 0,
+            totalBronze: 0,
+            totalSilver: 0,
+            totalGold: 0,
             disciplines: {}
           };
 
@@ -179,10 +182,13 @@ export function computeDisciplineScoresByCountry (resultsData, nocMap) {
 
               if (d.medal === 'Gold') {
                 result.disciplines[d.discipline].gold += 1;
+                result.totalGold += 1;
               } else if (d.medal === 'Silver') {
                 result.disciplines[d.discipline].silver += 1;
+                result.totalSilver += 1;
               } else if (d.medal === 'Bronze') {
                 result.disciplines[d.discipline].bronze += 1;
+                result.totalBronze += 1;
               }
             }
           }
