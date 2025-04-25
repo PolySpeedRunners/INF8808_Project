@@ -1,9 +1,15 @@
 import { CSS_CONSTANTS as CSS, CONTINENT_LEGEND_COLOR } from "../assets/constants.js";
 
+
+/**
+ * This file contains the code for the medals vs GDP/population graph.
+ * It includes the functions to draw the graph and update it based on user input.
+ */
+
 /* Local Constants */
 const ANIMATION_TIME = 500;
+// The map of country codes to continent names. No dataset was found for this, so it was created manually.
 const COUNTRY_TO_CONTINENT_MAP = {
-    // Existing entries
     USA: "America", CHN: "Asia", JPN: "Asia", AUS: "Oceania", FRA: "Europe",
     GBR: "Europe", KOR: "Asia", ITA: "Europe", NZL: "Oceania", CAN: "America",
     UZB: "Asia", HUN: "Europe", ESP: "Europe", SWE: "Europe", KEN: "Africa",
@@ -33,6 +39,13 @@ const COUNTRY_TO_CONTINENT_MAP = {
     BER: "America", FIJ: "Oceania", GER: "Europe", HUN: "Europe", FJI: "Oceania",
 };
 
+/**
+ * Draws a graph comparing the medal score of countries to their GDP or population.
+ * 
+ * @param {string} containerSelector The selector for the container element.
+ * @param {object} data The data to be displayed in the graph.
+ * @param {number} defaultYear The default year to be displayed in the graph.
+ */
 export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
 
     const processedDataByYear = {};
@@ -42,6 +55,7 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
         const year = parseInt(yearStr);
 
         const countries = data[yearSeasonKey];
+        // This is to avoid the case where a country has no medals but has a GDP or has no GDP but has medals.
         const yearEntries = Object.entries(countries)
             .filter(([code, d]) => d.gdp >= 2 && d.medalScore > 0)
             .sort((a, b) => b[1].medalScore - a[1].medalScore)
@@ -103,6 +117,7 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
         .style("pointer-events", "none")
         .style("opacity", 0);
 
+    // The values are used to calculate the min and max values for the x axis.
     const maxPopulation = d3.max(Object.values(data).flat(), d => d.population);
     const minPopulation = Math.max(1, d3.min(Object.values(data).flat(), d => d.population));
     const maxGdp = d3.max(Object.values(data).flat(), d => d.gdp);
@@ -172,9 +187,7 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
       .attr("class", "y-axis-label")
       .text("Medal Score");
 
-        //flattent the data, and then print me all instance where a country fails getColorByCountryCode (returns #999)
-    const missingCountries = Object.values(data).flat().filter(d => getColorByCountryCode(d.countryCode) === "#999");
-
+    // Creates the circles for each country for each year. Keeps them transparent until the year is selected.
     const allCircles = g.selectAll("circle")
         .data(Object.values(data).flat())
         .enter()
@@ -205,6 +218,11 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
         })
         .on("mouseout", () => tooltip.style("opacity", 0));
 
+    /**
+     * Creates the graph and updates it based on the selected mode and year.
+     * @param {*} mode The mode of the graph, either "gdp" or "population".
+     * @param {*} year The year to display the data for.
+     */
     function updateGraph(mode, year) {
         const xScale = xScales[mode];
         const yScale = yScales[year];
@@ -270,7 +288,7 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
     let currentMode = "population";
     updateGraph(currentMode, defaultYear);
 
-    // Toggle buttons
+    // Toggle buttons for mode selection
     document.querySelectorAll(".toggle-button").forEach(button => {
         button.addEventListener("click", () => {
             document.querySelectorAll(".toggle-button").forEach(b => b.classList.remove("active"));
@@ -280,7 +298,7 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
             updateGraph(currentMode, selectedYear);
         });
     });
-
+    // Slider for year selection
     const yearSlider = document.getElementById("yearRange");
     const yearLabels = document.querySelectorAll(".year-label");
 
@@ -311,6 +329,12 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
     createLegend(svg, margin);
 }
 
+/**
+ * Creates a legend for the graph.
+ * 
+ * @param {object} svg The SVG element to append the legend to.
+ * @param {object} margin The margin object containing top, right, bottom, and left values.
+ */
 function createLegend(svg, margin) {
     const legendGroup = svg.append("g")
         .attr("class", "graph-legend");
