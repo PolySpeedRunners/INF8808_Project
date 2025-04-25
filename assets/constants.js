@@ -174,6 +174,5 @@ export const COUNTRY_TO_CONTINENT_MAP = {
   BER: 'America',
   FIJ: 'Oceania',
   GER: 'Europe',
-  HUN: 'Europe',
-  FJI: 'Oceania',
+  FJI: 'Oceania'
 };
