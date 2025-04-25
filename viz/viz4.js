@@ -133,9 +133,9 @@ function processData (data, season) {
         year,
         score: d.medalScore,
         medals: d.totalMedals,
-        totalGold: d.totalGold,
-        totalSilver: d.totalSilver,
-        totalBronze: d.totalBronze
+        gold: d.totalGold,
+        silver: d.totalSilver,
+        bronze: d.totalBronze
       }));
     });
 
@@ -144,8 +144,19 @@ function processData (data, season) {
       values.sort((a, b) => a.year - b.year);
       let cumulativeScore = 0;
       let cumulativeMedals = 0;
+      let cumulativeBronze = 0;
+      let cumulativeSilver = 0;
+      let cumulativeGold = 0;
       // eslint-disable-next-line no-return-assign
-      return values.map(d => ({ ...d, score: cumulativeScore += d.score, medals: cumulativeMedals += d.medals }));
+      return values.map(d => (
+        {
+          ...d,
+          score: cumulativeScore += d.score,
+          bronze: cumulativeBronze += d.bronze,
+          silver: cumulativeSilver += d.silver,
+          gold: cumulativeGold += d.gold,
+          medals: cumulativeMedals += d.medals
+        }));
     })
     .flat();
 }
@@ -269,7 +280,6 @@ function drawLines (g, dataByCountry, xScale, yScale, color) {
  * @param {d3.Selection} container The container element to compute tooltip position.
  */
 function drawDots (g, data, xScale, yScale, color, tooltip, container) {
-  // Create the dots.
   const dots = g
     .selectAll('.dot')
     .data(data)
@@ -281,10 +291,12 @@ function drawDots (g, data, xScale, yScale, color, tooltip, container) {
     .attr('r', 0)
     .attr('fill', (d) => color(d.country));
 
-  // Add event listeners.
   dots
     .on('mouseover', (event, d) => {
-      tooltip.style('opacity', 1).html(`<strong>${d.country}</strong><br>Year: ${d.year}<br>Score: ${d.score}`);
+      tooltip.style('opacity', 1).html(`<strong>${d.country}</strong><br>Year: ${d.year}<br>Medal Score: ${d.score}<br>Medals: ${d.medals}<br>` +
+            `🥇 Gold: ${d.gold}<br>` +
+            `🥈 Silver: ${d.silver}<br>` +
+            `🥉 Bronze: ${d.bronze}<br>`);
     })
     .on('mousemove', (event) => {
       const bounds = container.node().getBoundingClientRect();
