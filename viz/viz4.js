@@ -236,9 +236,10 @@ function drawAxes (g, xScale, yScale, innerHeight, ticks) {
  * @param {d3.ScaleOrdinal} color The ordinal color scale.
  */
 function drawLines (g, dataByCountry, xScale, yScale, color) {
-  const lineGenerator = d3.line()
-    .x(d => xScale(d.year))
-    .y(d => yScale(d.score));
+  const lineGenerator = d3
+    .line()
+    .x((d) => xScale(d.year))
+    .y((d) => yScale(d.score));
 
   g.selectAll('.line')
     .data(dataByCountry)
@@ -248,7 +249,18 @@ function drawLines (g, dataByCountry, xScale, yScale, color) {
     .attr('fill', 'none')
     .attr('stroke', ([name]) => color(name))
     .attr('stroke-width', 2)
-    .attr('d', ([, values]) => lineGenerator(values));
+    .attr('d', ([, values]) => lineGenerator(values))
+    .attr('stroke-dasharray', function () {
+      const totalLength = this.getTotalLength();
+      return `${totalLength} ${totalLength}`;
+    })
+    .attr('stroke-dashoffset', function () {
+      return this.getTotalLength();
+    })
+    .transition()
+    .duration(ANIMATION_TIME)
+    .ease(d3.easeLinear)
+    .attr('stroke-dashoffset', 0);
 }
 
 /**
@@ -272,7 +284,7 @@ function drawDots (g, data, xScale, yScale, color, tooltip, container) {
     .attr('class', (d) => `dot dot-${d.country.replace(/\s+/g, '_')}`)
     .attr('cx', (d) => xScale(d.year))
     .attr('cy', (d) => yScale(d.score))
-    .attr('r', 0) // Start with a radius of 0 (invisible)
+    .attr('r', 0)
     .attr('fill', (d) => color(d.country));
 
   // Add event listeners.
@@ -285,6 +297,12 @@ function drawDots (g, data, xScale, yScale, color, tooltip, container) {
       tooltip.style('left', `${event.clientX - bounds.left}px`).style('top', `${event.clientY - bounds.top + 20}px`);
     })
     .on('mouseout', () => tooltip.style('opacity', 0));
+
+  // Add the transition.
+  dots
+    .transition()
+    .duration(ANIMATION_TIME)
+    .attr('r', 4);
 }
 
 /**
