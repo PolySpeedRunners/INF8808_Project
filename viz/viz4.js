@@ -1,5 +1,8 @@
 import { CSS_CONSTANTS as CSS } from '../assets/constants.js';
 
+/* Local Constants */
+const ANIMATION_TIME = 750; // ms
+
 /**
  * Sets a listener on the season select dropdown to update the chart when the season changes.
  *
@@ -163,10 +166,11 @@ function drawAxes (g, xScale, yScale, innerHeight, ticks) {
     .style('fill', CSS.AxisTitleColor);
 }
 
-function drawLines (g, dataByCountry, xScale, yScale, color) {
-  const lineGenerator = d3.line()
-    .x(d => xScale(d.year))
-    .y(d => yScale(d.score));
+function drawLines(g, dataByCountry, xScale, yScale, color) {
+  const lineGenerator = d3
+    .line()
+    .x((d) => xScale(d.year))
+    .y((d) => yScale(d.score));
 
   g.selectAll('.line')
     .data(dataByCountry)
@@ -176,31 +180,49 @@ function drawLines (g, dataByCountry, xScale, yScale, color) {
     .attr('fill', 'none')
     .attr('stroke', ([name]) => color(name))
     .attr('stroke-width', 2)
-    .attr('d', ([, values]) => lineGenerator(values));
+    .attr('d', ([, values]) => lineGenerator(values))
+    .attr('stroke-dasharray', function () {
+      const totalLength = this.getTotalLength();
+      return `${totalLength} ${totalLength}`;
+    })
+    .attr('stroke-dashoffset', function () {
+      return this.getTotalLength();
+    })
+    .transition()
+    .duration(ANIMATION_TIME)
+    .ease(d3.easeLinear)
+    .attr('stroke-dashoffset', 0);
 }
 
-function drawDots (g, data, xScale, yScale, color, tooltip, container) {
-  g.selectAll('.dot')
+function drawDots(g, data, xScale, yScale, color, tooltip, container) {
+  // Create the dots.
+  const dots = g
+    .selectAll('.dot')
     .data(data)
     .enter()
     .append('circle')
-    .attr('class', d => `dot dot-${d.country.replace(/\s+/g, '_')}`)
-    .attr('cx', d => xScale(d.year))
-    .attr('cy', d => yScale(d.score))
-    .attr('r', 4)
-    .attr('fill', d => color(d.country))
+    .attr('class', (d) => `dot dot-${d.country.replace(/\s+/g, '_')}`)
+    .attr('cx', (d) => xScale(d.year))
+    .attr('cy', (d) => yScale(d.score))
+    .attr('r', 0) // Start with a radius of 0 (invisible)
+    .attr('fill', (d) => color(d.country));
+
+  // Add event listeners.
+  dots
     .on('mouseover', (event, d) => {
-      tooltip
-        .style('opacity', 1)
-        .html(`<strong>${d.country}</strong><br>Year: ${d.year}<br>Score: ${d.score}`);
+      tooltip.style('opacity', 1).html(`<strong>${d.country}</strong><br>Year: ${d.year}<br>Score: ${d.score}`);
     })
-    .on('mousemove', event => {
+    .on('mousemove', (event) => {
       const bounds = container.node().getBoundingClientRect();
-      tooltip
-        .style('left', `${event.clientX - bounds.left}px`)
-        .style('top', `${event.clientY - bounds.top + 20}px`);
+      tooltip.style('left', `${event.clientX - bounds.left}px`).style('top', `${event.clientY - bounds.top + 20}px`);
     })
     .on('mouseout', () => tooltip.style('opacity', 0));
+
+  // Add the transition.
+  dots
+    .transition()
+    .duration(ANIMATION_TIME)
+    .attr('r', 4); // Final radius of the dots
 }
 
 function drawLegend (svg, countries, color, containerSelector) {
