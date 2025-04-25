@@ -109,7 +109,6 @@ export function drawBarChart ({
   yearSeason,
   discipline
 }) {
-  console.log(data);
   const margin = { top: 50, right: 20, bottom: 90, left: 80 };
   const ticks = { x: 6, y: 10 };
 

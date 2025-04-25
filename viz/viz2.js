@@ -48,7 +48,6 @@ function drawRadarCharts (yearData, selectedYear) {
   const sortedCountries = Object.entries(yearData)
     .sort(([, a], [, b]) => b.medalScore - a.medalScore)
     .slice(0, 5);
-  console.log(sortedCountries);
 
   sortedCountries.forEach(([_, countryData], index) => {
     drawRadarChart({
@@ -162,7 +161,6 @@ export function drawRadarChart ({ containerSelector, data, index }) {
     'minmax_percentage',
     'minmax_AthCount'
   ];
-  console.log(width);
   const svg = createSVG(container, width, height, data);
   const chartGroup = svg
     .append('g')

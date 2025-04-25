@@ -3,7 +3,7 @@ import { CSS_CONSTANTS as CSS } from '../assets/constants.js';
 /**
  * Sets a listener on the season select dropdown to update the chart when the season changes.
  *
- * @param {Object} data The dataset containing medal scores.
+ * @param {object} data The dataset containing medal scores.
  * @param {string} containerSelector The selector for the chart container.
  * @param {string} [initialSeason="Both"] The initially selected season.
  */
@@ -28,6 +28,14 @@ export function setLineChartListener (
   }
 }
 
+/**
+ * Draws the line chart showing cumulative medal scores over time.
+ *
+ * @param {object} params The parameters object.
+ * @param {object} params.data The dataset containing medal scores.
+ * @param {string} params.containerSelector The selector for the chart container.
+ * @param {string} [params.season="Both"] The season filter.
+ */
 export function drawLineChart ({ data, containerSelector, season = 'Both' }) {
   const margin = { top: 20, right: -20, bottom: 80, left: 80 };
   const ticks = { x: 6, y: 10 };
@@ -39,7 +47,7 @@ export function drawLineChart ({ data, containerSelector, season = 'Both' }) {
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
 
-  const {svg, g } = setupSVG(container, margin, width, height);
+  const { svg, g } = setupSVG(container, margin, width, height);
 
   const cumulativeData = processData(data, season);
   const topCountries = getTopCountries(cumulativeData);
@@ -58,6 +66,12 @@ export function drawLineChart ({ data, containerSelector, season = 'Both' }) {
   drawXAxisLabel(g, innerWidth, innerHeight, margin);
 }
 
+/**
+ * Clears and returns the chart container for new rendering.
+ *
+ * @param {string} containerSelector The selector for the chart container.
+ * @returns {d3.Selection} The cleaned D3 container selection.
+ */
 function setupContainer (containerSelector) {
   const container = d3.select(containerSelector + ' .graph');
   container.selectAll('*').remove();
@@ -65,6 +79,12 @@ function setupContainer (containerSelector) {
   return container;
 }
 
+/**
+ * Creates a styled tooltip element for displaying point data.
+ *
+ * @param {d3.Selection} container The container to append the tooltip to.
+ * @returns {d3.Selection} The tooltip element.
+ */
 function createTooltip (container) {
   return container
     .append('div')
@@ -80,8 +100,16 @@ function createTooltip (container) {
     .style('opacity', 0);
 }
 
+/**
+ * Appends an SVG to the container and creates a chart group element.
+ *
+ * @param {d3.Selection} container The D3 selection of the container.
+ * @param {object} margin The margin object.
+ * @param {number} width The full SVG width.
+ * @param {number} height The full SVG height.
+ * @returns {object} An object with `svg` and `g` (group) elements.
+ */
 function setupSVG (container, margin, width, height) {
-
   const svg = container
     .append('svg')
     .attr('width', width)
@@ -91,9 +119,16 @@ function setupSVG (container, margin, width, height) {
 
   const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
-  return {svg, g};
+  return { svg, g };
 }
 
+/**
+ * Processes raw data into cumulative scores per country by year, filtered by season.
+ *
+ * @param {object} data The raw data object.
+ * @param {string} season The selected season ("Summer", "Winter", or "Both").
+ * @returns {Array<object>} The processed and sorted cumulative data array.
+ */
 function processData (data, season) {
   const flattened = Object.entries(data)
     .filter(([key]) => season === 'Both' || key.includes(season))
@@ -104,7 +139,7 @@ function processData (data, season) {
         country: d.countryName,
         year,
         score: d.medalScore,
-        medals: d.totalMedals,
+        medals: d.totalMedals
       }));
     });
 
@@ -112,11 +147,18 @@ function processData (data, season) {
     .map(([_, values]) => {
       values.sort((a, b) => a.year - b.year);
       let cumulativeSum = 0;
+      // eslint-disable-next-line no-return-assign
       return values.map(d => ({ ...d, score: cumulativeSum += d.score }));
     })
     .flat();
 }
 
+/**
+ * Extracts the top 10 countries based on their maximum cumulative score.
+ *
+ * @param {Array<object>} data The processed data array.
+ * @returns {Set<string>} A set of top country names.
+ */
 function getTopCountries (data) {
   const totalByCountry = d3.rollups(
     data,
@@ -132,6 +174,15 @@ function getTopCountries (data) {
   );
 }
 
+/**
+ * Creates D3 x and y linear scales based on years and data values.
+ *
+ * @param {Array<number>} years The sorted list of years.
+ * @param {Array} dataByCountry The grouped data by country.
+ * @param {number} innerWidth The width of the drawable chart area.
+ * @param {number} innerHeight The height of the drawable chart area.
+ * @returns {object} An object containing xScale and yScale.
+ */
 function createScales (years, dataByCountry, innerWidth, innerHeight) {
   const xScale = d3
     .scaleLinear()
@@ -147,6 +198,15 @@ function createScales (years, dataByCountry, innerWidth, innerHeight) {
   return { xScale, yScale };
 }
 
+/**
+ * Draws the x and y axes for the chart using the provided scales.
+ *
+ * @param {d3.Selection} g The chart group element.
+ * @param {d3.ScaleLinear} xScale The x-axis scale.
+ * @param {d3.ScaleLinear} yScale The y-axis scale.
+ * @param {number} innerHeight The chart height without margins.
+ * @param {object} ticks The tick configuration for axes.
+ */
 function drawAxes (g, xScale, yScale, innerHeight, ticks) {
   const xAxis = d3.axisBottom(xScale).ticks(d3.tickStep(...xScale.domain(), 2)).tickFormat(d3.format('d'));
   const yAxis = d3.axisLeft(yScale).ticks(ticks.y);
@@ -163,6 +223,15 @@ function drawAxes (g, xScale, yScale, innerHeight, ticks) {
     .style('fill', CSS.AxisTitleColor);
 }
 
+/**
+ * Draws the line paths for each country's data over time.
+ *
+ * @param {d3.Selection} g The chart group element.
+ * @param {Array} dataByCountry The grouped data array by country.
+ * @param {d3.ScaleLinear} xScale The x-axis scale.
+ * @param {d3.ScaleLinear} yScale The y-axis scale.
+ * @param {d3.ScaleOrdinal} color The ordinal color scale.
+ */
 function drawLines (g, dataByCountry, xScale, yScale, color) {
   const lineGenerator = d3.line()
     .x(d => xScale(d.year))
@@ -179,6 +248,17 @@ function drawLines (g, dataByCountry, xScale, yScale, color) {
     .attr('d', ([, values]) => lineGenerator(values));
 }
 
+/**
+ * Draws data points on the lines.
+ *
+ * @param {d3.Selection} g The chart group element.
+ * @param {Array<object>} data The processed data array.
+ * @param {d3.ScaleLinear} xScale The x-axis scale.
+ * @param {d3.ScaleLinear} yScale The y-axis scale.
+ * @param {d3.ScaleOrdinal} color The ordinal color scale.
+ * @param {d3.Selection} tooltip The tooltip element.
+ * @param {d3.Selection} container The container element to compute tooltip position.
+ */
 function drawDots (g, data, xScale, yScale, color, tooltip, container) {
   g.selectAll('.dot')
     .data(data)
@@ -203,18 +283,25 @@ function drawDots (g, data, xScale, yScale, color, tooltip, container) {
     .on('mouseout', () => tooltip.style('opacity', 0));
 }
 
+/**
+ * Draws an interactive legend allowing toggling of country visibility.
+ *
+ * @param {d3.Selection} svg The SVG selection.
+ * @param {Set<string>} countries A set of country names.
+ * @param {d3.ScaleOrdinal} color The color scale for countries.
+ * @param {string} containerSelector The container selector for placing the legend.
+ */
 function drawLegend (svg, countries, color, containerSelector) {
   d3.selectAll(containerSelector + ' .legend').remove();
   const legendItemHeight = 40;
-  const legendHeight = countries.size * legendItemHeight + 30
-  console.log(legendHeight)
+  const legendHeight = countries.size * legendItemHeight + 30;
   d3.select(containerSelector + ' .legend-container')
     .attr('height', legendHeight)
     .style('height', `${legendHeight}px`);
   const legend = d3.select(containerSelector + ' .legend-container')
     .append('g')
     .attr('class', 'legend')
-    .attr('width', '100%')
+    .attr('width', '100%');
 
   legend.append('text')
     .attr('y', -10)
@@ -244,7 +331,7 @@ function drawLegend (svg, countries, color, containerSelector) {
       .attr('width', switchWidth)
       .attr('height', switchHeight)
       .attr('fill', CSS.BackGroundColor)
-      .attr('stroke', CSS.ActiveButtonColor)
+      .attr('stroke', CSS.ActiveButtonColor);
 
     const knob = switchGroup.append('circle')
       .attr('cx', switchWidth - knobRadius - 2)
@@ -254,7 +341,7 @@ function drawLegend (svg, countries, color, containerSelector) {
 
     const text = legendItem.append('text')
       .attr('x', switchWidth + 5)
-      .attr('y', switchHeight/2 + 5)
+      .attr('y', switchHeight / 2 + 5)
       .text(country)
       .style('fill', CSS.TextColor)
       .style('font-family', CSS.Font)
@@ -285,6 +372,13 @@ function drawLegend (svg, countries, color, containerSelector) {
   });
 }
 
+/**
+ * Adds the y-axis label to the chart.
+ *
+ * @param {d3.Selection} g The chart group element.
+ * @param {number} innerHeight The chart height without margins.
+ * @param {object} margin The margin configuration.
+ */
 function drawYAxisLabel (g, innerHeight, margin) {
   g.append('text')
     .attr('x', -innerHeight / 2)
@@ -293,10 +387,18 @@ function drawYAxisLabel (g, innerHeight, margin) {
     .text('Medal Score');
 }
 
+/**
+ * Adds the x-axis label to the chart.
+ *
+ * @param {d3.Selection} g The chart group element.
+ * @param {number} innerWidth The chart width without margins.
+ * @param {number} innerHeight The chart height without margins.
+ * @param {object} margin The margin configuration.
+ */
 function drawXAxisLabel (g, innerWidth, innerHeight, margin) {
   g.append('text')
     .attr('x', innerWidth / 2)
-    .attr('y', innerHeight + margin.bottom/2 + 10)
+    .attr('y', innerHeight + margin.bottom / 2 + 10)
     .attr('class', 'x-axis-label')
     .text('Years');
 }
