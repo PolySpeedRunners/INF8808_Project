@@ -19,6 +19,15 @@ body {
     flex-direction: column;
 }
 
+h1 {
+    font-size: 36px;
+    font-weight: bold;
+    margin: 20px 0;
+    text-align: center;
+    color: var(--text-color);
+    font-family: 'Inter', sans-serif;
+}
+
 .header {
     background-color: var(--secondary-color);
     text-align: center;
@@ -28,7 +37,6 @@ body {
 }
 
 .header h1 {
-    margin: 0;
     font-size: 36px;
     color: var(--text-color);
 }
