@@ -283,7 +283,7 @@ function drawYAxisLabel(g, innerHeight, margin) {
     .attr("x", -innerHeight / 2)
     .attr("y", -margin.left + 20)
     .attr("class", "y-axis-label")
-    .text("Medal score");
+    .text("Medal Score");
 }
 
 function drawXAxisLabel(g, innerWidth, innerHeight, margin) {

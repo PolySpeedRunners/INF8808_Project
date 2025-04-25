@@ -29,7 +29,7 @@
                 These visualizations are designed for anyone interested in learning more about the Olympics, regardless of their background.<br><br>
                 By transforming complex datasets into intuitive visual formats, the webpage aims to make it easier for the general public to identify trends, correlations, and disparities between countries and sports disciplines.<br><br>
                 This helps facilitate a quicker and more accessible understanding of Olympic performance, even for those without specialized knowledge.<br><br>
-                <strong>A performance score is attributed to each country using the formula: Score = 3 × Gold + 2 × Silver + 1 × Bronze.</strong>
+                <strong>A medal score is attributed to each country using the formula: Score = 3 × Gold + 2 × Silver + 1 × Bronze.</strong>
               </p>
         </section>
         <section id="section1" class="visual-section data-viz">
@@ -65,7 +65,11 @@
                 </div>     
             </div>
             <p class="description center">
-                This visualization presents the performance scores of countries based on their GDP or population for a specific Olympic season.<br>
+                This visualization presents the performance scores of countries based on their GDP or population for a 
+                specific Olympic season. It allows for comparisons between nations of different sizes and continents, 
+                revealing how efficiently countries convert resources or population into performance.  Patterns may emerge, 
+                such as smaller nations outperforming larger ones in efficiency or wealthier countries securing higher medal scores.
+                Users can filter by season and choose between GDP or population as the basis for comparison.
             </p>       
         </section>
         <section id="section2" class="visual-section data-viz">
@@ -93,8 +97,11 @@
             </div>
           
             <p class="description center">
-                This visualization ranks countries based on their medal scores, utilizing a radar chart to showcase their demographic and economic profiles.<br><br>
-                A min-max scaling technique is applied to normalize the variables, ensuring each is represented on a scale from 1 to 10 in the radar chart.
+                This visualization ranks countries based on their medal scores, using radar charts to compare their demographic 
+                and economic profiles. It highlights differences in factors like GDP per capita, youth population, 
+                and athlete count, offering insights into how these indicators may influence Olympic success. 
+                All variables are normalized on a 1–10 scale for easy visual comparison.
+                Hovering over a country reveals its name and the corresponding values for each indicator.
             </p>
               
         </section>
@@ -103,24 +110,29 @@
             <!-- <h1 class="title">Visualisation 3</h1> -->
             <div class="visualization-container">
                 <h1 class="graph-title">
-                    Number of olympic medals by discipline
+                    Olympic Medal Scores by Discipline and Country
                 </h1>
                 <div class="controls-viz3">
                     <label for="year-select">Season</label>
                     <select id="year-select"></select>
-                    <label for="discipline-select">Discipline :</label>
+                    <label for="discipline-select">Discipline</label>
                     <select id="discipline-select"></select>
                 </div>
                 <div class="graph-container">
                     <div class="graph graph3"></div>
                 </div>
             </div>
-            <p class="description center">Countries are ranked in this visualization according to their medal scores, categorized by their Olympic Season and Discipline.</p>
+            <p class="description center">
+                This visualization ranks countries based on their medal scores, categorized by Olympic season and discipline. 
+                It highlights national strengths in specific sports, such as Alpine Skiing, and offers a quick comparison of 
+                medal performance across top-performing countries within the selected category.
+                Users can filter by season and discipline to explore trends and patterns in Olympic performance.
+            </p>
         </section>
         <section id="section4" class="visual-section data-viz">
             <div class="visualization-container">
                 <h1 class="graph-title">
-                    Number of olympic medals by season
+                    Performance Trends of Top Countries by Olympic Medal Scores
                 </h1>
                 <div class="graph-and-controls">
                     <div class="graph"></div>
@@ -139,7 +151,10 @@
                 </div>
             </div>
             <p class="description center">
-                This visualization showcases the top 10 countries ranked by their medal scores, along with their performance trends over the years, for the Winter Olympics, Summer Olympics, or both.
+                This visualization showcases the top 10 countries ranked by their medal scores, tracking performance trends 
+                across Olympic years. It highlights how national medal totals have evolved over time, revealing patterns 
+                such as consistent dominance or emerging competitors. 
+                Users can filter by season to explore trends in Summer, Winter, or both Olympic Games.
             </p>              
 
         </section>
