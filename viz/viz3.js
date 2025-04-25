@@ -184,8 +184,8 @@ export function drawBarChart({
     .on("mousemove", (event) => {
       const bounds = container.node().getBoundingClientRect();
       tooltip
-        .style("left", `${event.clientX - bounds.left + 10}px`)
-        .style("top", `${event.clientY - bounds.top - 30}px`);
+        .style("left", `${event.clientX - bounds.left + 25}px`)
+        .style("top", `${event.clientY - bounds.top}px`);
     })
     .on("mouseout", () => {
       tooltip.style("opacity", 0);
