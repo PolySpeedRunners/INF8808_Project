@@ -5,8 +5,8 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
 
     const COUNTRY_TO_CONTINENT_MAP = {
         // Existing entries
-        USA: "America", CHN: "Asia", JPN: "Asia", AUS: "Australia", FRA: "Europe",
-        GBR: "Europe", KOR: "Asia", ITA: "Europe", NZL: "Australia", CAN: "America",
+        USA: "America", CHN: "Asia", JPN: "Asia", AUS: "Oceania", FRA: "Europe",
+        GBR: "Europe", KOR: "Asia", ITA: "Europe", NZL: "Oceania", CAN: "America",
         UZB: "Asia", HUN: "Europe", ESP: "Europe", SWE: "Europe", KEN: "Africa",
         NOR: "Europe", IRL: "Europe", BRA: "America", UKR: "Europe", ROU: "Europe",
         GEO: "Europe", BEL: "Europe", SRB: "Europe", CZE: "Europe", AZE: "Asia",
@@ -31,7 +31,7 @@ export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
         MRI: "Africa", TOG: "Africa", AFG: "Asia", PHI: "Asia", KOS: "Europe",
         BDI: "Africa", GRN: "America", GUA: "America", BOT: "Africa", GAB: "Africa",
         MNE: "Europe", NAM: "Africa", BUR: "Africa", PUR: "America", NIG: "Africa",
-        BER: "America", FIJ: "Oceania", GER: "Europe", HUN: "Europe",
+        BER: "America", FIJ: "Oceania", GER: "Europe", HUN: "Europe", FJI: "Oceania",
     };
     const processedDataByYear = {};
 
