@@ -84,18 +84,7 @@ export function drawBarChart({
   const container = d3.select(containerSelector + " .graph");
   container.selectAll("*").remove();
   container.selectAll("div.tooltip").remove();
-  const tooltip = container
-    .append("div")
-    .attr("class", "tooltip")
-    .style("position", "absolute")
-    .style("padding", "8px")
-    .style("background", "var(--secondary-color)")
-    .style("border", "1px solid var(--text-color)")
-    .style("color", "var(--text-color)")
-    .style("border-radius", "4px")
-    .style("font-size", "14px")
-    .style("pointer-events", "none")
-    .style("opacity", 0);
+  const tooltip = createToolTip(container);
 
   const width = container.node().clientWidth;
   const height = container.node().clientHeight;
@@ -241,4 +230,25 @@ export function drawBarChart({
     .style("font-weight", "bold")
     .style("fill", CSS.TextColor)
     .text(`${discipline} Medals in ${yearSeasonFormatted} Olympics`);
+}
+
+/**
+ * Creates a tooltip div element which appears when hovering on a bar chart.
+ * 
+ * @param {*} container The d3 selection of the graph's container.
+ * @returns The tooltip div element.
+ */
+function createToolTip(container) {
+  return container
+    .append("div")
+    .attr("class", "tooltip")
+    .style("position", "absolute")
+    .style("padding", "8px")
+    .style("background", CSS.BackGroundColor)
+    .style("border", `1px solid ${CSS.TextColor}`)
+    .style("color", CSS.TextColor)
+    .style("border-radius", "4px")
+    .style("font-size", "14px")
+    .style("pointer-events", "none")
+    .style("opacity", 0);
 }

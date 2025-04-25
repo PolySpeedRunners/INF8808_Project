@@ -24,7 +24,7 @@ export function chooseYearRadarChart(data) {
     applyMinMaxScaling(yearData);
     drawRadarCharts(yearData, selectedYear);
   });
-  
+
   // The initial year should be the last year in the list.
   const initialYear = years[years.length - 1];
   yearSelect.value = initialYear;
@@ -322,6 +322,12 @@ function drawRadarShape(group, values, axisScale) {
     .style("pointer-events", "all");
 }
 
+/**
+ * Creates a tooltip div element which appears when hovering on a radar chart.
+ * 
+ * @param {*} container The d3 selection of the graph's container.
+ * @returns The tooltip div element.
+ */
 function createTooltip(container) {
   return container
     .append("div")
