@@ -1,4 +1,4 @@
-import { loadResults, loadDemography, loadGenc } from './DataReader.js';
+import { loadResults, loadDemography, loadGenc } from './data-reader.js';
 import { drawMedalsVsGdpGraph } from './viz/viz1.js';
 import { chooseYearRadarChart } from './viz/viz2.js';
 import { drawBarChart, populateYearAndDisciplineOptions } from './viz/viz3.js';
