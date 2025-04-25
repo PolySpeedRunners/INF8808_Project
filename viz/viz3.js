@@ -8,7 +8,7 @@ export const yearSelect = document.getElementById('year-select');
 export const disciplineSelect = document.getElementById('discipline-select');
 
 /* Local Constants */
-const ANIMATION_TIME = 500;
+const ANIMATION_TIME = 500; // ms
 const section3Container = '#section3';
 
 /**
