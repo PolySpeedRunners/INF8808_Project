@@ -128,7 +128,9 @@ export function drawRadarChart({ containerSelector, data, index }) {
   // Add the first value to the end of the array to close the radar shape
   countryValues.push(countryValues[0]);
 
-  drawRadarShape(chartGroup, countryValues, radarAxis, data, container);
+  const sectionContainer = d3.select(container.node().closest("#section2"));
+  sectionContainer.style("position", "relative");
+  drawRadarShape(chartGroup, countryValues, radarAxis, data, sectionContainer);
 
   drawTitle(svg, width, margin.top, data.countryName);
 }
@@ -274,7 +276,8 @@ function drawRadarShape(group, values, axisScale, data, container) {
     .attr("stroke-width", 2)
     .style("pointer-events", "all");
 
-  const tooltip = createTooltip();
+  const tooltip = createTooltip(container);
+
 
   path.on("mouseover", () => {
     tooltip.style("opacity", 1)
@@ -287,19 +290,17 @@ function drawRadarShape(group, values, axisScale, data, container) {
         `Athletes: ${d3.format(",")(data.AthCount)}<br>` +
         `Score: ${d3.format(",")(data.medalScore)}`
       );
-  }).on("mousemove", (event) => {
-    tooltip
-      .style("left", `${event.pageX + 15}px`)
-      .style("top", `${event.pageY - 120}px`);
   }).on("mouseout", () => {
     tooltip.style("opacity", 0);
   });
 }
 
-function createTooltip() {
-  return d3.select("main").append("div")
+function createTooltip(container) {
+  return container.append("div")
     .attr("class", "tooltip")
     .style("position", "absolute")
+    .style("top", "100px")
+    .style("right", "70px")
     .style("padding", "8px")
     .style("background", "var(--secondary-color)")
     .style("border", "1px solid var(--text-color)")
