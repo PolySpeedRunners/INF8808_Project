@@ -221,8 +221,8 @@ export function drawMedalsVsGdpGraph ({ containerSelector, data, defaultYear }) 
       .duration(ANIMATION_TIME)
       .attr('cx', (d) => xScale(d[mode]))
       .attr('cy', (d) => yScale(d.medalScore))
-      .style('opacity', (d) => (d.year == year ? 1 : 0))
-      .style('pointer-events', (d) => (d.year == year ? 'auto' : 'none'));
+      .style('opacity', (d) => (d.year === year ? 1 : 0))
+      .style('pointer-events', (d) => (d.year === year ? 'auto' : 'none'));
     updateTitle(mode);
   }
 
