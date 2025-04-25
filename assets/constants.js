@@ -9,18 +9,6 @@ export const MEDAL_VALUES = {
 };
 
 /**
- * Constants imported from the stylesheet.
- */
-export const CSS_CONSTANTS = {
-  AxisTitleColor: getComputedStyle(document.documentElement).getPropertyValue('--axis-title-color').trim(),
-  Font: getComputedStyle(document.documentElement).getPropertyValue('--font-family').trim(),
-  TextColor: getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim(),
-  RadarColor: getComputedStyle(document.documentElement).getPropertyValue('--button-active-color').trim(),
-  BackGroundColor: getComputedStyle(document.documentElement).getPropertyValue('--background-color').trim(),
-  ActiveButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--button-active-color').trim()
-};
-
-/**
  * Colors used for the continents in the legend.
  * Independant from styles.css.
  */

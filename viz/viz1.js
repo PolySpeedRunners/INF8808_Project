@@ -1,4 +1,4 @@
-import { CSS_CONSTANTS as CSS, CONTINENT_LEGEND_COLOR, COUNTRY_TO_CONTINENT_MAP } from '../assets/constants.js';
+import { CONTINENT_LEGEND_COLOR, COUNTRY_TO_CONTINENT_MAP } from '../assets/constants.js';
 
 /**
  * This file contains the code for the medals vs GDP/population graph.
@@ -72,8 +72,8 @@ export function drawMedalsVsGdpGraph ({ containerSelector, data, defaultYear }) 
     .attr('preserveAspectRatio', 'xMidYMid meet')
     .style('width', '100%')
     .style('height', '100%')
-    .style('font-family', CSS.Font)
-    .style('color', CSS.TextColor);
+    .style('font-family', 'var(--font-family)')
+    .style('color', 'var(--text-color)');
 
   const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top + 30})`);
   const tooltip = container
@@ -157,7 +157,7 @@ export function drawMedalsVsGdpGraph ({ containerSelector, data, defaultYear }) 
     .append('circle')
     .attr('r', 6)
     .attr('fill', (d) => getColorByCountryCode(d.countryCode))
-    .attr('stroke', CSS.TextColor)
+    .attr('stroke', 'var(--text-color)')
     .attr('stroke-width', 1)
     .style('opacity', 0)
     .style('pointer-events', 'none')
@@ -317,9 +317,9 @@ function createLegend (svg, margin) {
       .append('text')
       .attr('x', legendSquareSize + legendSpacing) // Position text to the right of the square
       .attr('y', legendSquareSize - 3) // Vertically align text with the square
-      .style('font-family', CSS.Font)
+      .style('font-family', 'var(--font-family)')
       .style('font-size', '14px')
-      .style('fill', CSS.TextColor)
+      .style('fill', 'var(--text-color)')
       .text(continent);
   });
 }

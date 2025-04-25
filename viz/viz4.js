@@ -1,5 +1,3 @@
-import { CSS_CONSTANTS as CSS } from '../assets/constants.js';
-
 /* Local Constants */
 const ANIMATION_TIME = 750; // ms
 
@@ -108,8 +106,8 @@ function setupSVG (container, margin, width, height) {
     .append('svg')
     .attr('width', width)
     .attr('height', height)
-    .style('font-family', CSS.Font)
-    .style('color', CSS.TextColor);
+    .style('font-family', 'var(--font-family)')
+    .style('color', 'var(--text-color)');
 
   const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
@@ -209,12 +207,12 @@ function drawAxes (g, xScale, yScale, innerHeight, ticks) {
     .attr('transform', `translate(0,${innerHeight})`)
     .call(xAxis)
     .selectAll('text')
-    .style('fill', CSS.AxisTitleColor);
+    .style('fill', 'var(--axis-title-color)');
 
   g.append('g')
     .call(yAxis)
     .selectAll('text')
-    .style('fill', CSS.AxisTitleColor);
+    .style('fill', 'var(--axis-title-color)');
 }
 
 /**
@@ -319,14 +317,14 @@ function drawLegend (svg, countries, color, containerSelector) {
   legend.append('text')
     .attr('y', -10)
     .text('Legend')
-    .style('fill', CSS.TextColor)
-    .style('font-family', CSS.Font)
+    .style('fill', 'var(--text-color)')
+    .style('font-family', 'var(--font-family)')
     .style('font-size', '12px')
     .style('font-weight', 'bold');
 
   const visibleCountries = new Set([...countries]);
 
-  const originalFill = CSS.BackGroundColor;
+  const originalFill = 'var(--background-color)';
   const darkerFill = d3.color(originalFill).darker(1.5).toString();
 
   [...countries].forEach((country, i) => {
@@ -343,8 +341,8 @@ function drawLegend (svg, countries, color, containerSelector) {
       .attr('ry', switchHeight / 2)
       .attr('width', switchWidth)
       .attr('height', switchHeight)
-      .attr('fill', CSS.BackGroundColor)
-      .attr('stroke', CSS.ActiveButtonColor);
+      .attr('fill', 'var(--background-color)')
+      .attr('stroke', 'var(--button-active-color)');
 
     const knob = switchGroup.append('circle')
       .attr('cx', switchWidth - knobRadius - 2)
@@ -356,8 +354,8 @@ function drawLegend (svg, countries, color, containerSelector) {
       .attr('x', switchWidth + 5)
       .attr('y', switchHeight / 2 + 5)
       .text(country)
-      .style('fill', CSS.TextColor)
-      .style('font-family', CSS.Font)
+      .style('fill', 'var(--text-color)')
+      .style('font-family', 'var(--font-family)')
       .style('font-size', '12px')
       .style('font-weight', 'bold');
 

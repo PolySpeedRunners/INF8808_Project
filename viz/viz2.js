@@ -1,5 +1,3 @@
-import { CSS_CONSTANTS as CSS } from '../assets/constants.js';
-
 /* Local Constants */
 const ANIMATION_TIME = 500; // ms
 
@@ -338,7 +336,7 @@ function drawRadarAxes (group, keys, axisScale, valueScale) {
       .attr('y1', 0)
       .attr('x2', valueScale(10) * Math.cos(angle))
       .attr('y2', valueScale(10) * Math.sin(angle))
-      .attr('stroke', CSS.TextColor)
+      .attr('stroke', 'var(--text-color)')
       .attr('stroke-width', 2);
   });
 }
@@ -373,8 +371,8 @@ function drawRadarLabels (group, keys, axisScale, valueScale) {
       .attr('y', yPos)
       .attr('dy', '-10px')
       .style('text-anchor', 'middle')
-      .style('font-family', CSS.Font)
-      .style('fill', CSS.TextColor)
+      .style('font-family', 'var(--font-family)')
+      .style('fill', 'var(--text-color)')
       .style('font-size', '12px')
       .text(formatRadarKey(key));
   });
@@ -394,15 +392,15 @@ function drawRadarShape(group, values, axisScale) {
     .radius((d) => d.value);
 
   // Create a fill color with opacity
-  const fillColor = d3.color(CSS.RadarColor).copy({ opacity: 0.2 }).toString();
 
   // Append the path
   const path = group
     .append('path')
     .datum(values)
     .attr('d', radarLine)
-    .attr('fill', fillColor)
-    .attr('stroke', CSS.RadarColor)
+    .attr('fill', 'var(--button-active-color)')
+    .attr('fill-opacity', 0.2)
+    .attr('stroke', 'var(--button-active-color)')
     .attr('stroke-width', 2)
     .style('pointer-events', 'all')
     .attr('stroke-dasharray', function () {
@@ -448,8 +446,8 @@ function drawTitle (svg, width, topMargin, countryName) {
     .attr('x', width / 2)
     .attr('y', topMargin / 1.2)
     .attr('text-anchor', 'middle')
-    .style('font-family', CSS.Font)
+    .style('font-family', 'var(--font-family)')
     .style('font-size', '25px')
-    .style('fill', CSS.TextColor)
+    .style('fill', 'var(--text-color)')
     .text(`${countryName}`);
 }

@@ -1,8 +1,4 @@
-import {
-  CSS_CONSTANTS as CSS,
-  MEDAL_COLORS,
-  MEDAL_VALUES
-} from '../assets/constants.js';
+import { MEDAL_COLORS, MEDAL_VALUES } from '../assets/constants.js';
 
 export const yearSelect = document.getElementById('year-select');
 export const disciplineSelect = document.getElementById('discipline-select');
@@ -129,8 +125,8 @@ export function drawBarChart ({
     .attr('preserveAspectRatio', 'xMidYMid meet') // Maintain aspect ratio.
     .style('width', '100%')
     .style('height', '100%')
-    .style('font-family', CSS.Font)
-    .style('color', CSS.TextColor);
+    .style('font-family', 'var(--font-family)')
+    .style('color', 'var(--text-color)');
 
   const chart = svg
     .append('g')
@@ -221,8 +217,8 @@ export function drawBarChart ({
     .selectAll('text')
     .style('text-anchor', 'end')
     .attr('transform', 'rotate(-35)')
-    .style('font-family', CSS.Font)
-    .style('fill', CSS.TextColor)
+    .style('font-family', 'var(--font-family)')
+    .style('fill', 'var(--text-color)')
     .style('font-weight', (d) => (d === topCountryName ? 'bold' : 'normal'));
 
   chart
@@ -235,8 +231,8 @@ export function drawBarChart ({
         .tickFormat(d3.format('d'))
     )
     .selectAll('text')
-    .style('font-family', CSS.Font)
-    .style('fill', CSS.TextColor);
+    .style('font-family', 'var(--font-family)')
+    .style('fill', 'var(--text-color)');
 
   chart
     .append('text')
@@ -261,10 +257,10 @@ export function drawBarChart ({
     .attr('x', width / 2)
     .attr('y', margin.top / 2)
     .attr('text-anchor', 'middle')
-    .style('font-family', CSS.Font)
+    .style('font-family', 'var(--font-family)')
     .style('font-size', '22px')
     .style('font-weight', 'bold')
-    .style('fill', CSS.TextColor)
+    .style('fill', 'var(--text-color)')
     .text(`${discipline} Medals in ${yearSeasonFormatted} Olympics`);
 }
 
