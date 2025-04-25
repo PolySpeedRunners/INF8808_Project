@@ -161,19 +161,19 @@
     </main>
 
     <script>
-        document.querySelectorAll('.sidebar button').forEach(button => {
-            button.addEventListener('click', () => {
+        document.querySelectorAll(".sidebar button").forEach(button => {
+            button.addEventListener("click", () => {
                 document.querySelector(button.dataset.target).scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'center'
+                    behavior: "smooth",
+                    block: "center"
                 });
             });
         });
 
-        window.addEventListener('scroll', () => {
-            const sections = document.querySelectorAll('.visual-section');
-            const sidebarButtons = document.querySelectorAll('.sidebar button');
-            let currentSection = '';
+        window.addEventListener("scroll", () => {
+            const sections = document.querySelectorAll(".visual-section");
+            const sidebarButtons = document.querySelectorAll(".sidebar button");
+            let currentSection = "";
             
             sections.forEach(section => {
                 const rect = section.getBoundingClientRect();
@@ -184,9 +184,9 @@
             
             sidebarButtons.forEach(button => {
                 if (button.dataset.target === currentSection) {
-                    button.classList.add('active');
+                    button.classList.add("active");
                 } else {
-                    button.classList.remove('active');
+                    button.classList.remove("active");
                 }
             });
         });
