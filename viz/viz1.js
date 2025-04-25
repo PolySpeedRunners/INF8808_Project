@@ -1,38 +1,40 @@
 import { CSS_CONSTANTS as CSS, CONTINENT_LEGEND_COLOR } from "../assets/constants.js";
 
-export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
-    const ANIMATION_TIME = 500;
+/* Local Constants */
+const ANIMATION_TIME = 500;
+const COUNTRY_TO_CONTINENT_MAP = {
+    // Existing entries
+    USA: "America", CHN: "Asia", JPN: "Asia", AUS: "Oceania", FRA: "Europe",
+    GBR: "Europe", KOR: "Asia", ITA: "Europe", NZL: "Oceania", CAN: "America",
+    UZB: "Asia", HUN: "Europe", ESP: "Europe", SWE: "Europe", KEN: "Africa",
+    NOR: "Europe", IRL: "Europe", BRA: "America", UKR: "Europe", ROU: "Europe",
+    GEO: "Europe", BEL: "Europe", SRB: "Europe", CZE: "Europe", AZE: "Asia",
+    BRN: "Asia", AUT: "Europe", HKG: "Asia", ISR: "Asia", POL: "Europe",
+    KAZ: "Asia", JAM: "America", THA: "Asia", ETH: "Africa", ECU: "America",
+    ARG: "America", EGY: "Africa", TUN: "Africa", CHI: "America",
+    LCA: "America", UGA: "Africa", DOM: "America", MAR: "Africa",
+    DMA: "America", PAK: "Asia", TUR: "Europe", MEX: "America", ARM: "Asia",
+    COL: "America", KGZ: "Asia", LTU: "Europe", IND: "Asia", MDA: "Europe",
+    CYP: "Europe", JOR: "Asia", PAN: "America", TJK: "Asia", ALB: "Europe",
+    CPV: "Africa", CIV: "Africa", PER: "America", QAT: "Asia", SGP: "Asia",
+    SVK: "Europe", FIN: "Europe", BLR: "Europe", EST: "Europe", SMR: "Europe",
+    MKD: "Europe", TKM: "Asia", SYR: "Asia", GHA: "Africa", CUB: "America",
+    LIE: "Europe", LAT: "Europe", RUS: "Europe", DEU: "Europe", NED: "Europe",
+    NLD: "Europe", CHE: "Europe", POR: "Europe", SVN: "Europe",
+    BUL: "Europe", GRE: "Europe", SUI: "Europe", DEN: "Europe", INA: "Asia",
+    IRI: "Asia", ALG: "Africa", BAH: "America", NGR: "Africa", RSA: "Africa",
+    SLO: "Europe", CRO: "Europe", KSA: "Asia", TTO: "America", CMR: "Africa",
+    MOZ: "Africa", URU: "America", SRI: "Asia", CRC: "America", KUW: "Asia",
+    ISL: "Europe", BAR: "America", ZIM: "Africa", UAE: "Asia", VEN: "America",
+    PAR: "America", MGL: "Asia", ERI: "Africa", SUD: "Africa", SAM: "Oceania",
+    MRI: "Africa", TOG: "Africa", AFG: "Asia", PHI: "Asia", KOS: "Europe",
+    BDI: "Africa", GRN: "America", GUA: "America", BOT: "Africa", GAB: "Africa",
+    MNE: "Europe", NAM: "Africa", BUR: "Africa", PUR: "America", NIG: "Africa",
+    BER: "America", FIJ: "Oceania", GER: "Europe", HUN: "Europe", FJI: "Oceania",
+};
 
-    const COUNTRY_TO_CONTINENT_MAP = {
-        // Existing entries
-        USA: "America", CHN: "Asia", JPN: "Asia", AUS: "Oceania", FRA: "Europe",
-        GBR: "Europe", KOR: "Asia", ITA: "Europe", NZL: "Oceania", CAN: "America",
-        UZB: "Asia", HUN: "Europe", ESP: "Europe", SWE: "Europe", KEN: "Africa",
-        NOR: "Europe", IRL: "Europe", BRA: "America", UKR: "Europe", ROU: "Europe",
-        GEO: "Europe", BEL: "Europe", SRB: "Europe", CZE: "Europe", AZE: "Asia",
-        BRN: "Asia", AUT: "Europe", HKG: "Asia", ISR: "Asia", POL: "Europe",
-        KAZ: "Asia", JAM: "America", THA: "Asia", ETH: "Africa", ECU: "America",
-        ARG: "America", EGY: "Africa", TUN: "Africa", CHI: "America",
-        LCA: "America", UGA: "Africa", DOM: "America", MAR: "Africa",
-        DMA: "America", PAK: "Asia", TUR: "Europe", MEX: "America", ARM: "Asia",
-        COL: "America", KGZ: "Asia", LTU: "Europe", IND: "Asia", MDA: "Europe",
-        CYP: "Europe", JOR: "Asia", PAN: "America", TJK: "Asia", ALB: "Europe",
-        CPV: "Africa", CIV: "Africa", PER: "America", QAT: "Asia", SGP: "Asia",
-        SVK: "Europe", FIN: "Europe", BLR: "Europe", EST: "Europe", SMR: "Europe",
-        MKD: "Europe", TKM: "Asia", SYR: "Asia", GHA: "Africa", CUB: "America",
-        LIE: "Europe", LAT: "Europe", RUS: "Europe", DEU: "Europe", NED: "Europe",
-        NLD: "Europe", CHE: "Europe", POR: "Europe", SVN: "Europe",
-        BUL: "Europe", GRE: "Europe", SUI: "Europe", DEN: "Europe", INA: "Asia",
-        IRI: "Asia", ALG: "Africa", BAH: "America", NGR: "Africa", RSA: "Africa",
-        SLO: "Europe", CRO: "Europe", KSA: "Asia", TTO: "America", CMR: "Africa",
-        MOZ: "Africa", URU: "America", SRI: "Asia", CRC: "America", KUW: "Asia",
-        ISL: "Europe", BAR: "America", ZIM: "Africa", UAE: "Asia", VEN: "America",
-        PAR: "America", MGL: "Asia", ERI: "Africa", SUD: "Africa", SAM: "Oceania",
-        MRI: "Africa", TOG: "Africa", AFG: "Asia", PHI: "Asia", KOS: "Europe",
-        BDI: "Africa", GRN: "America", GUA: "America", BOT: "Africa", GAB: "Africa",
-        MNE: "Europe", NAM: "Africa", BUR: "Africa", PUR: "America", NIG: "Africa",
-        BER: "America", FIJ: "Oceania", GER: "Europe", HUN: "Europe", FJI: "Oceania",
-    };
+export function drawMedalsVsGdpGraph({ containerSelector, data, defaultYear }) {
+
     const processedDataByYear = {};
 
     for (const yearSeasonKey of Object.keys(data)) {

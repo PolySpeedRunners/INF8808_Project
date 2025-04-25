@@ -6,6 +6,9 @@ import {
 
 export const yearSelect = document.getElementById("year-select");
 export const disciplineSelect = document.getElementById("discipline-select");
+
+/* Local Constants */
+const ANIMATION_TIME = 500;
 const section3Container = "#section3";
 
 export function populateYearAndDisciplineOptions(data) {
@@ -188,8 +191,8 @@ export function drawBarChart({
     })
     // Adds a transition to the bars when they are drawn.
     .transition()
-    .duration(1000)
-    .attr("y", (d) => y(d[1]))                 // Use the upper value of the stack.
+    .duration(ANIMATION_TIME)
+    .attr("y", (d) => y(d[1])) // Use the upper value of the stack.
     .attr("height", (d) => y(d[0]) - y(d[1])); // Height is the difference between stack values.
 
   chart
