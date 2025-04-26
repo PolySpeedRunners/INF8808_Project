@@ -165,23 +165,23 @@ export function drawMedalsVsGdpGraph ({ containerSelector, data, defaultYear }) 
     .style('opacity', 0)
     .style('pointer-events', 'none')
     .on('mouseover', (event, d) => {
-      tooltip
-        .style('opacity', 1)
-        .html(
-          `<strong>${d.country}</strong><br>` +
-            `Medal score: ${d.medalScore}<br>` +
-            `Medals obtained: ${d.totalMedals}<br>` +
-            `🥇 Gold: ${d.totalGold}<br>` +
-            `🥈 Silver: ${d.totalSilver}<br>` +
-            `🥉 Bronze: ${d.totalBronze}<br>` +
-            `Country rank: ${d.rank}<br>` +
-            `GDP: ${d3.format(',.0f')(d.gdp)} $<br>` +
-            `Population: ${d3.format(',.0f')(d.population)}`
-        );
+      tooltip.style('opacity', 1).html(
+        `<strong>${d.country}</strong><br>` +
+          `<table>
+          <tr><td>Country Rank</td><td>${d.rank}</td></tr>
+          <tr><td>Medal Score</td><td>${d.medalScore}</td></tr>
+          <tr><td>Medals Obtained</td><td>${d.totalMedals}</td></tr>
+          <tr><td> 🥇 Gold</td><td>${d.totalGold}</td></tr>
+          <tr><td> 🥈 Silver</td><td>${d.totalSilver}</td></tr>
+          <tr><td> 🥉 Bronze</td><td>${d.totalBronze}</td></tr>
+          <tr><td>GDP</td><td>${d3.format(',.0f')(d.gdp)} $</td></tr>
+          <tr><td>Population</td><td>${d3.format(',.0f')(d.population)}</td></tr>
+        </table>`
+      );
     })
     .on('mousemove', (event) => {
       const bounds = container.node().getBoundingClientRect();
-      tooltip.style('left', `${event.clientX - bounds.left + 10}px`).style('top', `${event.clientY - bounds.top - 30}px`);
+      tooltip.style('left', `${event.clientX - bounds.left + 20}px`).style('top', `${event.clientY - bounds.top - 60}px`);
     })
     .on('mouseout', () => tooltip.style('opacity', 0));
 

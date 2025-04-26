@@ -260,22 +260,22 @@ function createSVG (container, width, height, data, rank) {
         .transition()
         .duration(100)
         .attr('transform', `scale(1.4) translate(${0}, ${-height / 5})`);
-      tooltip
-        .style('opacity', 1)
-        .html(
-          `<strong>${data.countryName}</strong><br>` +
-            `Rank: ${rank}<br>` +
-            `GDP per Capita: ${d3.format(',.0f')(data.gdpPerCapita)} $<br>` +
-            `Population: ${d3.format(',.0f')(data.population)}<br>` +
-            `Fertility: ${data.tfr.toFixed(2)}<br>` +
-            `Youth %: ${data.percentage.toFixed(2)}%<br>` +
-            `Athletes: ${d3.format(',')(data.AthCount)}<br>` +
-            `Medal Score: ${d3.format(',')(data.medalScore)}<br>` +
-            `Medals obtained: ${data.totalMedals}<br>` +
-            `🥇 Gold: ${data.totalGold}<br>` +
-            `🥈 Silver: ${data.totalSilver}<br>` +
-            `🥉 Bronze: ${data.totalBronze}<br>`
-        );
+      tooltip.style('opacity', 1).html(
+        `<strong>${data.countryName}</strong><br>` +
+        `<table>
+          <tr><td>Rank</td><td>${rank}</td></tr>
+          <tr><td>GDP per Capita</td><td>${d3.format(',.0f')(data.gdpPerCapita)} $</td></tr>
+          <tr><td>Population</td><td>${d3.format(',.0f')(data.population)}</td></tr>
+          <tr><td>Fertility</td><td>${data.tfr.toFixed(2)}</td></tr>
+          <tr><td>Youth %</td><td>${data.percentage.toFixed(2)}%</td></tr>
+          <tr><td>Athletes</td><td>${d3.format(',')(data.AthCount)}</td></tr>
+          <tr><td>Medal Score</td><td>${d3.format(',')(data.medalScore)}</td></tr>
+          <tr><td>Medals Obtained</td><td>${data.totalMedals}</td></tr>
+          <tr><td>🥇 Gold</td><td>${data.totalGold}</td></tr>
+          <tr><td>🥈 Silver</td><td>${data.totalSilver}</td></tr>
+          <tr><td>🥉 Bronze</td><td>${data.totalBronze}</td></tr>
+        </table>`,
+      );
 
       // Making the hovered podium larger.
       d3.select(currentPodium).transition().duration(200).style('width', '80%');

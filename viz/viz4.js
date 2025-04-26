@@ -293,14 +293,21 @@ function drawDots (g, data, xScale, yScale, color, tooltip, container) {
 
   dots
     .on('mouseover', (event, d) => {
-      tooltip.style('opacity', 1).html(`<strong>${d.country}</strong><br>Year: ${d.year}<br>Medal Score: ${d.score}<br>Medals: ${d.medals}<br>` +
-            `🥇 Gold: ${d.gold}<br>` +
-            `🥈 Silver: ${d.silver}<br>` +
-            `🥉 Bronze: ${d.bronze}<br>`);
+      tooltip.style('opacity', 1).html(
+        `<strong>${d.country}</strong><br>` +
+          `<table>
+            <tr><td>Year</td><td>${d.year}</td></tr>
+            <tr><td>Medal Score</td><td>${d.score}</td></tr>
+            <tr><td>Medals</td><td>${d.medals}</td></tr>
+            <tr><td>🥇 Gold</td><td>${d.gold}</td></tr>
+            <tr><td>🥈 Silver</td><td>${d.silver}</td></tr>
+            <tr><td>🥉 Bronze</td><td>${d.bronze}</td></tr>
+          </table>`
+      );
     })
     .on('mousemove', (event) => {
       const bounds = container.node().getBoundingClientRect();
-      tooltip.style('left', `${event.clientX - bounds.left}px`).style('top', `${event.clientY - bounds.top + 20}px`);
+      tooltip.style('left', `${event.clientX - bounds.left + 30}px`).style('top', `${event.clientY - bounds.top - 30}px`);
     })
     .on('mouseout', () => tooltip.style('opacity', 0));
 
