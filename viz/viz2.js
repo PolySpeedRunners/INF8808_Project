@@ -1,7 +1,14 @@
+/**
+ * Visualization 2.
+ * This file contains the code for the radar comparison of leading Olympic nations by socioeconomic and demographic indicators
+ * It includes the functions to draw the graph and update it based on user input.
+ *
+ * @file viz2.js
+ */
+
 /* Local Constants */
 const ANIMATION_TIME = 500; // ms
-
-export const yearSelect = document.getElementById('year-select-podium');
+const yearSelect = document.getElementById('year-select-podium');
 
 /**
  * Populates the year selector dropdown with available seasons/years from the data
@@ -17,9 +24,7 @@ export function chooseYearRadarChart (data) {
       const option = document.createElement('option');
       option.value = year;
       const [yearStr, season] = year.split(',');
-      const formattedYear = `${
-        season.charAt(0).toUpperCase() + season.slice(1)
-      } ${yearStr}`;
+      const formattedYear = `${season.charAt(0).toUpperCase() + season.slice(1)} ${yearStr}`;
       option.textContent = formattedYear;
       yearSelect.appendChild(option);
     });
@@ -67,22 +72,12 @@ function drawRadarCharts (yearData, selectedYear) {
  * @param {object} resultsData - Country data to scale.
  */
 function applyMinMaxScaling (resultsData) {
-  const keysToScale = [
-    'gdpPerCapita',
-    'percentage',
-    'population',
-    'tfr',
-    'AthCount'
-  ];
+  const keysToScale = ['gdpPerCapita', 'percentage', 'population', 'tfr', 'AthCount'];
   const minMax = {};
 
   const countries = Object.values(resultsData);
   countries.forEach((c) => {
-    if (
-      typeof c.gdp === 'number' &&
-      typeof c.population === 'number' &&
-      c.population !== 0
-    ) {
+    if (typeof c.gdp === 'number' && typeof c.population === 'number' && c.population !== 0) {
       c.gdpPerCapita = c.gdp / c.population;
     } else {
       c.gdpPerCapita = 0;
@@ -90,9 +85,7 @@ function applyMinMaxScaling (resultsData) {
   });
 
   for (const key of keysToScale) {
-    const values = countries
-      .map((c) => c[key])
-      .filter((v) => typeof v === 'number' && !isNaN(v));
+    const values = countries.map((c) => c[key]).filter((v) => typeof v === 'number' && !isNaN(v));
     minMax[key] = {
       min: Math.min(...values),
       max: Math.max(...values)
@@ -149,28 +142,12 @@ function formatRadarKey (key) {
 export function drawRadarChart ({ containerSelector, data, rank }) {
   const margin = { top: 50, right: 0, bottom: 0, left: 0 };
   const container = setupContainer(containerSelector);
-  const { width, height, innerWidth, innerHeight } = getDimensions(
-    container,
-    margin
-  );
+  const { width, height, innerWidth, innerHeight } = getDimensions(container, margin);
   const radius = (Math.min(innerWidth, innerHeight) / 2) * 0.7;
 
-  const radarKeys = [
-    'minmax_gdpPerCapita',
-    'minmax_population',
-    'minmax_tfr',
-    'minmax_percentage',
-    'minmax_AthCount'
-  ];
+  const radarKeys = ['minmax_gdpPerCapita', 'minmax_population', 'minmax_tfr', 'minmax_percentage', 'minmax_AthCount'];
   const svg = createSVG(container, width, height, data, rank);
-  const chartGroup = svg
-    .append('g')
-    .attr(
-      'transform',
-      `translate(${margin.left + innerWidth / 2}, ${
-        margin.top + innerHeight / 2
-      })`
-    );
+  const chartGroup = svg.append('g').attr('transform', `translate(${margin.left + innerWidth / 2}, ${margin.top + innerHeight / 2})`);
 
   const scale = d3
     .scaleLinear()
@@ -262,7 +239,7 @@ function createSVG (container, width, height, data, rank) {
         .attr('transform', `scale(1.4) translate(${0}, ${-height / 5})`);
       tooltip.style('opacity', 1).html(
         `<strong>${data.countryName}</strong><br>` +
-        `<table>
+          `<table>
           <tr><td>Rank</td><td>${rank}</td></tr>
           <tr><td>GDP per Capita</td><td>${d3.format(',.0f')(data.gdpPerCapita)} $</td></tr>
           <tr><td>Population</td><td>${d3.format(',.0f')(data.population)}</td></tr>
@@ -417,11 +394,7 @@ function drawRadarShape (group, values, axisScale) {
     });
 
   // Add the animation
-  path
-    .transition()
-    .duration(ANIMATION_TIME)
-    .ease(d3.easeLinear)
-    .attr('stroke-dashoffset', 0);
+  path.transition().duration(ANIMATION_TIME).ease(d3.easeLinear).attr('stroke-dashoffset', 0);
 }
 
 /**
@@ -431,11 +404,7 @@ function drawRadarShape (group, values, axisScale) {
  * @returns {object} The tooltip div element.
  */
 function createTooltip (container) {
-  return container
-    .append('div')
-    .attr('class', 'tooltip')
-    .style('top', '100px')
-    .style('right', '70px');
+  return container.append('div').attr('class', 'tooltip').style('top', '100px').style('right', '70px');
 }
 
 /**

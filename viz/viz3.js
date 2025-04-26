@@ -1,11 +1,18 @@
 import { MEDAL_COLORS, MEDAL_VALUES } from '../assets/constants.js';
 
-export const yearSelect = document.getElementById('year-select');
-export const disciplineSelect = document.getElementById('discipline-select');
+/**
+ * Visualization 3.
+ * This file contains the code for the bar graph of Olympic Medal Scores by Discipline and Country.
+ * It includes the functions to draw the graph and update it based on user input.
+ *
+ * @file viz3.js
+ */
 
 /* Local Constants */
 const ANIMATION_TIME = 500; // ms
 const section3Container = '#section3';
+const yearSelect = document.getElementById('year-select');
+const disciplineSelect = document.getElementById('discipline-select');
 
 /**
  * Populates the dropdowns with year/season and disciplines

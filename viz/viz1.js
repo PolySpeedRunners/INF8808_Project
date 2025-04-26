@@ -1,8 +1,11 @@
 import { CONTINENT_LEGEND_COLOR, COUNTRY_TO_CONTINENT_MAP } from '../assets/constants.js';
 
 /**
- * This file contains the code for the medals vs GDP/population graph.
+ * Visualization 1.
+ * This file contains the code for the graph of score of Olympic medals in relation to population and GDP.
  * It includes the functions to draw the graph and update it based on user input.
+ *
+ * @file viz1.js
  */
 
 /* Local Constants */

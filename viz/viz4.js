@@ -1,3 +1,11 @@
+/**
+ * Visualization 4.
+ * This file contains the code for the graph of performance over time in the Olympics.
+ * It includes the functions to draw the graph and update it based on user input.
+ *
+ * @file viz4.js
+ */
+
 /* Local Constants */
 const ANIMATION_TIME = 750; // ms
 
@@ -8,11 +16,7 @@ const ANIMATION_TIME = 750; // ms
  * @param {string} containerSelector The selector for the chart container.
  * @param {string} [initialSeason="Both"] The initially selected season.
  */
-export function setLineChartListener (
-  data,
-  containerSelector,
-  initialSeason = 'Both'
-) {
+export function setLineChartListener (data, containerSelector, initialSeason = 'Both') {
   const seasonSelect = document.getElementById('seasonSelect');
 
   const updateChart = (event) => {
@@ -52,9 +56,9 @@ export function drawLineChart ({ data, containerSelector, season = 'Both' }) {
 
   const cumulativeData = processData(data, season);
   const topCountries = getTopCountries(cumulativeData);
-  const filtered = cumulativeData.filter(d => topCountries.has(d.country));
-  const dataByCountry = d3.groups(filtered, d => d.country);
-  const years = Array.from(new Set(filtered.map(d => d.year))).sort((a, b) => a - b);
+  const filtered = cumulativeData.filter((d) => topCountries.has(d.country));
+  const dataByCountry = d3.groups(filtered, (d) => d.country);
+  const years = Array.from(new Set(filtered.map((d) => d.year))).sort((a, b) => a - b);
 
   const { xScale, yScale } = createScales(years, dataByCountry, innerWidth, innerHeight);
   drawAxes(g, xScale, yScale, innerHeight, ticks);
@@ -87,9 +91,7 @@ function setupContainer (containerSelector) {
  * @returns {d3.Selection} The tooltip element.
  */
 function createTooltip (container) {
-  return container
-    .append('div')
-    .attr('class', 'tooltip');
+  return container.append('div').attr('class', 'tooltip');
 }
 
 /**
@@ -138,7 +140,8 @@ function processData (data, season) {
       }));
     });
 
-  return d3.groups(flattened, d => d.country)
+  return d3
+    .groups(flattened, (d) => d.country)
     .map(([_, values]) => {
       values.sort((a, b) => a.year - b.year);
       let cumulativeScore = 0;
@@ -147,15 +150,14 @@ function processData (data, season) {
       let cumulativeSilver = 0;
       let cumulativeGold = 0;
       // eslint-disable-next-line no-return-assign
-      return values.map(d => (
-        {
-          ...d,
-          score: cumulativeScore += d.score,
-          bronze: cumulativeBronze += d.bronze,
-          silver: cumulativeSilver += d.silver,
-          gold: cumulativeGold += d.gold,
-          medals: cumulativeMedals += d.medals
-        }));
+      return values.map((d) => ({
+        ...d,
+        score: (cumulativeScore += d.score),
+        bronze: (cumulativeBronze += d.bronze),
+        silver: (cumulativeSilver += d.silver),
+        gold: (cumulativeGold += d.gold),
+        medals: (cumulativeMedals += d.medals)
+      }));
     })
     .flat();
 }
@@ -169,8 +171,8 @@ function processData (data, season) {
 function getTopCountries (data) {
   const totalByCountry = d3.rollups(
     data,
-    v => d3.max(v, d => d.score),
-    d => d.country
+    (v) => d3.max(v, (d) => d.score),
+    (d) => d.country
   );
 
   return new Set(
@@ -198,7 +200,7 @@ function createScales (years, dataByCountry, innerWidth, innerHeight) {
 
   const yScale = d3
     .scaleLinear()
-    .domain([0, d3.max(dataByCountry, ([, values]) => d3.max(values, d => d.score))])
+    .domain([0, d3.max(dataByCountry, ([, values]) => d3.max(values, (d) => d.score))])
     .nice()
     .range([innerHeight, 0]);
 
@@ -215,19 +217,15 @@ function createScales (years, dataByCountry, innerWidth, innerHeight) {
  * @param {object} ticks The tick configuration for axes.
  */
 function drawAxes (g, xScale, yScale, innerHeight, ticks) {
-  const xAxis = d3.axisBottom(xScale).ticks(d3.tickStep(...xScale.domain(), 2)).tickFormat(d3.format('d'));
+  const xAxis = d3
+    .axisBottom(xScale)
+    .ticks(d3.tickStep(...xScale.domain(), 2))
+    .tickFormat(d3.format('d'));
   const yAxis = d3.axisLeft(yScale).ticks(ticks.y);
 
-  g.append('g')
-    .attr('transform', `translate(0,${innerHeight})`)
-    .call(xAxis)
-    .selectAll('text')
-    .style('fill', 'var(--axis-title-color)');
+  g.append('g').attr('transform', `translate(0,${innerHeight})`).call(xAxis).selectAll('text').style('fill', 'var(--axis-title-color)');
 
-  g.append('g')
-    .call(yAxis)
-    .selectAll('text')
-    .style('fill', 'var(--axis-title-color)');
+  g.append('g').call(yAxis).selectAll('text').style('fill', 'var(--axis-title-color)');
 }
 
 /**
@@ -311,10 +309,7 @@ function drawDots (g, data, xScale, yScale, color, tooltip, container) {
     .on('mouseout', () => tooltip.style('opacity', 0));
 
   // Add the transition.
-  dots
-    .transition()
-    .duration(ANIMATION_TIME)
-    .attr('r', 4);
+  dots.transition().duration(ANIMATION_TIME).attr('r', 4);
 }
 
 /**
@@ -332,12 +327,14 @@ function drawLegend (svg, countries, color, containerSelector) {
   d3.select(containerSelector + ' .legend-container')
     .attr('height', legendHeight)
     .style('height', `${legendHeight}px`);
-  const legend = d3.select(containerSelector + ' .legend-container')
+  const legend = d3
+    .select(containerSelector + ' .legend-container')
     .append('g')
     .attr('class', 'legend')
     .attr('width', '100%');
 
-  legend.append('text')
+  legend
+    .append('text')
     .attr('y', -10)
     .text('Legend')
     .style('fill', 'var(--text-color)')
@@ -352,14 +349,18 @@ function drawLegend (svg, countries, color, containerSelector) {
 
   [...countries].forEach((country, i) => {
     const className = country.replace(/\s+/g, '_');
-    const legendItem = legend.append('g')
+    const legendItem = legend
+      .append('g')
       .attr('transform', `translate(0, ${i * legendItemHeight})`)
       .style('cursor', 'pointer');
 
-    const switchWidth = 50; const switchHeight = 30; const knobRadius = 12;
+    const switchWidth = 50;
+    const switchHeight = 30;
+    const knobRadius = 12;
     const switchGroup = legendItem.append('g');
 
-    switchGroup.append('rect')
+    switchGroup
+      .append('rect')
       .attr('rx', switchHeight / 2)
       .attr('ry', switchHeight / 2)
       .attr('width', switchWidth)
@@ -367,13 +368,15 @@ function drawLegend (svg, countries, color, containerSelector) {
       .attr('fill', 'var(--background-color)')
       .attr('stroke', 'var(--button-active-color)');
 
-    const knob = switchGroup.append('circle')
+    const knob = switchGroup
+      .append('circle')
       .attr('cx', switchWidth - knobRadius - 2)
       .attr('cy', switchHeight / 2)
       .attr('r', knobRadius)
       .attr('fill', color(country));
 
-    const text = legendItem.append('text')
+    const text = legendItem
+      .append('text')
       .attr('x', switchWidth + 5)
       .attr('y', switchHeight / 2 + 5)
       .text(country)
@@ -393,12 +396,18 @@ function drawLegend (svg, countries, color, containerSelector) {
       const rect = switchGroup.select('rect');
       if (isVisible) {
         visibleCountries.delete(country);
-        knob.transition().duration(400).attr('cx', knobRadius + 2);
+        knob
+          .transition()
+          .duration(400)
+          .attr('cx', knobRadius + 2);
         rect.transition().duration(400).attr('fill', darkerFill);
         text.style('font-weight', 'normal');
       } else {
         visibleCountries.add(country);
-        knob.transition().duration(400).attr('cx', switchWidth - knobRadius - 2);
+        knob
+          .transition()
+          .duration(400)
+          .attr('cx', switchWidth - knobRadius - 2);
         rect.transition().duration(400).attr('fill', originalFill);
         text.style('font-weight', 'bold');
       }
