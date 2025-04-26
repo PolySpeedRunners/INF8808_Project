@@ -163,6 +163,7 @@ h1 {
     height: 100%; 
 }
 
+/* Tooltip styles */
 .tooltip {
     position: absolute;
     z-index: 99999;
