@@ -122,7 +122,6 @@ function setupSVG (container, margin, width, height) {
  * @returns {Array<object>} The processed and sorted cumulative data array.
  */
 function processData (data, season) {
-  console.log(data);
   const flattened = Object.entries(data)
     .filter(([key]) => season === 'Both' || key.includes(season))
     .flatMap(([key, countries]) => {
