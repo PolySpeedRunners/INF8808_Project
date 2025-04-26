@@ -26,9 +26,7 @@ export function setLineChartListener (data, containerSelector, initialSeason = '
 
   if (seasonSelect) {
     seasonSelect.value = initialSeason;
-
     seasonSelect.removeEventListener('change', updateChart);
-
     seasonSelect.addEventListener('change', updateChart);
   }
 }
