@@ -274,7 +274,7 @@ function createSVG (container, width, height, data, rank) {
           <tr><td>🥇 Gold</td><td>${data.totalGold}</td></tr>
           <tr><td>🥈 Silver</td><td>${data.totalSilver}</td></tr>
           <tr><td>🥉 Bronze</td><td>${data.totalBronze}</td></tr>
-        </table>`,
+        </table>`
       );
 
       // Making the hovered podium larger.

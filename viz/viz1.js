@@ -19,7 +19,7 @@ export function drawMedalsVsGdpGraph ({ containerSelector, data, defaultYear }) 
   const processedDataByYear = {};
 
   for (const yearSeasonKey of Object.keys(data)) {
-    const [yearStr, season] = yearSeasonKey.split(',');
+    const [yearStr] = yearSeasonKey.split(',');
     const year = parseInt(yearStr);
 
     const countries = data[yearSeasonKey];
@@ -79,9 +79,7 @@ export function drawMedalsVsGdpGraph ({ containerSelector, data, defaultYear }) 
     .style('color', 'var(--text-color)');
 
   const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top + 30})`);
-  const tooltip = container
-    .append('div')
-    .attr('class', 'tooltip');
+  const tooltip = container.append('div').attr('class', 'tooltip');
 
   // The values are used to calculate the min and max values for the x axis.
   const maxPopulation = d3.max(Object.values(data).flat(), (d) => d.population);
@@ -253,7 +251,9 @@ export function drawMedalsVsGdpGraph ({ containerSelector, data, defaultYear }) 
   if (yearSlider) yearSlider.value = defaultYear;
 
   /**
-   * @param year
+   * Updates the active year label based on the selected year.
+   *
+   * @param {*} year The year to display the data for.
    */
   function updateActiveYearLabel (year) {
     yearLabels.forEach((label) => {
